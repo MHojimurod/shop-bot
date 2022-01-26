@@ -9,7 +9,9 @@ class Bot(Updater):
         super().__init__(token)
 
         self.conversation = ConversationHandler(
-            entry_points=[],
+            entry_points=[
+                CommandHandler('start',self.start_handler)
+                ],
             states={},
             fallbacks=[]
         )
@@ -21,5 +23,6 @@ class Bot(Updater):
         print('polling')
         self.idle()
 
-
+    def start_handler(self, update:Update, context:CallbackContext):
+        print("aaa")
 bot = Bot(TOKEN)
