@@ -5,5 +5,4 @@ from django.db import models
 
 class Diller(models.Model):
     chat_id = models.IntegerField()
-    language = models.IntegerChoices(choices=((0, 'uz'), (1, 'en')))
-    
+    language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))

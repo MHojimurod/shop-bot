@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
-    'diller'
+    'diller',
+    'admin_panel'
 ]
 
 MIDDLEWARE = [
