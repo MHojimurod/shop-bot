@@ -4,3 +4,5 @@ from django.db import models
 class Seller(models.Model):
     chat_id = models.IntegerField()
     language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
+
+    
