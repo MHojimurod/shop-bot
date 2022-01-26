@@ -20,7 +20,7 @@ class Bot(Updater):
         self.idle()
 
         
-
+    @register
     def start_handler(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         print(user,db_user)
