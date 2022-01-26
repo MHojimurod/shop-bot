@@ -31,3 +31,10 @@ class District(models.Model):
 
     def name(self, lang:int):
         return self.uz_data if lang == 0 else self.ru_data
+
+
+class Category(models.Model):
+    name_uz = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
+    def name(self, lang:int):
+        return self.name_uz if lang == 0 else self.name_ru
