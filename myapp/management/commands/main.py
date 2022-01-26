@@ -20,8 +20,8 @@ class Bot(Updater):
 
         self.conversation = ConversationHandler(
             entry_points=[
-                CommandHandler('start', self.start)
-            ],
+                CommandHandler('start',self.start_handler)
+                ],
             states={},
             fallbacks=[]
         )
@@ -36,5 +36,6 @@ class Bot(Updater):
     def start(self, update:Update, context:CallbackContext):
         print(context.user_data)
 
-
+    def start_handler(self, update:Update, context:CallbackContext):
+        print("aaa")
 bot = Bot(TOKEN)

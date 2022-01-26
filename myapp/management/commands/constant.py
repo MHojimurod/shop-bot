@@ -9,4 +9,4 @@ reload = "🔄"
 
 X = range(1)
 
-TOKEN = "2136261295:AAGRm85AIjpG6hspmOwNtNUgPX_F6EJ7pUA"
+TOKEN = "5075005699:AAGGFW7NCbRq-TvflzsECUfU6ZzzGDFpLXU"
