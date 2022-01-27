@@ -30,7 +30,9 @@ def distribute(items: list, number:int) -> list:
 def delete_tmp_message(func:callable) -> callable:
     def wrapper(self, update:Update, context:CallbackContext):
         if 'tmp_message' in context.user_data:
-            context.user_data['tmp_message'].delete()
+            try:
+                context.user_data['tmp_message'].delete()
+            except:pass
         try:
             update.message.delete() if update.message else update.callback_query.message.delete()
         except:

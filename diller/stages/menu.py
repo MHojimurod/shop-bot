@@ -6,12 +6,13 @@ from telegram.ext import (
     CallbackContext
 )
 
-from diller.management.commands.decorators import get_user
+from diller.management.commands.decorators import delete_tmp_message, get_user
 from diller.models import Busket
 
-from diller.utils import category_pagination_inline
-from ..management.commands.constant import SELECT_CATEGORY
+from diller.utils import busket_keyboard, category_pagination_inline, diller_products_paginator
+from ..management.commands.constant import CART, PURCHASED, SELECT_CATEGORY
 class Menu:
+    @delete_tmp_message
     def buy(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         if update.message:
@@ -20,8 +21,14 @@ class Menu:
             context.user_data['tmp_message'] = user.send_message(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination'], context))
         elif update.callback_query:
             data = update.callback_query.data.split(":")
-            context.user_data['buy']['pagination'] = int(data[1])
-            update.callback_query.message.edit_text(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination']))
+            if data[0] == "category_pagination":
+                context.user_data['buy']['pagination'] = int(data[1])
+                update.callback_query.message.edit_text(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination'], context))
+            else:
+                context.user_data['buy']['pagination'] = 1
+                keyboard = category_pagination_inline(db_user.language, context.user_data['buy']['pagination'], context)
+                # update.callback_query.message.delete()
+                context.user_data['tmp_message'] = user.send_message(**keyboard)
         return SELECT_CATEGORY
 
 
@@ -37,11 +44,34 @@ class Menu:
 
 
 
-    
+    @delete_tmp_message
     def purchased(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
-        context.user_data['tmp_message'] = user.send_message("Sotib olingan")
-    
+        if update.message:
+            if len(db_user.products()) > 0:
+                context.user_data['tmp_message'] = user.send_message(**diller_products_paginator(db_user,1), parse_mode="HTML")
+            else:
+                context.user_data['tmp_message'] = user.send_message("Sizda hech qanday buyurtma yo'q")
+                return self.start(update, context)
+        else:
+            data = update.callback_query.data.split(":")
+            if data[0] == "product_pagination":
+                context.user_data['tmp_message'] = user.send_message(**diller_products_paginator(db_user, int(data[1])), parse_mode="HTML")
+        return PURCHASED
+
+
+
+
+
+    @delete_tmp_message
     def my_balls(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         context.user_data['tmp_message'] = user.send_message("Sotib olingan")
+    
+    # @delete_tmp_message
+    def cart(self, update:Update, context:CallbackContext):
+        user, db_user= get_user(update)
+
+        if len(db_user.busket.items) > 0:
+            update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
+            return CART

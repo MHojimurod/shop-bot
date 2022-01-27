@@ -49,13 +49,13 @@ class Buy:
             keyboard.pop('photo')
             context.user_data['tmp_message'] = update.callback_query.message.edit_caption(**keyboard)
             return SELECT_PRODUCT_COUNT
-    
+    @delete_tmp_message
     def add_to_cart(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         if update.callback_query:
             product = context.user_data['buy']['product']
             count = context.user_data['product']['count']
-            context.user_data['current_busket'].add_product(product, count)
+            db_user.busket.add_product(product, count)
             context.user_data['buy']['pagination'] = 1
             context.user_data['tmp_message'] = user.send_message(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination'], context))
             return SELECT_CATEGORY

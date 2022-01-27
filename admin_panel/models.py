@@ -56,6 +56,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
+    ball = models.IntegerField()
     price = models.IntegerField()
     image = models.ImageField(upload_to='products')
 
