@@ -7,16 +7,17 @@ from telegram.ext import (
 )
 
 from diller.management.commands.decorators import get_user
+from diller.models import Busket
 
 from diller.utils import category_pagination_inline
 from ..management.commands.constant import SELECT_CATEGORY
 class Menu:
     def buy(self, update:Update, context:CallbackContext):
-        print('xxx')
         user, db_user= get_user(update)
         if update.message:
+            context.user_data['current_busket'] = db_user.busket
             context.user_data['buy']['pagination'] = 1
-            context.user_data['tmp_message'] = user.send_message(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination']))
+            context.user_data['tmp_message'] = user.send_message(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination'], context))
         elif update.callback_query:
             data = update.callback_query.data.split(":")
             context.user_data['buy']['pagination'] = int(data[1])
