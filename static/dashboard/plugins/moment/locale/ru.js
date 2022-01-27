@@ -119,7 +119,7 @@
                         case 1:
                         case 2:
                         case 4:
-                            return '[В следующий] dddd, [в] LT';
+                            return '[В Кейинги] dddd, [в] LT';
                         case 3:
                         case 5:
                         case 6:

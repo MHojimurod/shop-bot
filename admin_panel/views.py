@@ -4,6 +4,7 @@ from diller.models import Diller
 from myapp.models import Seller
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+import requests
 
 def login_required_decorator(f):
     return login_required(f, login_url="login")
@@ -31,24 +32,28 @@ def home(request):
 
 
 def dillers_list(request):
-    dillers = Diller.objects.all()
+    dillers = Diller.objects.order_by('-id').all()
     ctx = {
         "dillers": dillers,
         "d_active":"menu-open"
     }
-    return render(request, "dashboard/dillers/list.html",ctx)
+    return render(request, "dashboard/index.html",ctx)
 
 
 
 @login_required_decorator
 def diller_update(request, pk,status):
-    model = Diller.objects.get(pk=pk)
-    model.delete()
-    return redirect("dillers")
+    Diller.objects.filter(pk=pk).update(status=status)
+    data = requests.get(f"http://127.0.0.1:6002/diller_status/", json={"data": {
+            "id": pk,
+            "status": status
+        }})
+    print(data.status_code)
+    return redirect("home")
 
 
 @login_required_decorator
 def diller_delete(request, pk):
     model = Diller.objects.get(pk=pk)
     model.delete()
-    return redirect("dillers")
+    return redirect("home")
