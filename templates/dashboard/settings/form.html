@@ -1,0 +1,33 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+              <form class="col-sm-12" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="d-flex flex-column">
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                        {{form.uz_text}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                        {{form.ru_text}}
+                      </div>
+                    </div>
+        
+                  </div>
+                <div>
+                  <button type="submit" class="btn col-sm-1 btn-info">Сохранить</button>
+                </div>
+              </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}

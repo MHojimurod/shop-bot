@@ -1,0 +1,59 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row flex-column">
+      {% for i in bot_settings %}
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label >Бот токен</label>
+          <input class="form-control" placeholder="{{i.token}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label >Payme</label>
+          <input class="form-control" placeholder="{{i.payme}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label >Click</label>
+          <input class="form-control" placeholder="{{i.click}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label >Группа ид</label>
+          <input class="form-control" placeholder="{{i.group_id}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label >Дальность доставки в км</label>
+          <input class="form-control" placeholder="{{i.deliver_km}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label for="">Доставить время начала</label>
+          <input class="form-control" placeholder="{{i.deliver_time_from}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-5">
+        <div class="form-group">
+          <label for="">Доставить время остановки</label>
+          <input class="form-control" placeholder="{{i.deliver_time_to}}" disabled></input>
+        </div>
+      </div>
+      <div class="col-sm-1 mb-3 d-flex align-center">
+        <a style="color: #17a2b8;" href="{% url 'bot_settings_edit' i.id %}" class="m-auto col-sm-12"><i class="far fa-edit"></i></a>
+      </div>
+      
+      
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

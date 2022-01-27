@@ -1,0 +1,82 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Категория</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Главный</a></li>
+          <li class="breadcrumb-item active">Категория</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Категория</h3>
+
+            <div class="card-tools">
+              <a href="{% url 'category_add' %}">
+                <div class="btn btn-block btn-success">Добавлять</div>
+              </a>
+            </div>
+          </div>
+
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Название uz</th>
+                  <th>Название ru</th>
+                  <th>Фото</th>
+                  <th>Статус</th>
+                  <th>Дата</th>
+                  <th>Редактировать</th>
+                  <th>Удалить</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in categories %}
+
+                <tr>
+
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.name_uz }}</td>
+                  <td>{{ i.name_ru }}</td>
+                  <td>
+                    <a href="/media/{{i.img}}">Фото</a>
+                  </td>
+                  {% if i.active %}
+                  <td><span class="badge badge-success">активный</span></td>
+                  {% else %}
+                  <td><span class="badge badge-danger">неактивный</span></td>
+                  {% endif %}
+                  <td>{{ i.created_at|date:"d-m-Y H:i"}}</td>
+                  <td><a style="color: #17a2b8;" href="{% url 'category_edit' i.id %}">
+                    <div ><i class="far fa-edit"></i></div></a></td>
+                  <td><a style="color: #dc3545;" href="{% url 'category_delete' i.id %}">
+                    <div><i class="fas fa-trash-alt"></i></div></a></td>
+                    </a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

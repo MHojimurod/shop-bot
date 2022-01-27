@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+              <form class="col-sm-12" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="d-flex flex-column">
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Бот токен</label><br>
+                        {{form.token}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Payme</label><br>
+                        {{form.payme}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Click</label><br>
+                        {{form.click}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Группа ид</label><br>
+                        {{form.group_id}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Дальность доставки в км</label><br>
+                        {{form.deliver_km}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                        <label >Доставить время начала</label><br>
+                        {{form.deliver_time_from}}
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                        <label >Доставить время остановки</label><br>
+                        {{form.deliver_time_to}}
+                      </div>
+                    </div>
+        
+                  </div>
+                <div>
+                  <button type="submit" class="btn col-sm-1 btn-info">Сохранить</button>
+                </div>
+              </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

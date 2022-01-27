@@ -1,0 +1,79 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Создать пользователя</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Главный</a></li>
+          <li class="breadcrumb-item active">Создать пользователя</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="card card-primary">
+              {% for message in messages %}
+                <div style="color: red;" class="ml-2 mt-3">{{message}}</div>
+                {% endfor %}
+              <form method="post"  enctype="multipart/form-data">
+                  {% csrf_token %}
+                <div class="card-body">
+                    <label >Имя пользователя</label><br>
+                      <h1 >{{name}} {{username}}</h1>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label >Позиция</label><br>
+                      {{form.type}}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label >Телефон</label><br>
+                      {{form.phone}}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label >Доступ</label><br>
+                    {{form.accesses}}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label >Status</label><br>
+                    {{form.active}}
+                  </div>
+                </div>
+                <div class="ml-3">
+                  <button type="submit" class="btn col-sm-1 btn-info">Сохранить</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block javascript %}
+    <script>
+        function myFunction() {
+        var x = document.getElementById("myInput");
+        if (x.type === "password") {
+        x.type = "text";
+        } else {
+        x.type = "password";
+        }
+    }
+    </script>
+{% endblock %}
