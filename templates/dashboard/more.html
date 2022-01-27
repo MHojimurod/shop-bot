@@ -1,0 +1,65 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        {% if data %}
+        {% if lang %}
+        <h1>Barcha O'zbek Mijozlar</h1>
+        {% else %}
+        <h1>Barcha Rus Mijozlar</h1>
+        {% endif %}
+        {% else %}
+        <h1>Barcha Mijozlar</h1>
+        {% endif %}
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><button class="btn btn-block btn-primary" onclick="history.back()">Ortga</button></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+
+
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Ismi</th>
+                      <th>Telefon raqami</th>
+                      <th>Tili</th>
+                      <th>Qo'shilgan sana</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in users %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.name }}</td>
+                      <td>{{ i.phone }}</td>
+                      <td>{{ i.lang }}</td>
+                      <td>{{ i.created_at|date:"d-m-Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

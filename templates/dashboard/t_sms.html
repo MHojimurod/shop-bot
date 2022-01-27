@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+              <form class="col-sm-12" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="d-flex flex-column">
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Пользователь ид</label><br>
+                        <input type="text" value="{{chat_id}}" name="chat_id" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-sm-6 mt-3">
+                      <div class="form-group">
+                      <label >Сообщение</label><br>
+                        <textarea name="message" id="" class="h-50 col-s-6 form-control" rows="3"></textarea>
+                      </div>
+                    </div>
+        
+                  </div>
+                <div>
+                  <button type="submit" class="btn col-sm-1 btn-info swalDefaultSuccess">Отправить</button>
+                </div>
+              </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

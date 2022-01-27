@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Рассылки</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Главный</a></li>
+          <li class="breadcrumb-item active">Рассылки</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Рассылки</h3>
+
+            <div class="card-tools">
+              <a href="{% url 'cerate_ads' %}">
+                <div class="btn btn-block btn-success">Добавлять</div>
+              </a>
+            </div>
+          </div>
+
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover ">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Язык</th>
+                  <th>Медиа</th>
+                  <th>Текст</th>
+                  <th>Дата</th>
+                  <th>Статус</th>
+                  <th>Отправлять</th>
+                  <th>Редактировать</th>
+                  <th>Удалить</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in ads %}
+
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.get_status_display }}</td>
+                  <td>
+                    <a href="/media/{{i.file}}">Медиа</a>
+                  </td> 
+                  <td style="width: 50%;"><div style=" height: 100px; overflow-x: auto; word-break: break-all;">{{i.message|safe}}</div></td>
+                  <td>{{ i.created_at|date:"d-m-Y H:i"}}</td>
+                  {% if i.active %}
+                  <td><span class="badge badge-success">Отправил</span></td>
+                  {% else %}
+                  <td><span class="badge badge-warning">Не отправлено</span></td>
+                  {% endif %}
+                  {% if not i.active %}
+                  <td><a href="{% url 'send_ads' i.id %}" class="btn btn-xs btn-info">Отправлять</a></td>
+                  <td><a style="color: #17a2b8;" href="{% url 'edit_ads' i.id %}">
+                    <div ><i class="far fa-edit"></i></div></a></td>
+                    {% else %}
+                    <td><a href="" class="btn btn-info btn-xs disabled">Отправлять</a></td>
+                    <td><a style="color: #17a2b8;" href="">
+                    <div ><i class="far fa-edit disabled"></i></div></a></td>
+                    {% endif %}
+                  <td><a style="color: #dc3545;" href="{% url 'delete_ads' i.id %}">
+                    <div><i class="fas fa-trash-alt"></i></div></a></td>
+                    </a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

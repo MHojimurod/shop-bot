@@ -3,7 +3,7 @@ from admin_panel.models import Text
 # Create your models here.
 from admin_panel.models import *
 
-class Diller(models.Model):
+class  Diller(models.Model):
     chat_id = models.IntegerField()
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=100)
