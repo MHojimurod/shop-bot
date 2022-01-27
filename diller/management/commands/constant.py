@@ -1,8 +1,3 @@
-  
-from tokenize import Number
-from numpy import number
-
-
 done = "✅"
 prev = "⏮"
 next = "⏭"
@@ -11,9 +6,7 @@ cross = "❌"
 trash = "🗑"
 reload = "🔄"
 
-LANGUAGE, NAME, NUMBER, REGION, DISTRICT, MENU, SELECT_CATEGORY = range(7)
+LANGUAGE, NAME, NUMBER, REGION, DISTRICT, MENU, SELECT_CATEGORY, SELECT_PRODUCT, SELECT_PRODUCT_COUNT = range(9)
 
 TOKEN = "5271053431:AAF54PTgM_3B01wTPDj-WiXy3nkOx03JWXM"
 
-
-Number

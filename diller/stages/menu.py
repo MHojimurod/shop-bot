@@ -16,7 +16,7 @@ class Menu:
         user, db_user= get_user(update)
         if update.message:
             context.user_data['buy']['pagination'] = 1
-            user.send_message(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination']))
+            context.user_data['tmp_message'] = user.send_message(**category_pagination_inline(db_user.language, context.user_data['buy']['pagination']))
         elif update.callback_query:
             data = update.callback_query.data.split(":")
             context.user_data['buy']['pagination'] = int(data[1])
@@ -39,8 +39,8 @@ class Menu:
     
     def purchased(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
-        user.send_message("Sotib olingan")
+        context.user_data['tmp_message'] = user.send_message("Sotib olingan")
     
     def my_balls(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
-        user.send_message("Sotib olingan")
+        context.user_data['tmp_message'] = user.send_message("Sotib olingan")

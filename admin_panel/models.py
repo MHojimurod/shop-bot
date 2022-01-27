@@ -38,3 +38,31 @@ class Category(models.Model):
     name_ru = models.CharField(max_length=100)
     def name(self, lang:int):
         return self.name_uz if lang == 0 else self.name_ru
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Product(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    name_uz = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
+    price = models.IntegerField()
+    image = models.ImageField(upload_to='products')
+
+
+
+    def name(self, lang:int):
+        return self.name_uz if lang == 0 else self.name_ru
+
+    def description(self, lang:int):
+        return self.description_uz if lang == 0 else self.description_ru

@@ -31,6 +31,9 @@ def delete_tmp_message(func:callable) -> callable:
     def wrapper(self, update:Update, context:CallbackContext):
         if 'tmp_message' in context.user_data:
             context.user_data['tmp_message'].delete()
-        update.message.delete() if update.message else update.callback_query.message.delete()
+        try:
+            update.message.delete() if update.message else update.callback_query.message.delete()
+        except:
+            pass
         return func(self, update, context)
     return wrapper
