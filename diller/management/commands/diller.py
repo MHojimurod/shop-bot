@@ -46,7 +46,7 @@ class Bot(Updater, Register, Menu):
                     MessageHandler(Filters.regex("^(Sotib olingan|Купленные)"), self.purchased),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls)
                     ],
-                SELECT_CATEGORY: [MessageHandler(Filters.regex("^\d+$") & not_start, self.buy), CallbackQueryHandler(self.buy, pattern="^category_pagination:"), CallbackQueryHandler(self.start, pattern="^cancel_pagination" )],
+                SELECT_CATEGORY: [MessageHandler(Filters.regex("^\d+$") & not_start, self.buy), CallbackQueryHandler(self.buy, pattern="^category_pagination"), CallbackQueryHandler(self.start, pattern="^cancel_pagination")],
             },
             fallbacks=[
                 CommandHandler('start',self.start)

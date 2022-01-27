@@ -18,7 +18,7 @@ def category_pagination_inline(lang: int, page: int):
         category = categorys_page[i]
         text += f"{i + 1}. {category.name(lang)}\n"
         categorys_page_inline.append(
-            InlineKeyboardButton(i, callback_data=f"category:{category.id}")
+            InlineKeyboardButton(i + 1, callback_data=f"category:{category.id}")
         )
     keyboard = distribute(categorys_page_inline, 5)
     controls = []
