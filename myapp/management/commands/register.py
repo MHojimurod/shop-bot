@@ -1,6 +1,7 @@
 
 from telegram.ext import (CallbackContext)
 from telegram import (Update,ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton)
+from diller.management.commands.decorators import delete_tmp_message, distribute
 from myapp.management.commands.constant import (
     TOKEN,
     LANGUAGE,
@@ -11,8 +12,7 @@ from myapp.management.commands.constant import (
     MENU,
     SHOP
 )
-from diller.management.commands.decorators import delete_tmp_message, distribute, get_user
-from diller.models import Diller
+from myapp.management.commands.decorators import get_user
 from admin_panel.models import District, Regions, Text, i18n
 from myapp.models import Seller
 
@@ -35,7 +35,7 @@ class Register:
             return LANGUAGE
         else:
             context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
-                distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
+                distribute([db_user.text("check_img"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
             ))
             return MENU
 
@@ -110,10 +110,7 @@ class Register:
         district = District.objects.filter(**{ "uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if district:
             context.user_data['register']['district'] = district
-            db_user:Seller = Seller.objects.create(**context.user_data['register'])
-            context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
-                distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            ))
+            context.user_data['tmp_message'] = user.send_message("select_district")
             return SHOP
         else:
             context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
@@ -124,11 +121,12 @@ class Register:
             return LANGUAGE
     @delete_tmp_message
     def shop(self, update:Update, context:CallbackContext):
+        print('aaa')
         user, db_user = get_user(update)
         lang = context.user_data['register']['language']
         context.user_data['register']['shop'] = shop = update.message.text
         db_user:Seller = Seller.objects.create(**context.user_data['register'])
         context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
-            distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
+            distribute([db_user.text("check_img"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
         ))
         return MENU

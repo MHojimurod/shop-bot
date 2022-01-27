@@ -3,11 +3,11 @@ from telegram import *
 from myapp.management.commands.constant import *
 from myapp.management.commands.decorators import *
 from myapp.management.commands.register import Register
-class Bot(Updater, Register):
-    def __init__(self, token: str = None):
+from myapp.management.commands.menu import Menu
+class Bot(Updater, Register,Menu):
+    def __init__(self, token: str = None,update=None,context=None):
         assert token, ValueError("Token is required")
         super().__init__(token)
-
         not_start = ~Filters.regex("^(\/start)")
 
         self.conversation = ConversationHandler(
@@ -22,9 +22,9 @@ class Bot(Updater, Register):
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district) ],
                 SHOP: [MessageHandler(Filters.text & not_start, self.shop) ],
                 MENU: [
-                    # MessageHandler(Filters.regex("^(Sotib olish|Купить)"), self.buy),
-                    # MessageHandler(Filters.regex("^(Sotib olingan|Купленные)"), self.purchased),
-                    # MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls)
+                    MessageHandler(Filters.regex("^(check_img|Купить)"), self.buy),
+                    MessageHandler(Filters.regex("^(Sotib olingan|Купленные)"), self.purchased),
+                    MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls)
                     ],
                 # SELECT_CATEGORY: [MessageHandler(Filters.regex("^\d+$") & not_start, self.buy), CallbackQueryHandler(self.buy, pattern="^category_pagination"), CallbackQueryHandler(self.start, pattern="^cancel_pagination")],
             },
@@ -33,7 +33,6 @@ class Bot(Updater, Register):
             ]
         )
         self.dispatcher.add_handler(self.conversation)
-
         self.start_polling()
         print('polling')
         self.idle()
@@ -44,3 +43,4 @@ class Bot(Updater, Register):
             
         
 x = Bot(TOKEN)
+print(x)
