@@ -1,10 +1,10 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
-from admin_panel.models import Category, Product
+from admin_panel.models import Category, Product, i18n
 from diller.management.commands.decorators import distribute
 
 
-def category_pagination_inline(lang: int, page: int):
+def category_pagination_inline(lang: int, page: int, context: CallbackContext):
     categorys = list(Category.objects.all())
     categorys_count = len(categorys)
     categorys_per_page = 10
@@ -22,6 +22,9 @@ def category_pagination_inline(lang: int, page: int):
             InlineKeyboardButton(i + 1, callback_data=f"select_category:{category.id}")
         )
     keyboard = distribute(categorys_page_inline, 5)
+    if len(context.user_data['current_busket'].items) > 0:
+        keyboard.append([InlineKeyboardButton(
+            "🛒 " + i18n('cart'), callback_data=f"cart")])
     controls = []
     if page > 1:
         controls.append(InlineKeyboardButton(
@@ -37,7 +40,7 @@ def category_pagination_inline(lang: int, page: int):
         }
 
 
-def product_pagination_inline(lang: int, page: int, product:Category):
+def product_pagination_inline(lang: int, page: int, product:Category, context: CallbackContext):
     products = list(Product.objects.filter(category=product))
     products_count = len(products)
     cproducts_per_page = 10
@@ -76,16 +79,21 @@ def product_count_inline(lang:int, product:Product, context:CallbackContext):
     # text += f"Price: {product.price}\n"
     # text += f"Total: {product.total(lang)}\n"
     controls = []
-
-    controls.append(InlineKeyboardButton("-", callback_data=f"product_count:{context.user_data['product']['count'] - 1}")) if context.user_data['product']['count'] > 1 else None
-    controls.append(InlineKeyboardButton("❌", callback_data=f"cancel_product"))
-    controls.append(InlineKeyboardButton("+", callback_data=f"product_count:{context.user_data['product']['count'] + 1}"))
+    
+    count = context.user_data['product']['count']
+    controls.append(InlineKeyboardButton("-", callback_data=f"product_count:{count - 1}")) if count > 1 else None
+    controls.append(InlineKeyboardButton(count, callback_data=f"cancel_product"))
+    controls.append(InlineKeyboardButton("+", callback_data=f"product_count:{count + 1}"))
     keyboard = []
     keyboard.append(controls)
-    for line in distribute([InlineKeyboardButton(i, callback_data=f"set_product_count:{i}") for i in range(1, 10)], 3):
+    for line in distribute([InlineKeyboardButton(i, callback_data=f"product_count:{i}") for i in range(1, 10)], 3):
         keyboard.append(line)
-    print(keyboard)
+    keyboard.append([InlineKeyboardButton(f"📥 {i18n('add_to_cart')}", callback_data=f"add_to_cart")])
+    
+    print(product.image.path)
+
     return {
-        "text": text,
+        "photo" : open(product.image.path, 'rb'),
+        "caption": text,
         "reply_markup": InlineKeyboardMarkup(keyboard)
     }
