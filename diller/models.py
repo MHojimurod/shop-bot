@@ -1,6 +1,5 @@
 from django.db import models
 from admin_panel.models import Text
-# Create your models here.
 from admin_panel.models import *
 
 

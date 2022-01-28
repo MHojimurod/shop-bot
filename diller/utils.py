@@ -221,7 +221,7 @@ def balls_keyboard_pagination(diller:Diller, page:int):
     
     gifts_page_inline = []
 
-    text = "<b>Balls</b>\n\n"
+    text = f"<b>Results {(page - 1) * gifts_per_page} - {(page * gifts_per_page) if (page * gifts_per_page) < gifts_count else gifts_count } of {gifts_count}</b>\n\n"
 
     for i in range(len(gifts_page)):
         gift = gifts_page[i]
@@ -229,21 +229,22 @@ def balls_keyboard_pagination(diller:Diller, page:int):
             InlineKeyboardButton(
                 i + 1, callback_data=f"select_gift:{gift.id}")
         )
-        text += f"<b>{gift.name(diller.language)}</b> → <b>{gift.ball} {i18n('ball')}</b> { '✅' if diller.balls >= gift.ball else '❌'} \n"
+        text += f"<b>{i + 1}. {gift.name(diller.language)}</b> → <b>{gift.ball} {i18n('ball')}</b> { '✔️' if diller.balls >= gift.ball else '✖️'} \n"
     keyboard = distribute(gifts_page_inline, 5)
 
     controls = []
+    print(page)
     if page > 1:
         controls.append(InlineKeyboardButton(
             "⬅️", callback_data=f"gift_pagination:{page - 1}"))
     controls.append(InlineKeyboardButton(
-        "🔙", callback_data=f"cancel_pagination"))
+        "🔙", callback_data=f"back"))
 
     if page < gifts_pages:
         controls.append(InlineKeyboardButton(
             "➡️", callback_data=f"gift_pagination:{page + 1}"))
     keyboard.append(controls)
-
+    text += f"\n\n<b>{i18n('balls')}</b> <b>{diller.balls} {i18n('ball')}</b>"
     return {
         "text": text,
         "reply_markup": InlineKeyboardMarkup(keyboard)

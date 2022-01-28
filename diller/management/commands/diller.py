@@ -4,6 +4,7 @@ from telegram import User
 
 from diller.stages.busket import BusketHandlers
 from .constant import (
+    BALL,
     CART,
     PAYMENT_TYPE,
     PURCHASED,
@@ -65,7 +66,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 CART: [CallbackQueryHandler(self.busket_item_count, pattern="^busket_item_count"),
                 CallbackQueryHandler(self.busket_item_remove, pattern="^remove_busket_item"), CallbackQueryHandler(self.buy, pattern="^continue"), CallbackQueryHandler(self.order, pattern="^order"), CallbackQueryHandler(self.buy, pattern="^back")],
                 PURCHASED: [ CallbackQueryHandler(self.purchased, pattern="product_pagination"), CallbackQueryHandler(self.start, pattern="^back")],
-                PAYMENT_TYPE: [CallbackQueryHandler(self.payment_type, pattern="^payment_type"), CallbackQueryHandler(self.start, pattern="^back")]
+                PAYMENT_TYPE: [CallbackQueryHandler(self.payment_type, pattern="^payment_type"), CallbackQueryHandler(self.start, pattern="^back")],
+                BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
             },
             fallbacks=[
                 CommandHandler('start', self.start)

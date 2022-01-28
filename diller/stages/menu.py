@@ -1,10 +1,14 @@
 
 from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
     Update
 )
 from telegram.ext import (
     CallbackContext
 )
+from admin_panel.models import Gifts, i18n
 
 from diller.management.commands.decorators import delete_tmp_message, get_user
 from diller.models import Busket
@@ -63,11 +67,43 @@ class Menu:
 
 
 
-    @delete_tmp_message
+    # @delete_tmp_message
     def my_balls(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
-        context.user_data['tmp_message'] = user.send_message(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML",)
-        return BALL
+        if update.message:
+            context.user_data['tmp_message'] = user.send_message(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML",)
+            return BALL
+        else:
+            data = update.callback_query.data.split(":")
+            if data[0] == "gift_pagination":
+                update.callback_query.message.edit_text(**balls_keyboard_pagination(db_user, int(data[1])), parse_mode="HTML")
+                return BALL
+    
+    def select_gift(self, update:Update, context:CallbackContext):
+        user, db_user = get_user(update)
+        data = update.callback_query.data.split(":")
+        if data[0] == "select_gift":
+            gift = Gifts.objects.filter(id=int(data[1]))
+            if gift.exists():
+                if gift.first().ball <= db_user.balls:
+                    context.user_data['current_gift'] = gift.first()
+                    update.callback_query.message.edit_text(i18n("are_you_sure_get_gift", db_user.language),    parse_mode="HTML", reply_markup=InlineKeyboardMarkup([
+                        [
+                            InlineKeyboardButton(i18n("yes", db_user.language), callback_data="sure_select_gift:yes"),
+                            InlineKeyboardButton(i18n("no", db_user.language), callback_data="sure_select_gift:no")
+                        ]
+                    ]))
+                    return BALL
+                else:
+                    update.callback_query.answer("Sizning balansingizda kifayot emas")
+    def selct_gift_sure(self, update:Update, context:CallbackContext):
+        user, db_user= get_user(update)
+        data = update.callback_query.data.split(":")
+        if data[0] == "sure_select_gift":
+            if data[1] == "yes":
+                context.user_data['current_gift'].take(db_user)
+                update.callback_query.message.edit_text("Sizning so'rovingiz qabul qilindi!\nTez orada o'zimiz tilifon qivoramiz!")
+                return self.start(update, context, False)
     
     # @delete_tmp_message
     def cart(self, update:Update, context:CallbackContext):
