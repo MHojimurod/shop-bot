@@ -64,9 +64,12 @@ def diller_delete(request, pk):
     model.delete()
     return redirect("home")
 
-    
+
 @login_required_decorator
 def seller_delete(request, pk):
     model = Seller.objects.get(pk=pk)
     model.delete()
     return redirect("sellers_list")
+
+def checks(request):
+    return render(request,"dashboard/checks.html")

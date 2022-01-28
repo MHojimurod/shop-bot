@@ -47,14 +47,14 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
          </li>
          
-        <li class="nav-item">
+        <li class="nav-item {{d_active}}">
           <a href="{% url 'home' %}" class="nav-link">
             <i class="nav-icon fas fa-user-tie"></i>
             <p>Диллерлар</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="{% url 'sellers_list' %}" class="nav-link">
+        <li class="nav-item {{s_active}}">
+          <a href="{% url 'sellers_list' %}" class="nav-link ">
             <i class="nav-icon fas fa-user"></i>
             <p>Сотувчилар</p>
           </a>
@@ -62,8 +62,8 @@
         <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-mug-hot"></i>
-            <p>
-              Настройки бота
+            <p> 
+              Каталоглар
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
@@ -81,6 +81,13 @@
               </a>
             </li>
           </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'checks' %}" class="nav-link">
+            <i class="nav-icon fas fa-sign-out-alt"></i>
+            <!-- <i class="fa-sign-out"></i> -->
+            <p>Квитансиялар</p>
+          </a>
         </li>
         <li class="nav-item">
           <a href="{% url 'logout' %}" class="nav-link">
