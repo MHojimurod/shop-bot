@@ -19,6 +19,7 @@ from admin_panel.models import District, Regions, Text, i18n
 
 class Register:
     # @delete_tmp_message
+
     def start(self, update: Update, context: CallbackContext, delete:bool=True):
         if delete:
             try:
@@ -28,6 +29,7 @@ class Register:
                 try:
                     context.user_data['tmp_message'].delete()
                 except:pass
+        
         user, db_user = get_user(update)
         context.user_data['register'] = {
             "chat_id": user.id,
@@ -42,10 +44,13 @@ class Register:
             ), parse_mode="HTML")
             return LANGUAGE
         else:
-            context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
-                distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            ), parse_mode="HTML")
-            return MENU
+            if db_user.status == 1:
+                context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
+                    distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
+                ), parse_mode="HTML")
+                return MENU
+            else:
+               context.user_data['tmp_message'] = user.send_message("kechirasiz hali kirish uchun ruhsat berilmagan!") 
 
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
@@ -124,10 +129,11 @@ class Register:
             context.user_data['register']['district'] = district
             db_user: Diller = Diller.objects.create(
                 **context.user_data['register'])
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
-                distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            ), parse_mode="HTML")
-            return MENU
+            # context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
+            #     distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
+            # ), parse_mode="HTML")
+            context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /start kommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            return -1
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
                 distribute([
