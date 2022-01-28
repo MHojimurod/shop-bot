@@ -31,12 +31,12 @@ class Register:
                     ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
                 ],
                 resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return LANGUAGE
         else:
             context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
                 distribute([db_user.text("check_img"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return MENU
 
     @delete_tmp_message
@@ -44,14 +44,14 @@ class Register:
         user, db_user = get_user(update)
         context.user_data['register']['language'] = lang = 0 if update.message.text.startswith("🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
         if lang is not None:
-            context.user_data['tmp_message'] = user.send_message(i18n("request_name", lang), reply_markup=ReplyKeyboardRemove())
+            context.user_data['tmp_message'] = user.send_message(i18n("request_name", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return NAME
         else:
             context.user_data['tmp_message'] = user.send_message("language_not_found", reply_markup=ReplyKeyboardMarkup(
                 [
                     ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
                 ], resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return LANGUAGE
 
     @delete_tmp_message
@@ -65,7 +65,7 @@ class Register:
                         KeyboardButton(i18n("send_number", lang), request_contact=True),
                     ]
                 ], resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
         return NUMBER
     
 
@@ -78,7 +78,7 @@ class Register:
             distribute([
                 region.name(lang) for region in Regions.objects.all()
             ], 2), resize_keyboard=True
-        ))
+        ), parse_mode="HTML")
         return REGION
     
     @delete_tmp_message
@@ -92,7 +92,7 @@ class Register:
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=region)
                 ], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return DISTRICT
 
         else:
@@ -100,7 +100,7 @@ class Register:
                 distribute([
                     region.name(lang) for region in Regions.objects.all()
                 ], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return REGION
 
     @delete_tmp_message
@@ -110,14 +110,14 @@ class Register:
         district = District.objects.filter(**{ "uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if district:
             context.user_data['register']['district'] = district
-            context.user_data['tmp_message'] = user.send_message("select_district")
+            context.user_data['tmp_message'] = user.send_message("select_district", parse_mode="HTML")
             return SHOP
         else:
             context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=context.user_data['register']['region'])
                 ], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return LANGUAGE
     @delete_tmp_message
     def shop(self, update:Update, context:CallbackContext):
@@ -128,5 +128,5 @@ class Register:
         db_user:Seller = Seller.objects.create(**context.user_data['register'])
         context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
             distribute([db_user.text("check_img"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-        ))
+        ), parse_mode="HTML")
         return MENU

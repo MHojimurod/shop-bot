@@ -14,7 +14,7 @@ def register(func):
         info_user = context.user_data.get("user",0)
         if info_user:
             if info_user["chat_id"]:
-                context.bot.send_message(text="tilni tanlang",reply_markup=lang_btn())
+                context.bot.send_message(text="tilni tanlang",reply_markup=lang_btn(), parse_mode="HTML")
                 return 
                 
 

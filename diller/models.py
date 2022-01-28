@@ -3,7 +3,8 @@ from admin_panel.models import Text
 # Create your models here.
 from admin_panel.models import *
 
-class  Diller(models.Model):
+
+class Diller(models.Model):
     chat_id = models.IntegerField()
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=100)
@@ -14,6 +15,7 @@ class  Diller(models.Model):
         (1, "Qabul qilingan"),
         (2, "Rad etilgan"),
     ))
+    balls = models.IntegerField(default=2)
 
     
     language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
@@ -58,6 +60,9 @@ class  Diller(models.Model):
 class Busket(models.Model):
     diller = models.ForeignKey(Diller, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
+
+    payment_type = models.IntegerField(choices=((0, "Naqd"), (1, "Nasiya")), null=True, blank=True)
+
     is_ordered = models.BooleanField(default=False)
     is_purchased = models.BooleanField(default=False)
 
@@ -80,7 +85,8 @@ class Busket(models.Model):
     def item(self, product:Product):
         return Busket_item.objects.filter(busket=self, product=product).first()
 
-    def order(self):
+    def order(self, payment_type:int):
+        self.payment_type = payment_type
         self.is_ordered = True
         self.save()
     
@@ -91,4 +97,6 @@ class Busket_item(models.Model):
     count = models.IntegerField()
     active = models.BooleanField(default=True)
     def total_price(self):
+        return self.product.price * self.count
+
         return self.product.price * self.count
