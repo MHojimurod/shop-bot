@@ -26,18 +26,24 @@ def dashboard_logout(request):
     res = redirect("login")
     res.delete_cookie("sessionid")
     return res
+
 @login_required_decorator
-def home(request):
-    return render(request, "dashboard/index.html")
-
-
 def dillers_list(request):
     dillers = Diller.objects.order_by('-id').all()
     ctx = {
         "dillers": dillers,
         "d_active":"menu-open"
     }
-    return render(request, "dashboard/index.html",ctx)
+    return render(request, "dashboard/diller.html",ctx)
+ 
+@login_required_decorator   
+def sellers_list(request):
+    sellers = Seller.objects.order_by('-id').all()
+    ctx = {
+        "sellers": sellers,
+        "s_active":"menu-open"
+    }
+    return render(request, "dashboard/seller.html",ctx)
 
 
 
@@ -57,3 +63,10 @@ def diller_delete(request, pk):
     model = Diller.objects.get(pk=pk)
     model.delete()
     return redirect("home")
+
+    
+@login_required_decorator
+def seller_delete(request, pk):
+    model = Seller.objects.get(pk=pk)
+    model.delete()
+    return redirect("sellers_list")
