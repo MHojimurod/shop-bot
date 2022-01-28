@@ -67,3 +67,12 @@ class Product(models.Model):
 
     def description(self, lang:int):
         return self.description_uz if lang == 0 else self.description_ru
+
+class Gifts(models.Model):
+    name_uz = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
+    ball = models.IntegerField()
+    image = models.ImageField(upload_to='gifts')
+
+    def name(self, lang:int):
+        return self.name_uz if lang == 0 else self.name_ru

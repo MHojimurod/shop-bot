@@ -1,10 +1,19 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
-from admin_panel.models import Category, Product, i18n
+from admin_panel.models import Category, Gifts, Product, i18n
 from diller.management.commands.decorators import distribute
-from diller.models import Diller
+from diller.models import Busket, Diller
 import locale
 locale.setlocale(locale.LC_ALL, 'en_CA.UTF-8')
+
+
+
+
+def money(number:int, grouping:bool=True, lang=1):
+    res = locale.currency(number, grouping=grouping).split(".")[0]
+    return f"{res} {i18n('som', lang)}"
+
+
 
 def category_pagination_inline(lang: int, page: int, context: CallbackContext):
     categorys = list(Category.objects.all())
@@ -60,7 +69,7 @@ def product_pagination_inline(lang: int, page: int, product: Category, context: 
     text = "Categorys\n\n"
     for i in range(len(product_page)):
         product = product_page[i]
-        text += f"<b>{i + 1}.</b> {product.name(lang)} {product.ball} {i18n('ball', lang)} \n"
+        text += f"<b>{i + 1}.</b> {product.name(lang)} <b><i>{product.ball} {i18n('ball', lang)}</i></b>\n"
         products_page_inline.append(
             InlineKeyboardButton(
                 i + 1, callback_data=f"select_products:{product.id}")
@@ -84,13 +93,10 @@ def product_pagination_inline(lang: int, page: int, product: Category, context: 
 
 
 def product_count_inline(lang: int, product: Product, context: CallbackContext):
-    text = f"{product.name(lang)}\n\n"
-    # text += f"Count: {product.count}\n"
-    # text += f"Price: {product.price}\n"
-    # text += f"Total: {product.total(lang)}\n"
+    count = context.user_data['product']['count']
+    text = f"{product.name(lang)} <b><i>{product.ball} {i18n('ball', lang)}</i></b>\n\n<b>{count} x {money(product.price, True, lang)[1:]} = {money(count * product.price, True, lang)[1:]}</b>"
     controls = []
 
-    count = context.user_data['product']['count']
     controls.append(InlineKeyboardButton(
         "-", callback_data=f"product_count:{count - 1}")) if count > 1 else None
     controls.append(InlineKeyboardButton(
@@ -115,11 +121,12 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
     }
 
 
+
 def busket_keyboard(user: Diller, context:CallbackContext) -> dict:
     text:str = f"<b>Cart</b>\n\n"
     keyboard:list = []
     for item in user.busket.items:
-        text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {locale.currency(item.count * item.product.price, grouping=True)[1:]}</b>\n"
+        text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {money(item.count * item.product.price, True, user.language)[1:]}</b>\n"
         controls = []
         if item.count > 1:
             controls.append(InlineKeyboardButton("-", callback_data=f"busket_item_count:{item.id}:{item.count - 1}"))
@@ -135,6 +142,8 @@ def busket_keyboard(user: Diller, context:CallbackContext) -> dict:
         f"🛒 order", callback_data=f"order_busket")])
     keyboard.append([InlineKeyboardButton(
         f"🛒 add item", callback_data=f"continue")])
+    keyboard.append([InlineKeyboardButton(
+        f"🔙 back", callback_data=f"back")])
 
     return {
         "text": text,
@@ -162,7 +171,7 @@ def diller_products_paginator(diller:Diller, page:int):
 └{product['product'].name(diller.language)} \
 → {product['count']} \
 * {product['product'].price}\
-= {locale.currency(product['count'] * product['product'].price, grouping=True)[1:]}</b>\n"
+= {money(product['count'] * product['product'].price, True, diller.language)[1:]}</b>\n"
     keyboard = distribute(products_page_inline, 5)
 
     controls = []
@@ -177,6 +186,63 @@ def diller_products_paginator(diller:Diller, page:int):
     keyboard.append(controls)
     # add back button to keyboard
     keyboard.append([InlineKeyboardButton("🔙", callback_data='back')])
+
+    return {
+        "text": text,
+        "reply_markup": InlineKeyboardMarkup(keyboard)
+    }
+
+
+
+def wait_accept_keyboard(user: Diller, user_busket: Busket):
+    text = f"<b>{user.text('wait_accept')}\n\n</b>\n\n"
+    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Qabul qildim", callback_data=f"order_accepted:{user_busket.id}")]])
+
+    for item in user_busket.items:
+        text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {money(item.count * item.product.price, True, user.language)[1:]}</b>\n"
+
+    return {
+        "text": text,
+        "reply_markup": keyboard
+    }
+
+
+
+def balls_keyboard_pagination(diller:Diller, page:int):
+    gifts = list(Gifts.objects.all())
+    gifts_count = len(gifts)
+    gifts_per_page = 10
+    gifts_pages = gifts_count // gifts_per_page + \
+        1 if gifts_count % gifts_per_page != 0 else gifts_count // gifts_per_page
+
+
+    gifts_page = gifts[(
+        page - 1) * gifts_per_page:page * gifts_per_page]
+    
+    gifts_page_inline = []
+
+    text = "<b>Balls</b>\n\n"
+
+    for i in range(len(gifts_page)):
+        gift = gifts_page[i]
+        gifts_page_inline.append(
+            InlineKeyboardButton(
+                i + 1, callback_data=f"select_gift:{gift.id}")
+        )
+        text += f"<b>{gift.name(diller.language)}</b> → <b>{gift.ball} {i18n('ball')}</b> { '✅' if diller.balls >= gift.ball else '❌'} \n"
+    keyboard = distribute(gifts_page_inline, 5)
+
+    controls = []
+    if page > 1:
+        controls.append(InlineKeyboardButton(
+            "⬅️", callback_data=f"gift_pagination:{page - 1}"))
+    controls.append(InlineKeyboardButton(
+        "🔙", callback_data=f"cancel_pagination"))
+
+    if page < gifts_pages:
+        controls.append(InlineKeyboardButton(
+            "➡️", callback_data=f"gift_pagination:{page + 1}"))
+    keyboard.append(controls)
 
     return {
         "text": text,

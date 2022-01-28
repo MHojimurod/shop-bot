@@ -18,8 +18,16 @@ from admin_panel.models import District, Regions, Text, i18n
 
 
 class Register:
-    @delete_tmp_message
-    def start(self, update: Update, context: CallbackContext):
+    # @delete_tmp_message
+    def start(self, update: Update, context: CallbackContext, delete:bool=True):
+        if delete:
+            try:
+                update.message.delete() if update.message else update.callback_query.message.delete()
+            except: pass
+            if 'tmp_message' in context.user_data:
+                try:
+                    context.user_data['tmp_message'].delete()
+                except:pass
         user, db_user = get_user(update)
         context.user_data['register'] = {
             "chat_id": user.id,
@@ -31,12 +39,12 @@ class Register:
                     ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
                 ],
                 resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return LANGUAGE
         else:
             context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
                 distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return MENU
 
     @delete_tmp_message
@@ -46,14 +54,14 @@ class Register:
             "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
         if lang is not None:
             context.user_data['tmp_message'] = user.send_message(
-                i18n("request_name", lang), reply_markup=ReplyKeyboardRemove())
+                i18n("request_name", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return NAME
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("language_not_found", reply_markup=ReplyKeyboardMarkup(
                 [
                     ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
                 ], resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return LANGUAGE
 
     @delete_tmp_message
@@ -68,7 +76,7 @@ class Register:
                                    request_contact=True),
                 ]
             ], resize_keyboard=True
-        ))
+        ), parse_mode="HTML")
         return NUMBER
 
     @delete_tmp_message
@@ -80,7 +88,7 @@ class Register:
             distribute([
                 region.name(lang) for region in Regions.objects.all()
             ], 2), resize_keyboard=True
-        ))
+        ), parse_mode="HTML")
         return REGION
 
     @delete_tmp_message
@@ -95,7 +103,7 @@ class Register:
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=region)
                 ], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return DISTRICT
 
         else:
@@ -103,7 +111,7 @@ class Register:
                 distribute([
                     region.name(lang) for region in Regions.objects.all()
                 ], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return REGION
 
     @delete_tmp_message
@@ -118,12 +126,12 @@ class Register:
                 **context.user_data['register'])
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
                 distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return MENU
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=context.user_data['register']['region'])
                 ], 2), resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
             return LANGUAGE
