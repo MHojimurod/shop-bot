@@ -1,103 +1,145 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}">
+{% extends 'dashboard/base.html' %} {% load static %} {% block style %}
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
+/>
 <!-- DataTables -->
-<link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-<link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-<link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"
+/>
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"
+/>
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}"
+/>
 <!-- Theme style -->
-<link rel="stylesheet" href="{% static 'dashboard/css/adminlte.min.css' %}">
-{% endblock %}
+<link rel="stylesheet" href="{% static 'dashboard/css/adminlte.min.css' %}" />
+{% endblock %} {% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Диллерлар</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Диллерлар</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+</section>
 
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <!-- /.card -->
 
-{% block content %}
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Пользователи</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{% url 'home' %}">Главный</a></li>
-              <li class="breadcrumb-item active">Пользователи</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <div class="card p-2">
+          <div class="card-body table-responsive p-0">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>ФИО</th>
+                  <th>Телефон</th>
+                  <th>Вилоят</th>
+                  <th>Туман</th>
+                  <th>Тил</th>
+                  <th>Сана</th>
+                  <th>Ҳолати</th>
+                  <th>Тасдиқлаш</th>
+                  <th>Рад этиш</th>
+                  <th>Ўчириш</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in dillers %}
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{i.name}}</td>
+                  <td><a href="tel:{{i.number}}">{{i.number}}</a></td>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <!-- /.card -->
-
-            <div class="card p-2">
-              <div class="card-body table-responsive p-0">
-                <table id="example1" class="table table-bordered table-striped">
-                  <thead>
-                  <tr>
-                    <th>№</th>
-                    <th>Филиал</th>
-                    <th>Заказы</th>
-                    <th>Клиент</th>
-                    <th>Адрес доставки</th>
-                    <th>Комментарий</th>
-                    <th>Тип доставки</th>
-                    <th>Тип оплата</th>
-                    <th>Время доставки</th>
-                    <th>Общая цена</th>
-                    <th>Принят</th>
-                    <th>Отказ</th>
-                    <th>Время заказа</th>
-
-                  </tr>
-                  </thead>
-                  <tbody>
-                    {% for i in orders %}
-                  <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{i.fillial}}</td>
-                    <td style="width: 20%;">{{i.cart|safe}}</td>
-                    <td><a href="tel:{{i.phone}}">{{i.costumer}}</a></td>
-                    
-                    <td><a target="_blank" href="{{i.address}}">Локация</a></td>
-                    <td>{{i.comment}}</td>
-                    {% if i.order_type %}
-                    <td>Забрать</td>
-                    {% else %}
-                    <td>Доставлять</td>
-                    {% endif %}
-                    <td>{{i.cost_type}}</td>
-                    <td>{{i.deliver_time}}</td>
-                    <td>{{i.all_price}} сум</td>
-                    <td><a href="{% url 'update_order' pk=i.id status='confirm' %}" class="btn btn-xs btn-success">Принят</a></td>
-                    <td><a href="{% url 'update_order' pk=i.id status='deny' %}" class="btn btn-xs btn-danger">Отказ</a></td>
-                    <td>{{i.created_at|date:"d-m-Y H:i"}}</td>
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  <td>{{i.region.ru_data}}</td>
+                  <td>{{i.district.ru_data}}</td>
+                  <td>{{i.get_language_display}}</td>
+                  <td>{{i.created_at|date:"d-m-Y H:i"}}</td>
+                  {% if i.status == 0 %}
+                  <td><span class="badge badge-warning">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a href="{% url 'diller_update' pk=i.pk status=1 %}" class="btn btn-xs btn-success"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'diller_update' pk=i.pk status=2 %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% elif i.status == 1 %}
+                  <td><span class="badge badge-success">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a  class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'diller_delete' i.pk %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% else %}
+                  <td><span class="badge badge-danger">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'diller_delete' i.pk %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% endif %}
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-   
-
-  <!-- Control Sidebar -->
-  <!-- <aside class="control-sidebar control-sidebar-dark"> -->
-    <!-- Control sidebar content goes here -->
-  <!-- </aside> -->
-  <!-- /.control-sidebar -->
+<!-- Control Sidebar -->
+<!-- <aside class="control-sidebar control-sidebar-dark"> -->
+<!-- Control sidebar content goes here -->
+<!-- </aside> -->
+<!-- /.control-sidebar -->
 <!-- ./wrapper -->
-{% endblock %}
-{% block javascript %}
+{% endblock %} {% block javascript %}
 <script src="{% static 'dashboard/plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
@@ -114,22 +156,28 @@
 <script src="/static/dashboard/js/demo.js"></script>
 <script>
   $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
+    $("#example1")
+      .DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        buttons: ["copy", "csv", "excel", "pdf", "print"],
+      })
+      .buttons()
+      .container()
+      .appendTo("#example1_wrapper .col-md-6:eq(0)");
+    $("#example2").DataTable({
+      paging: true,
+      lengthChange: false,
+      searching: false,
+      ordering: true,
+      info: true,
+      autoWidth: false,
+      responsive: true,
     });
   });
-  setInterval(() =>{
-    location.reload()
+  setInterval(() => {
+    location.reload();
   }, 30000);
 </script>
 {% endblock %}
