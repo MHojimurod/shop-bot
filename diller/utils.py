@@ -221,7 +221,7 @@ def balls_keyboard_pagination(diller:Diller, page:int):
     
     gifts_page_inline = []
 
-    text = "<b>Balls</b>\n\n"
+    text = f"<b>Results {(page - 1) * gifts_per_page} - {(page * gifts_per_page) if (page * gifts_per_page) < gifts_count else gifts_count } of {gifts_count}</b>\n\n"
 
     for i in range(len(gifts_page)):
         gift = gifts_page[i]

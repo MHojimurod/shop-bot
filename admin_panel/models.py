@@ -59,7 +59,7 @@ class Product(models.Model):
     ball = models.IntegerField()
     price = models.IntegerField()
     image = models.ImageField(upload_to='products')
-
+    serial_number = models.CharField(max_length=255)
 
 
     def name(self, lang:int):
