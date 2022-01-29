@@ -54,6 +54,7 @@
                   <th>Вилоят</th>
                   <th>Туман</th>
                   <th>Тил</th>
+                  <th>Балл</th>
                   <th>Сана</th>
                   <th>Ҳолати</th>
                   <th>Тасдиқлаш</th>
@@ -71,6 +72,7 @@
                   <td>{{i.region.ru_data}}</td>
                   <td>{{i.district.ru_data}}</td>
                   <td>{{i.get_language_display}}</td>
+                  <td>{{i.balls}}</td>
                   <td>{{i.created_at|date:"d-m-Y H:i"}}</td>
                   {% if i.status == 0 %}
                   <td><span class="badge badge-warning">{{i.get_status_display}}</span></td>
@@ -176,8 +178,8 @@
       responsive: true,
     });
   });
-  setInterval(() => {
-    location.reload();
-  }, 30000);
+  // setInterval(() => {
+  //   location.reload();
+  // }, 30000);
 </script>
 {% endblock %}
