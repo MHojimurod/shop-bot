@@ -1,8 +1,9 @@
+from tkinter import Text
 from django.db import models
-from admin_panel.models import Regions,District,Text
-# Create your models here.
 
-    
+from admin_panel.models import District, Regions
+
+# Create your models here.
 class Seller(models.Model):
     chat_id = models.IntegerField()
     name = models.CharField(max_length=100)

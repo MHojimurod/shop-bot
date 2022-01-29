@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from admin_panel.models import Regions,District
 from diller.models import Diller
-from myapp.models import Seller
+# from myapp.models import Seller
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 import requests

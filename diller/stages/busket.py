@@ -3,7 +3,7 @@ from telegram import *
 from telegram.ext import *
 from diller.management.commands.constant import PAYMENT_TYPE
 from diller.management.commands.decorators import get_user
-from diller.models import Busket_item, Diller
+from diller.models import Busket, Busket_item, Diller
 from admin_panel.models import Category, Product, i18n
 from diller.utils import busket_keyboard, wait_accept_keyboard
 
@@ -48,11 +48,12 @@ class BusketHandlers:
         return self.start(update, context, False)
     
     def order_accept(self, update: Update, context: CallbackContext):
-        # user, db_user = get_user(update)
-        # data = update.callback_query.data.split(":")
-        # user_busket = Busket_item.objects.filter(id=int(data[1]))
-        # if user_busket.exists():
-        #     user_busket.update(status=1)
-        #     update.callback_query.message.edit_text("Sizning buyurtmaningiz qabul qilindi!", parse_mode="HTML")
-        #     return self.start(update, context)
-        pass
+        user, db_user = get_user(update)
+        data = update.callback_query.data.split(":")
+        busket = Busket.objects.filter(id=int(data[1]))
+        if busket.exists():
+            balls = busket.first().purchase()
+            db_user.balls += balls
+            db_user.save()
+            update.callback_query.message.edit_text("Sizning hisobingizga %d ball qo'shildi!" % balls, parse_mode="HTML")
+        

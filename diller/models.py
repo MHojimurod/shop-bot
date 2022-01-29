@@ -1,5 +1,4 @@
 from django.db import models
-from admin_panel.models import Text
 from admin_panel.models import *
 
 
@@ -89,6 +88,16 @@ class Busket(models.Model):
         self.is_ordered = True
         self.save()
     
+    def purchase(self):
+        self.is_purchased = True
+        balls = 0
+        for busket_item in self.items:
+            balls += busket_item.ball
+        self.save()
+        return balls
+    
+
+    
     
 class Busket_item(models.Model):
     busket = models.ForeignKey(Busket, on_delete=models.CASCADE)
@@ -97,5 +106,6 @@ class Busket_item(models.Model):
     active = models.BooleanField(default=True)
     def total_price(self):
         return self.product.price * self.count
-
-        return self.product.price * self.count
+    @property
+    def ball(self):
+        return self.product.ball * self.count

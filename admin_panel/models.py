@@ -80,12 +80,12 @@ class Gifts(models.Model):
     def name(self, lang:int):
         return self.name_uz if lang == 0 else self.name_ru
 
-    def take(self, user:"Diller"):
+    def take(self, user):
         return OrderGift.objects.create(user=user, gift=self)
 
 
 diller_module = include('diller.models')[0]
 class OrderGift(models.Model):
-    user = models.ForeignKey(diller_module.Diller, on_delete=models.CASCADE)
+    user = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     gift = models.ForeignKey(Gifts, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
