@@ -9,7 +9,7 @@
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Асосий</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
           <li class="breadcrumb-item active">Категория</li>
         </ol>
       </div>
@@ -25,8 +25,8 @@
             <h3 class="card-title">Категория</h3>
 
             <div class="card-tools">
-              <a href="{% url 'category_add' %}">
-                <div class="btn btn-block btn-success">Добавлять</div>
+              <a href="{% url 'category_create' %}">
+                <div class="btn btn-block btn-success">Қўшиш</div>
               </a>
             </div>
           </div>
@@ -36,13 +36,10 @@
               <thead>
                 <tr>
                   <th>№</th>
-                  <th>Название uz</th>
-                  <th>Название ru</th>
-                  <th>Фото</th>
-                  <th>Статус</th>
-                  <th>Дата</th>
-                  <th>Редактировать</th>
-                  <th>Удалить</th>
+                  <th>Номи УЗ</th>
+                  <th>Номи РУ</th>
+                  <th>Тахрирлаш</th>
+                  <th>Ўчириш</th>
                 </tr>
               </thead>
               <tbody>
@@ -51,20 +48,11 @@
                 <tr>
 
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ i.name_uz }}</td>
-                  <td>{{ i.name_ru }}</td>
-                  <td>
-                    <a href="/media/{{i.img}}">Фото</a>
-                  </td>
-                  {% if i.active %}
-                  <td><span class="badge badge-success">активный</span></td>
-                  {% else %}
-                  <td><span class="badge badge-danger">неактивный</span></td>
-                  {% endif %}
-                  <td>{{ i.created_at|date:"d-m-Y H:i"}}</td>
-                  <td><a style="color: #17a2b8;" href="{% url 'category_edit' i.id %}">
+                  <td><a href="{% url 'products' category_id=i.id %}">{{ i.name_uz }}</a></td>
+                  <td><a href="{% url 'products' category_id=i.id %}">{{ i.name_ru }}</a></td>
+                  <td><a style="color: #17a2b8;" href="{% url 'category_edit' pk=i.id %}">
                     <div ><i class="far fa-edit"></i></div></a></td>
-                  <td><a style="color: #dc3545;" href="{% url 'category_delete' i.id %}">
+                  <td><a style="color: #dc3545;" href="{% url 'category_delete' pk=i.id %}">
                     <div><i class="fas fa-trash-alt"></i></div></a></td>
                     </a></td>
                 </tr>

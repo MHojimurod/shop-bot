@@ -16,4 +16,17 @@ urlpatterns = [
     path('diller_delete/<int:pk>/', diller_delete,name="diller_delete"),
     path('diller_delete/<int:pk>/', diller_delete,name="diller_delete"),
     path('checks', checks,name="checks"),
+
+
+
+    path('categories/', categories,name="categories"),
+    path('category_create', category_create,name="category_create"),
+    path('category_edit/<int:pk>/', category_edit,name="category_edit"),
+    path('category_delete/<int:pk>/', category_delete,name="category_delete"),
+
+
+    path('products/<int:category_id>', products,name="products"),
+    path('product_create/<int:pk>', product_create,name="product_create"),
+    path('product_edit/<int:pk>/<int:category_id>', product_edit,name="product_edit"),
+    path('product_delete/<int:pk>/', product_delete,name="product_delete"),
     ]

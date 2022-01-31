@@ -60,31 +60,15 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-mug-hot"></i>
-            <p> 
-              Каталоглар
-              <i class="right fas fa-angle-left"></i>
-            </p>
+          <a href="{% url 'categories' %}" class="nav-link">
+            <i class="nav-icon fas fa-list"></i>
+            <!-- <i class="fa-sign-out"></i> -->
+            <p>Каталоглар</p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item ">
-              <a href="" class="nav-link ">
-                <i class="nav-icon fas fa-hotdog"></i>
-                <p>Тексты ботов</p>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a href="" class="nav-link">
-                <i class="nav-icon fas fa-seedling"></i>
-                <p>Настройки бота</p>
-              </a>
-            </li>
-          </ul>
         </li>
         <li class="nav-item">
           <a href="{% url 'checks' %}" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt"></i>
+            <i class="nav-icon fas fa-images"></i>
             <!-- <i class="fa-sign-out"></i> -->
             <p>Квитансиялар</p>
           </a>
