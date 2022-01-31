@@ -4,12 +4,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Gallery</h1>
+            <h1>Квитансиялар</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Gallery</li>
+              <li class="breadcrumb-item"><a href="#">Асосий</a></li>
+              <li class="breadcrumb-item active">Квитансиялар</li>
             </ol>
           </div>
         </div>
@@ -21,43 +21,15 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
-            <div class="card card-primary">
-              <div class="card-header">
-                <h4 class="card-title">FilterizR Gallery with Ekko Lightbox</h4>
-              </div>
-              <div class="card-body">
-                <div>
-                  <div class="btn-group w-100 mb-2">
-                    <a class="btn btn-info active" href="javascript:void(0)" data-filter="all"> All items </a>
-                    <a class="btn btn-info" href="javascript:void(0)" data-filter="1"> Category 1 (WHITE) </a>
-                    <a class="btn btn-info" href="javascript:void(0)" data-filter="2"> Category 2 (BLACK) </a>
-                    <a class="btn btn-info" href="javascript:void(0)" data-filter="3"> Category 3 (COLORED) </a>
-                    <a class="btn btn-info" href="javascript:void(0)" data-filter="4"> Category 4 (COLORED, BLACK) </a>
-                  </div>
-                  <div class="mb-2">
-                    <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a>
-                    <div class="float-right">
-                      <select class="custom-select" style="width: auto;" data-sortOrder>
-                        <option value="index"> Sort by Position </option>
-                        <option value="sortData"> Sort by Custom Data </option>
-                      </select>
-                      <div class="btn-group">
-                        <a class="btn btn-default" href="javascript:void(0)" data-sortAsc> Ascending </a>
-                        <a class="btn btn-default" href="javascript:void(0)" data-sortDesc> Descending </a>
-                      </div>
-                    </div>
-                  </div>
+            <div>
+              <div class="filter-container p-0 row">
+                {% for i in checks %}
+                <div class="filtr-item col-3" data-category="3" data-sort="white sample">
+                  <a href="{{i.image}}" data-toggle="lightbox" data-title="sample 1 - black">
+                    <img src="{{i.image}}" class="img-fluid mb-2" alt="white sample"/>
+                  </a>
                 </div>
-                <div>
-                  <div class="filter-container p-0 row">
-                    <div class="filtr-item col-3" data-category="3" data-sort="white sample">
-                      <a href="https://via.placeholder.com/1200/FFFFF.png?text=1" data-toggle="lightbox" data-title="sample 1 - black">
-                        <img src="https://via.placeholder.com/300/000000?text=2" class="img-fluid mb-2" alt="white sample"/>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
+                {% endfor %}
               </div>
             </div>
           </div>

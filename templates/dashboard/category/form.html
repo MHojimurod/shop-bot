@@ -5,12 +5,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Категория Добавлять</h1>
+        <h1>Категория қўшиш</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Асосий</a></li>
-          <li class="breadcrumb-item active">Категория Добавлять</li>
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Категория қўшиш</li>
         </ol>
       </div>
     </div>
@@ -20,49 +20,28 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-            <div class="card card-primary">
+            <div class="">
 
               <form method="post" enctype="multipart/form-data">
                   {% csrf_token %}
-                <div class="card-body">
-                  <div class="form-group">
-                    <label >Название uz</label><br>
+                <div class="">
+                  <div class="form-group col-md-6">
+                    <label >Номи УЗ</label><br>
                       {{form.name_uz}}
                   </div>
                 </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label >Название ru</label><br>
+                <div class="">
+                  <div class="form-group col-md-6">
+                    <label >Номи РУ</label><br>
                       {{form.name_ru}}
                   </div>
                 </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label >Описание</label><br>
-                      {{form.desc}}
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label >Фото</label><br>
-                      {{form.img}}
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label >Статус</label><br>
-                      {{form.active}}
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label >Категория цепи</label><br>
-                      {{form.parent}}
-                  </div>
-                </div>
+                
+                
+                
 
                 <div class="ml-3">
-                  <button type="submit" class="btn col-sm-1 btn-info">Сохранить</button>
+                  <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
                 </div>
               </form>
             </div>

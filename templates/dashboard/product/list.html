@@ -1,0 +1,78 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>{{category.name_uz}}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Категория</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">{{category.name_uz}}</h2>
+
+                
+                <div class="card-tools">
+                    <a href="{% url 'product_create' category.id %}"><div class="btn btn-block btn-success">Қўшиш</div></a>
+                </div>
+                <div class="card-tools mr-2">
+                  <a href="/categories">
+                <div class="btn btn-block btn-primary ">Ортга</div>
+                  </a>
+                </div>
+              </div>
+
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Номи УЗ</th>
+                      <th>Номи РУ</th>
+                      <th>Фото</th>
+                      <th>Нархи</th>
+                      <th>Балл</th>
+                      <th>Тахрирлаш</th>
+                      <th>Ўчириш</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in products %}
+                    
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.name_uz }}</td>
+                      <td>{{ i.name_ru }}</td>
+                      <td>
+                        <a href="/media/{{i.img}}">Фото</a>
+                      </td>
+                      <td>{{ i.price }} сўм</td>
+                      <td>{{ i.ball }}</td>
+                      <td ><a style="color: #17a2b8;" href="{% url 'product_edit' i.id i.category.id %}"><div ><i class="far fa-edit"></i></div></a></td>
+                      <td><a style="color: #dc3545;" href="{% url 'product_delete' i.id %}"><div><i class="fas fa-trash-alt"></i></div></a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
-from admin_panel.models import Regions,District
+from admin_panel.forms import CategoryForm, ProductForm
+from admin_panel.models import Regions,District,Category,Product
 from diller.models import Diller
 from seller.models import Seller
 from django.contrib.auth import authenticate, login, logout
@@ -73,3 +74,87 @@ def seller_delete(request, pk):
 
 def checks(request):
     return render(request,"dashboard/checks.html")
+
+
+def categories(request):
+    category = Category.objects.all()
+    
+    ctx = {
+        "categories": category,
+    }
+    return render(request,"dashboard/category/list.html",ctx)
+def category_create(request):
+    model = Category()
+    form = CategoryForm(request.POST, request.FILES, instance=model)
+    if form.is_valid():
+        form.save()
+        return redirect("categories")
+
+    ctx = {
+        "form": form,
+    }
+    return render(request,"dashboard/category/form.html",ctx)
+
+@login_required_decorator
+def category_edit(request, pk):
+    model = Category.objects.get(pk=pk)
+    form = CategoryForm(request.POST or None, request.FILES or None, instance=model)
+    if request.POST:
+        if form.is_valid():
+            form.save()
+            return redirect("categories")
+        else:
+            print(form.errors)
+    ctx = {"form": form}
+    return render(request, "dashboard/category/form.html", ctx)
+
+def category_delete(request, pk):
+    model = Category.objects.get(pk=pk)
+    model.delete()
+    return redirect("categories")
+
+
+
+
+def products(request,category_id):
+    category = Category.objects.get(pk=category_id)
+    products = Product.objects.filter(category_id=category_id)
+    ctx = {
+        "products": products,
+        "category": category,
+    }
+    return render(request,"dashboard/product/list.html",ctx)
+
+
+def product_create(request,pk):
+    model = Product()
+    form = ProductForm(request.POST, request.FILES, instance=model)
+    if form.is_valid():
+        data = form.save()
+        return redirect(f"/products/{data.category_id}")
+
+    ctx = {
+        "form": form,
+        "pk":pk
+    }
+    return render(request,"dashboard/product/form.html",ctx)
+
+@login_required_decorator
+def product_edit(request, pk,category_id):
+    model = Product.objects.get(pk=pk)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=model)
+    if request.POST:
+        if form.is_valid():
+            data = form.save()
+            return redirect(f"/products/{data.category_id}")
+        else:
+            print(form.errors)
+    ctx = {"form": form,
+            "pk":category_id
+        }
+    return render(request, "dashboard/product/form.html", ctx)
+
+def product_delete(request, pk):
+    model = Product.objects.get(pk=pk)
+    model.delete()
+    return redirect(f"/products/{model.category_id}")
