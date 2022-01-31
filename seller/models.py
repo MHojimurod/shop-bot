@@ -1,7 +1,7 @@
-from tkinter import Text
+
 from django.db import models
 
-from admin_panel.models import District, Regions
+from admin_panel.models import District, Regions, Text
 
 # Create your models here.
 class Seller(models.Model):
