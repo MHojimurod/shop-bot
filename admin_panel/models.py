@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import include
 
+# from seller.models import Seller
+
 # from diller.models import Diller
 
 # Create your models here.
@@ -89,3 +91,17 @@ class OrderGift(models.Model):
     user = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     gift = models.ForeignKey(Gifts, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+
+
+class BaseProduct(models.Model):
+    diller = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    serial_number = models.CharField(max_length=255)
+    status = models.IntegerField(choices=((0, 'New'), (1, "Saled"), (2, "Returned")))
+    saler = models.ForeignKey("seller.Seller", on_delete=models.CASCADE, null=True, blank=True, default=None)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def sale(self, seller):
+        self.status = 1
+        self.saler = seller
+        self.save()
