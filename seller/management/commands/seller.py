@@ -4,6 +4,7 @@ from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContex
 
 from telegram import Update, User
 from admin_panel.models import BaseProduct, i18n
+from seller.management.commands.decorators import get_user
 
 
 from seller.models import Seller
@@ -49,7 +50,7 @@ class Bot(Updater, MainHandlers):
                     MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
                 ],
-                CVI: [MessageHandler(Filters.photo)],
+                CVI: [MessageHandler(Filters.photo, self.cvi_photo)],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo)],
                 CVI_SERIAL_NUMBER: [MessageHandler(Filters.text, self.cvi_serial_number)],
             },
@@ -62,23 +63,23 @@ class Bot(Updater, MainHandlers):
 
     
     def cvitation(self, update:Update, context:CallbackContext):
-        user, db_user = self.get_user(update)
+        user, db_user = get_user(update)
         user.send_message(i18n("send_cvitation"))
-        return CVI_PHOTO,
+        return CVI_PHOTO
     
     def cvi_photo(self, update:Update, context:CallbackContext):
-        user, db_user = self.get_user(update)
+        user, db_user = get_user(update)
         user.send_message(i18n("send_cvi_serial_number"))
         return CVI_SERIAL_NUMBER
     
     def cvi_serial_number(self, update:Update, context:CallbackContext):
-        user, db_user = self.get_user(update)
+        user, db_user = get_user(update)
         product = BaseProduct.objects.filter(serial_number=update.message.text)
         if product.exists():
             product:BaseProduct = product.first()
             user.send_message("Sizning kvitansiyangiz qabul qilindi!\nBiz dillerga sotilgani haqida habaar beramiz!")
             product.sale(db_user)
-            context.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.name}\nSeria raqami: {product.serial_number}\nSotuvchi: {db_user.name} (@{user.username})")
+            context.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name(db_user.language)}\nSeria raqami: {product.serial_number}\nSotuvchi: {db_user.name} (@{user.username})")
             return self.start(update, context,False)
         else:
             user.send_message("Kechirasiz seria raqamni topilmadi!")

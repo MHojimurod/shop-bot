@@ -56,7 +56,7 @@ class Menu:
                 context.user_data['tmp_message'] = user.send_message(**diller_products_paginator(db_user,1), parse_mode="HTML")
             else:
                 context.user_data['tmp_message'] = user.send_message("Sizda hech qanday buyurtma yo'q", parse_mode="HTML")
-                return self.start(update, context)
+                return self.start(update, context, False)
         else:
             data = update.callback_query.data.split(":")
             if data[0] == "product_pagination":
