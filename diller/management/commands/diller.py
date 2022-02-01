@@ -1,6 +1,8 @@
+from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
 from telegram import User
+from admin_panel.models import i18n
 
 from diller.stages.busket import BusketHandlers
 from .constant import (
@@ -78,7 +80,25 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
 
         self.start_polling()
         print('polling')
-        self.idle()
+        server = Flask(__name__)
+        print('x')
+
+        server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
+
+
+        server.run("127.0.0.1",port=6002)
+
+    def user_state_update(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            diller = Diller.objects.filter(id=data['id'])
+            if diller.exists():
+                diller = diller.first()
+                self.bot.send_message(chat_id=diller.chat_id, text = i18n("accept_message" if data['status'] == 1 else "reject_message"))
+            else:
+                pass
+        return "x"
 
 
 x = Bot(TOKEN)

@@ -108,7 +108,6 @@ class Menu:
     # @delete_tmp_message
     def cart(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
-
         if len(db_user.busket.items) > 0:
             update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
             return CART

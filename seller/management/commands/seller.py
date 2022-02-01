@@ -1,5 +1,4 @@
 from email.message import Message
-from math import prod
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import Update, User
@@ -21,12 +20,12 @@ from .constant import (
     DISTRICT,
     MENU
 )
+from flask import Flask, request
 
 from seller.stages import MainHandlers
 
 user: User
 db_user: Seller
-
 
 class Bot(Updater, MainHandlers):
     def __init__(self, token: str = None):
@@ -59,9 +58,10 @@ class Bot(Updater, MainHandlers):
         self.dispatcher.add_handler(self.conversation)
         self.start_polling()
         print('polling')
+        print('x')
         self.idle()
+        
 
-    
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         user.send_message(i18n("send_cvitation"))
