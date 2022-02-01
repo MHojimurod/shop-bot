@@ -51,7 +51,7 @@ def sellers_list(request):
 @login_required_decorator
 def diller_update(request, pk,status):
     Diller.objects.filter(pk=pk).update(status=status)
-    data = requests.get(f"http://127.0.0.1:6002/diller_status/", json={"data": {
+    data = requests.get(f"http://127.0.0.1:6002/diller_status", json={"data": {
             "id": pk,
             "status": status
         }})
