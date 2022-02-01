@@ -1,0 +1,53 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Маҳсулот қўшиш</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Маҳсулот қўшиш</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="">
+
+              <form method="post"  enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" name="region" value="{{pk}}">
+                <div class="d-flex col-12 flex-column">
+                  <div class="">
+                    <div class="form-group">
+                      <label >Номи УЗ</label><br>
+                        {{form.uz_data}}
+                    </div>
+                  </div>
+                  <div class="">
+                    <div class="form-group ">
+                      <label >Номи РУ</label><br>
+                        {{form.ru_data}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ml-3">
+                  <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

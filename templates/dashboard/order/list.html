@@ -13,7 +13,7 @@
           </ol>
         </div>
       </div>
-    <form method="post">
+    <!-- <form method="post">
       {% csrf_token%}
       <select onchange="this.form.submit()" name="order_filter">
         <option value="all" {% if filter == 'all' %}selected{% endif %}>Hammasi</option>
@@ -21,7 +21,7 @@
         <option value="failed" {% if filter == 'failed' %}selected{% endif %}>Failed</option>
       </select>
 
-    </form>
+    </form> -->
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
@@ -32,29 +32,23 @@
                   <thead>
                     <tr>
                       <th>№</th>
-                      <th>Name</th>
-                      <th>Status</th>
-                      <th>Created_at</th>
-                      <th>Change_status</th>
+                      <th>Diller</th>
+                      <th>Nomer</th>
+                      <th>Tolov</th>
+                      <th>Zakaz</th>
+                      <th>Umumiy ball</th>
                     </tr>
-                  </thead>
+                  </thead>  
                   <tbody>
-                    {% for stat in status %}
+                    {% for i in items %}
                     <tr>
-                      <td>{{ forloop.counter }}</td>
-                      <td>{{ stat.first_name }}</td>
-                      <td>{{ stat.status }}</td>
-                      <td>{{ stat.created_at }}</td>
-                      <td>
-                        {% if stat.status == 1 %}
-                        <a href="{% url 'status' pk=stat.order_id status=2 %}"><div class="btn btn-sm btn-success">Done</div></a>
-                        <a href="{% url 'status' pk=stat.order_id status=3 %}"><div class="btn btn-sm btn-danger">Failed</div></a>
-                        {% elif stat.status == 2 %}
-                        Done
-                        {% elif stat.status == 3 %}
-                        Failed
-                        {% endif %}
-                      </td>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{i.diller.name}}</td>
+                      <td>{{i.diller.number}}</td>
+                      <td>{{i.busket.get_payment_type_display}}</td>
+                      <td>{{i.text|safe}}</td>
+                      <td>{{i.ball}}</td>
+                      <!-- <td>{{i}}</td> -->
                     </tr>
                     {% endfor %}
                   </tbody>

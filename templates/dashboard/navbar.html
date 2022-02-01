@@ -67,10 +67,31 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{% url 'regions' %}" class="nav-link">
+            <i class="nav-icon fas fa-globe-asia"></i>
+            <!-- <i class="fa-sign-out"></i> -->
+            <p>Вилоятлар</p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{% url 'checks' %}" class="nav-link">
             <i class="nav-icon fas fa-images"></i>
             <!-- <i class="fa-sign-out"></i> -->
             <p>Квитансиялар</p>
+          </a>
+        </li>
+        <li class="nav-item {{g_active}}">
+          <a href="{% url 'gifts' %}" class="nav-link">
+            <i class="nav-icon fas fa-gift"></i>
+            <!-- <i class="fa-sign-out"></i> -->
+            <p>Совғалар</p>
+          </a>
+        </li>
+        <li class="nav-item {{s_active}}">
+          <a href="{% url 'settings' %}" class="nav-link">
+            <i class="nav-icon fas fa-cog"></i>
+            <!-- <i class="fa-sign-out"></i> -->
+            <p>Созламалар</p>
           </a>
         </li>
         <li class="nav-item">
