@@ -29,4 +29,28 @@ urlpatterns = [
     path('product_create/<int:pk>', product_create,name="product_create"),
     path('product_edit/<int:pk>/<int:category_id>', product_edit,name="product_edit"),
     path('product_delete/<int:pk>/', product_delete,name="product_delete"),
+    
+    
+    path('gifts/', gifts,name="gifts"),
+    path('gift_create/', gift_create,name="gift_create"),
+    path('gift_edit/<int:pk>', gift_edit,name="gift_edit"),
+    path('gift_delete/<int:pk>/', gift_delete,name="gift_delete"),
+
+
+    path('regions/', regions,name="regions"),
+    path('region_create', region_create,name="region_create"),
+    path('region_edit/<int:pk>/', region_edit,name="region_edit"),
+    path('region_delete/<int:pk>/', region_delete,name="region_delete"),
+
+
+    path('districts/<int:region_id>', districts,name="districts"),
+    path('district_create/<int:pk>', district_create,name="district_create"),
+    path('district_edit/<int:pk>/<int:region_id>', district_edit,name="district_edit"),
+    path('district_delete/<int:pk>/', district_delete,name="district_delete"),
+
+
+    path('settings/', settings,name="settings"),
+    path('settings_edit/<int:pk>/', settings_edit,name="settings_edit"),
+
+    path('orders/', orders,name="orders"),
     ]
