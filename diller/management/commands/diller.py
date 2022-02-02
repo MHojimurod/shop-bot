@@ -102,3 +102,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
 
 
 x = Bot(TOKEN)
+
+
+
+__name__
+__file__

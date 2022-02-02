@@ -139,7 +139,3 @@ class MainHandlers:
             **context.user_data['register'])
         context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /startkommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         return -1
-    
-    def my_balls(self, update:Update, context:CallbackContext):
-        user, db_user = get_user(update)
-        print(546546)

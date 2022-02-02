@@ -1,12 +1,13 @@
 from email.message import Message
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
-from telegram import Update, User
-from admin_panel.models import BaseProduct, i18n
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
+from admin_panel.models import BaseProduct, Gifts, i18n
 from seller.management.commands.decorators import get_user
 
 
 from seller.models import Seller
+from seller.utils import balls_keyboard_pagination
 from .constant import (
     CVI,
     CVI_PHOTO,
@@ -18,7 +19,8 @@ from .constant import (
     NAME,
     REGION,
     DISTRICT,
-    MENU
+    MENU,
+    BALL
 )
 from flask import Flask, request
 
@@ -52,6 +54,7 @@ class Bot(Updater, MainHandlers):
                 CVI: [MessageHandler(Filters.photo, self.cvi_photo)],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo)],
                 CVI_SERIAL_NUMBER: [MessageHandler(Filters.text, self.cvi_serial_number)],
+                BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
             },
             fallbacks=[CommandHandler("start", self.start)],
         )
@@ -84,5 +87,47 @@ class Bot(Updater, MainHandlers):
         else:
             user.send_message("Kechirasiz seria raqamni topilmadi!")
         return CVI_PHOTO
+    
+    def my_balls(self, update:Update, context:CallbackContext):
+        user, db_user= get_user(update)
+        if update.message:
+            context.user_data['tmp_message'] = user.send_message(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML",)
+            return BALL
+        else:
+            data = update.callback_query.data.split(":")
+            if data[0] == "gift_pagination":
+                update.callback_query.message.edit_text(**balls_keyboard_pagination(db_user, int(data[1])), parse_mode="HTML")
+                return BALL
+            else:
+                update.callback_query.message.edit_text(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML")
+                return BALL
+    
+    def select_gift(self, update:Update, context:CallbackContext):
+        user, db_user = get_user(update)
+        data = update.callback_query.data.split(":")
+        if data[0] == "select_gift":
+            gift = Gifts.objects.filter(id=int(data[1]))
+            if gift.exists():
+                if gift.first().ball <= db_user.balls:
+                    context.user_data['current_gift'] = gift.first()
+                    update.callback_query.message.edit_text(i18n("are_you_sure_get_gift", db_user.language),    parse_mode="HTML", reply_markup=InlineKeyboardMarkup([
+                        [
+                            InlineKeyboardButton(i18n("yes", db_user.language), callback_data="sure_select_gift:yes"),
+                            InlineKeyboardButton(i18n("no", db_user.language), callback_data="sure_select_gift:no")
+                        ]
+                    ]))
+                    return BALL
+                else:
+                    update.callback_query.answer("Sizning balansingizda kifayot emas")
+    def selct_gift_sure(self, update:Update, context:CallbackContext):
+        user, db_user= get_user(update)
+        data = update.callback_query.data.split(":")
+        if data[0] == "sure_select_gift":
+            if data[1] == "yes":
+                context.user_data['current_gift'].take(db_user)
+                update.callback_query.message.edit_text("Sizning so'rovingiz qabul qilindi!\nTez orada o'zimiz tilifon qivoramiz!")
+                return self.start(update, context, False)
+            else:
+                return self.my_balls(update, context)
 
 x = Bot(TOKEN)
