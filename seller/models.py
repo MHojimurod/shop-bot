@@ -28,3 +28,11 @@ class OrderGiftSeller(models.Model):
     user = models.ForeignKey(Seller, on_delete=models.CASCADE)
     gift = models.ForeignKey("admin_panel.Gifts", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+
+
+class Cvitation(models.Model):
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    serial = models.CharField(max_length=100)
+    img = models.ImageField(upload_to='cvitations/')
+    date = models.DateTimeField(auto_now_add=True)
+
