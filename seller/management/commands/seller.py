@@ -6,7 +6,7 @@ from admin_panel.models import BaseProduct, Gifts, i18n
 from seller.management.commands.decorators import get_user
 
 
-from seller.models import Seller
+from seller.models import Cvitation, Seller
 from seller.utils import balls_keyboard_pagination
 from .constant import (
     CVI,
@@ -72,6 +72,8 @@ class Bot(Updater, MainHandlers):
     
     def cvi_photo(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
+        img = update.message.photo[0].get_file().download(f"{db_user.id}.jpg")
+        context.user_data['cvitation_img'] = img
         user.send_message(i18n("send_cvi_serial_number"))
         return CVI_SERIAL_NUMBER
     
@@ -80,9 +82,13 @@ class Bot(Updater, MainHandlers):
         product = BaseProduct.objects.filter(serial_number=update.message.text)
         if product.exists():
             product:BaseProduct = product.first()
+            Cvitation.objects.create(seller=db_user, serial=update.message.text, img=context.user_data['cvitation_img'])
             user.send_message("Sizning kvitansiyangiz qabul qilindi!\nBiz dillerga sotilgani haqida habaar beramiz!")
             product.sale(db_user)
-            context.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name(db_user.language)}\nSeria raqami: {product.serial_number}\nSotuvchi: {db_user.name} (@{user.username})")
+            try:
+                context.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name(db_user.language)}\nSeria raqami: {product.serial_number}\nSotuvchi: {db_user.name} (@{user.username})")
+            except:
+                pass
             return self.start(update, context,False)
         else:
             user.send_message("Kechirasiz seria raqamni topilmadi!")
