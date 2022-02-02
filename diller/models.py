@@ -15,6 +15,9 @@ class Diller(models.Model):
     ))
     balls = models.IntegerField(default=2)
 
+    def get_gift(self, gift):
+        return OrderGiftDiller.objects.create(user=self, gift=gift)
+
     
     language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
     @property
@@ -50,8 +53,6 @@ class Diller(models.Model):
 
     def __str__(self):
         return self.name
-
-        return d
 
 
 
@@ -109,3 +110,10 @@ class Busket_item(models.Model):
     @property
     def ball(self):
         return self.product.ball * self.count
+
+
+
+class OrderGiftDiller(models.Model):
+    user = models.ForeignKey(Diller, on_delete=models.CASCADE)
+    gift = models.ForeignKey(Gifts, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)

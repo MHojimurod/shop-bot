@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import include
 
+
 # from seller.models import Seller
 
 # from diller.models import Diller
@@ -83,14 +84,8 @@ class Gifts(models.Model):
         return self.name_uz if lang == 0 else self.name_ru
 
     def take(self, user):
-        return OrderGift.objects.create(user=user, gift=self)
-
-
-diller_module = include('diller.models')[0]
-class OrderGift(models.Model):
-    user = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
-    gift = models.ForeignKey(Gifts, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+        
+        return user.get_gift(gift=self)
 
 
 class BaseProduct(models.Model):
@@ -105,3 +100,11 @@ class BaseProduct(models.Model):
         self.status = 1
         self.saler = seller
         self.save()
+
+
+class Promotion(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price = models.IntegerField()
+    ball = models.IntegerField()
+    active = models.BooleanField(default=False)
+    description = models.TextField()
