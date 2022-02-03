@@ -102,6 +102,7 @@ class BaseProduct(models.Model):
         self.save()
 
 
+
 class Promotion(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.IntegerField()
