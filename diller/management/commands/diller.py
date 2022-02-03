@@ -2,7 +2,7 @@ from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
 from telegram import User
-from admin_panel.models import i18n
+from admin_panel.models import Promotion, i18n
 
 from diller.stages.busket import BusketHandlers
 from .constant import (
@@ -103,7 +103,11 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         data = request.get_json()
         if data:
             data = data['data']
-            
+            pr = Promotion.objects.filter(id=data['product'])
+            if pr.exists():
+                pr = pr.first()
+                for diller in Diller.objects.filter(status=1):
+                    self.bot.send_message(chat_id=diller.chat_id, text=)
 
 
 x = Bot(TOKEN)

@@ -111,5 +111,6 @@ class Promotion(models.Model):
     price = models.IntegerField()
     ball = models.IntegerField()
     active = models.BooleanField(default=False)
-    description = models.TextField()
+    description_uz = models.TextField()
+    description_ru = models.TextField()
     count = models.IntegerField()
