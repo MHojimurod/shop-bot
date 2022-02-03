@@ -74,6 +74,9 @@ class Product(models.Model):
     def description(self, lang:int):
         return self.description_uz if lang == 0 else self.description_ru
 
+    def __str__(self):
+        return self.name_uz
+
 class Gifts(models.Model):
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
@@ -92,7 +95,7 @@ class BaseProduct(models.Model):
     diller = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     serial_number = models.CharField(max_length=255)
-    status = models.IntegerField(choices=((0, 'New'), (1, "Saled"), (2, "Returned")))
+    status = models.IntegerField(choices=((0, 'New'), (1, "Saled"), (2, "Returned")),default=0)
     saler = models.ForeignKey("seller.Seller", on_delete=models.CASCADE, null=True, blank=True, default=None)
     date = models.DateTimeField(auto_now_add=True)
 
@@ -109,3 +112,4 @@ class Promotion(models.Model):
     ball = models.IntegerField()
     active = models.BooleanField(default=False)
     description = models.TextField()
+    count = models.IntegerField()

@@ -5,19 +5,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        {% if data %}
-        {% if lang %}
-        <h1>Barcha O'zbek Mijozlar</h1>
-        {% else %}
-        <h1>Barcha Rus Mijozlar</h1>
-        {% endif %}
-        {% else %}
-        <h1>Barcha Mijozlar</h1>
-        {% endif %}
+        <h1>Сотилаганлар</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><button class="btn btn-block btn-primary" onclick="history.back()">Ортга</button></li>
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Сотилаганлар</li>
         </ol>
       </div>
     </div>
@@ -29,27 +22,30 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
+                <h3 class="card-title">Сотилаганлар</h3>
 
+                <div class="card-tools">
+                    <a href="{% url 'sold_create' %}"><div class="btn btn-block btn-success">Добавлять</div></a>
+                </div>
+              </div>
 
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
                     <tr>
                       <th>№</th>
-                      <th>Ismi</th>
-                      <th>Telefon raqami</th>
-                      <th>Tili</th>
-                      <th>Qo'shilgan sana</th>
+                      <th>Диллер</th>
+                      <th>Махсулот</th>
+                      <th>Сериа номер</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for i in users %}
+                    {% for i in baseproduct %}
                     <tr>
                       <td>{{ forloop.counter }}</td>
-                      <td>{{ i.name }}</td>
-                      <td>{{ i.phone }}</td>
-                      <td>{{ i.lang }}</td>
-                      <td>{{ i.created_at|date:"d-m-Y H:i" }}</td>
+                      <td>{{ i.diller.name }}</td>
+                      <td>{{ i.product.name_uz }}</td>
+                      <td>{{ i.serial_number }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

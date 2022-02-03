@@ -26,13 +26,13 @@
                   {% csrf_token %}
                   <input type="hidden" name="region" value="{{pk}}">
                 <div class="d-flex col-12 flex-column">
-                  <div class="">
+                  <div class="col-4">
                     <div class="form-group">
                       <label >Номи УЗ</label><br>
                         {{form.uz_data}}
                     </div>
                   </div>
-                  <div class="">
+                  <div class="col-4">
                     <div class="form-group ">
                       <label >Номи РУ</label><br>
                         {{form.ru_data}}
@@ -42,6 +42,9 @@
 
                 <div class="ml-3">
                   <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
+                  <button onclick="history.back()" class="btn col-sm-1 btn-secondary">
+                    Ортга
+                  </button>
                 </div>
               </form>
             </div>

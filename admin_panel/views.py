@@ -1,9 +1,11 @@
+import pstats
+from pyexpat import model
 from django.shortcuts import render, redirect
 from telegram import TelegramDecryptionError
-from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, RegionsForm, TextForm
-from admin_panel.models import Gifts, Regions, District, Category, Product, Text
+from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
+from admin_panel.models import BaseProduct, Gifts, Regions, District, Category, Product, Text,Promotion
 from diller.models import Diller,Busket,Busket_item
-from seller.models import Seller
+from seller.models import Cvitation, Seller
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 import requests
@@ -72,8 +74,11 @@ def seller_delete(request, pk):
 
 @login_required_decorator
 def checks(request):
-    cvitation =  ''
-    return render(request, "dashboard/checks.html")
+    cvitation =  Cvitation.objects.order_by("-id").all()
+    ctx = {
+        "checks":cvitation
+    }
+    return render(request, "dashboard/checks.html",ctx)
 
 @login_required_decorator
 def categories(request):
@@ -338,3 +343,58 @@ def orders(request):
 
     }
     return render(request,"dashboard/order/list.html",ctx)
+
+
+
+def solds(request):
+    all = BaseProduct.objects.order_by("-id").all()
+    ctx  = {
+        "baseproduct":all,
+        "b_active":"menu-open"
+    }
+    return render(request,"dashboard/sold/list.html",ctx)
+
+def sold_create(request):
+    model = BaseProduct()
+    form  = SoldForm(request.POST, instance=model)
+    if form.is_valid():
+        form.save()
+        return redirect("solds")
+
+    return render(request,"dashboard/sold/form.html",{"form":form})
+
+
+
+def promotion(request):
+    data = Promotion.objects.all()
+    ctx = {
+        "prompts":data
+    }
+    return render(request,"dashboard/promotion/list.html",ctx)
+
+
+def prompt_create(request):
+    model = Promotion()
+    form = PromotionForm(request.POST, instance=model)
+    if form.is_valid():
+        form.save()
+        return redirect("prompts")
+
+    return render(request,"dashboard/promotion/form.html",{"form":form})
+
+
+def send_req(request,pk):
+    data = Promotion.objects.get(pk=pk)
+    ctx = {
+        "product":data.product.id,
+        "price":data.price,
+        "price":data.ball,
+        "price":data.description,
+        }
+    data = requests.get(f"http://127.0.0.1:6002/send_req", json={"data": ctx})
+    return redirect("prompts")
+
+def del_prompt(request,pk):
+    data = Promotion.objects.get(pk=pk)
+    data.delete()
+    return redirect("prompts")

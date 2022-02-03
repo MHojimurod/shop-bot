@@ -53,4 +53,14 @@ urlpatterns = [
     path('settings_edit/<int:pk>/', settings_edit,name="settings_edit"),
 
     path('orders/', orders,name="orders"),
+
+
+    path('solds/', solds,name="solds"),
+    path('sold_create/', sold_create,name="sold_create"),
+
+
+    path('prompts/', promotion,name="prompts"),
+    path('prompt_create/', prompt_create,name="prompt_create"),
+    path('send_req/<int:pk>', send_req,name="send_req"),
+    path('del_prompt/<int:pk>', del_prompt,name="del_prompt"),
     ]
