@@ -84,7 +84,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         print('x')
 
         server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
-
+        
 
         server.run("127.0.0.1",port=6002)
 
@@ -101,9 +101,5 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         return "x"
 
 
+
 x = Bot(TOKEN)
-
-
-
-__name__
-__file__
