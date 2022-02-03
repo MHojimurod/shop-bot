@@ -91,7 +91,7 @@ class MainHandlers:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if region:
             context.user_data['register']['region'] = region
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(db_user.text("select_district"), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=region)
                 ], 2), resize_keyboard=True
@@ -99,7 +99,7 @@ class MainHandlers:
             return DISTRICT
 
         else:
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("region_not_found", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(db_user.text("region_not_found"), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in Regions.objects.all()
                 ], 2), resize_keyboard=True
@@ -133,9 +133,10 @@ class MainHandlers:
     
     def shop(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        lang = context.user_data['register']['language']
+        # lang = context.user_data['register']['language']
         context.user_data['register']['shop'] = update.message.text
         db_user: Seller = Seller.objects.create(
             **context.user_data['register'])
-        context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /startkommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
-        return -1
+        self.start(update,context)
+        # context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /startkommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+        # return -1

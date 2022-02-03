@@ -1,5 +1,5 @@
 from django import forms
-from admin_panel.models import Category, District, Gifts,Product, Regions,Text
+from admin_panel.models import Category, District, Gifts,Product, Promotion, Regions,Text,BaseProduct
 
 
 
@@ -10,11 +10,11 @@ class CategoryForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'name_uz': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control",
                 
                 }),
             'name_ru': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
         }
@@ -25,27 +25,27 @@ class ProductForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'category': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'name_uz': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'name_ru': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'ball': forms.NumberInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'price': forms.NumberInput(attrs={
-                'class': "form-control col-md-6"
+                'class': "form-control "
                 
                 }), 
             'serial_number': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
         }
@@ -57,15 +57,15 @@ class GiftsForm(forms.ModelForm):
         fields = ["name_uz","name_ru","ball"]
         widgets = {
             'name_uz': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'name_ru': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'ball': forms.NumberInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
         }
@@ -77,11 +77,11 @@ class RegionsForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'uz_data': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'ru_data': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
         }
@@ -94,11 +94,11 @@ class DistrictForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'uz_data': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
             'ru_data': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control ",
                 
                 }),
         }
@@ -109,11 +109,59 @@ class TextForm(forms.ModelForm):
         fields = ['uz_data','ru_data']
         widgets = {
             'uz_data': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control",
                 
                 }),
             'ru_data': forms.TextInput(attrs={
-                'class': "form-control col-md-6",
+                'class': "form-control",
                 
                 }),
+        }
+class SoldForm(forms.ModelForm):
+    class Meta:
+        model = BaseProduct
+        fields = ['diller','product',"serial_number"]
+        widgets = {
+            'diller': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible","value":124343
+                
+                }),
+            'product': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible","value":124343
+                
+                }),
+            'serial_number': forms.TextInput(attrs={
+                'class': "form-control ","value":124343
+                
+                })
+        }
+class PromotionForm(forms.ModelForm):
+    class Meta:
+        model = Promotion
+        fields = "__all__"
+        widgets = {
+            'product': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible","value":124343
+                
+                }),
+            'price': forms.NumberInput(attrs={
+                'class': "form-control "
+                
+                }),
+            'ball': forms.NumberInput(attrs={
+                'class': "form-control "
+                
+                }),
+            'count': forms.NumberInput(attrs={
+                'class': "form-control "
+                
+                }),
+            'active': forms.CheckboxInput(attrs={
+                'class': "" 
+                
+                }),
+            'description': forms.Textarea(attrs={
+                'class': "form-control "
+                
+                })
         }

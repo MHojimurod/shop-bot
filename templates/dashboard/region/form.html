@@ -1,6 +1,4 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'dashboard/base.html' %} {% load static %} {% block content %}
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
@@ -14,44 +12,37 @@
         </ol>
       </div>
     </div>
-  </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.container-fluid -->
 </section>
 <section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-            <div class="">
-
-              <form method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                <div class="">
-                  <div class="form-group col-md-6">
-                    <label >Номи УЗ</label><br>
-                      {{form.uz_data}}
-                  </div>
-                </div>
-                <div class="">
-                  <div class="form-group col-md-6">
-                    <label >Номи РУ</label><br>
-                      {{form.ru_data}}
-                  </div>
-                </div>
-                
-                
-                
-
-                <div class="ml-3">
-                  <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
-                </div>
-              </form>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-4">
+              <div class="form-group ">
+                <label>Номи УЗ</label><br />
+                {{form.uz_data}}
+              </div>
             </div>
-          </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
-{% block javascript %}
-<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
-<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Номи РУ</label><br />
+                {{form.ru_data}}
+              </div>
+            </div>
 
+            <div class="ml-3">
+              <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
+              <button onclick="history.back()" class="btn col-sm-1 btn-secondary">Ортга</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

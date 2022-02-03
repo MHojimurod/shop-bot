@@ -112,7 +112,6 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
     keyboard.append([InlineKeyboardButton("🔙", callback_data='back'), InlineKeyboardButton(
         f"📥 {i18n('add_to_cart')}", callback_data=f"add_to_cart")])
 
-    print(product.image.path)
 
     return {
         "photo": open(product.image.path, 'rb'),

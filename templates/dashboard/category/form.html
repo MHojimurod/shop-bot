@@ -24,14 +24,14 @@
 
               <form method="post" enctype="multipart/form-data">
                   {% csrf_token %}
-                <div class="">
-                  <div class="form-group col-md-6">
+                <div class="col-4">
+                  <div class="form-group">
                     <label >Номи УЗ</label><br>
                       {{form.name_uz}}
                   </div>
                 </div>
-                <div class="">
-                  <div class="form-group col-md-6">
+                <div class="col-4">
+                  <div class="form-group">
                     <label >Номи РУ</label><br>
                       {{form.name_ru}}
                   </div>
@@ -42,6 +42,9 @@
 
                 <div class="ml-3">
                   <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
+                  <button onclick="history.back()" class="btn col-sm-1 btn-secondary">
+                    Ортга
+                  </button>
                 </div>
               </form>
             </div>

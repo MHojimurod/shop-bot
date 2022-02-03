@@ -5,12 +5,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Совға қўшиш</h1>
+        <h1>Aksiya қўшиш</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
-          <li class="breadcrumb-item active">Совға қўшиш</li>
+          <li class="breadcrumb-item active">Aksiya қўшиш</li>
         </ol>
       </div>
     </div>
@@ -26,20 +26,39 @@
                   {% csrf_token %}
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Номи УЗ</label><br>
-                      {{form.name_uz}}
+                    <label >Product</label><br>
+                      {{form.product}}
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Номи РУ</label><br>
-                      {{form.name_ru}}
+                    <label >Soni</label><br>
+                      {{form.count}}
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Балл</label><br>
+                    <label >Narx</label><br>
+                      {{form.price}}
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >ball</label><br>
                       {{form.ball}}
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Holati</label><br>
+                      {{form.active}}
+                  </div>
+                </div>
+                
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >Malumot</label><br>
+                      {{form.description}}
                   </div>
                 </div>
                 
@@ -58,4 +77,9 @@
         </div>
     </div>
 </section>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
 {% endblock %}
