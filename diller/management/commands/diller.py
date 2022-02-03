@@ -84,7 +84,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         print('x')
 
         server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
-        
+        server.route('/send_req', methods=['POST', 'GET'])(self.promotion)
 
         server.run("127.0.0.1",port=6002)
 
@@ -99,7 +99,11 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             else:
                 pass
         return "x"
-
+    def promotion(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            
 
 
 x = Bot(TOKEN)
