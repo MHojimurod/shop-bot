@@ -41,6 +41,7 @@ def dillers_list(request):
 @login_required_decorator
 def sellers_list(request):
     sellers = Seller.objects.order_by('-id').all()
+    print(sellers)
     ctx = {
         "sellers": sellers,
         "s_active": "menu-open"
@@ -71,6 +72,7 @@ def seller_delete(request, pk):
 
 @login_required_decorator
 def checks(request):
+    cvitation =  ''
     return render(request, "dashboard/checks.html")
 
 @login_required_decorator
