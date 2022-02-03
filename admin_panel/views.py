@@ -388,8 +388,8 @@ def send_req(request,pk):
     ctx = {
         "product":data.product.id,
         "price":data.price,
-        "price":data.ball,
-        "price":data.description,
+        "ball":data.ball,
+        "description":data.description,
         }
     data = requests.get(f"http://127.0.0.1:6002/send_req", json={"data": ctx})
     return redirect("prompts")
