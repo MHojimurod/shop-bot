@@ -1,3 +1,4 @@
+import threading
 from click import BaseCommand
 from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
@@ -172,23 +173,6 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 update.callback_query.answer("Kechirasiz aksiyalar soni tugadi!", show_alert=True)
                 return self.start(update, context, False)
             
-x = Bot(TOKEN)
 
-
-
-class Command(BaseCommand):
-    def handle(self, *args, **options):
-        print('x')
-
-
-
-
-
-
-
-
-
-
-
-
-# asdfsdfsdfsdf
+def run():
+    return threading.Thread(target=Bot, args=(TOKEN,))

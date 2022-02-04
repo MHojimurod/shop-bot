@@ -1,4 +1,5 @@
 from email.message import Message
+import threading
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
@@ -136,4 +137,11 @@ class Bot(Updater, MainHandlers):
             else:
                 return self.my_balls(update, context)
 
-x = Bot(TOKEN)
+
+def run():
+    return threading.Thread(target=Seller, args=(TOKEN,))
+
+
+class Command:
+    def handle(self):
+        pass
