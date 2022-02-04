@@ -1,5 +1,11 @@
+from django.conf import settings
+settings.configure()
+
+
 from diller.management.commands.diller import Bot as Diller, TOKEN as Diller_Token
 from seller.management.commands.seller import Bot as Seller, TOKEN as Seller_Token
+# import settings from django
+
 
 import threading
 
