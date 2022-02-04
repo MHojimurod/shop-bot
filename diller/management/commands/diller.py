@@ -173,6 +173,4 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 update.callback_query.answer("Kechirasiz aksiyalar soni tugadi!", show_alert=True)
                 return self.start(update, context, False)
             
-
-def run():
-    return threading.Thread(target=Bot, args=(TOKEN,))
+work = Bot(TOKEN)

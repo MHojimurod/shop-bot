@@ -1,4 +1,4 @@
 
 
 web: gunicorn mysite.wsgi
-worker: python3 bots.py
+worker: python3 manage.py bots

@@ -138,10 +138,4 @@ class Bot(Updater, MainHandlers):
                 return self.my_balls(update, context)
 
 
-def run():
-    return threading.Thread(target=Seller, args=(TOKEN,))
-
-
-class Command:
-    def handle(self):
-        pass
+x = Bot(TOKEN)

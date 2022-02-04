@@ -1,22 +1,17 @@
+import threading
 from django.core.management.base import BaseCommand
 
 
 
-from diller.management.commands.diller import run as run_diller
-from seller.management.commands.seller import run as run_seller
-# import settings from django
+import os
 
 
+def run_diller():
+    os.system("python manage.py diller")
+def run_seller():
+    os.system("python manage.py seller")
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        x= run_diller()
-        y= run_seller()
-        x.start()
-        print("Diller started")
-        y.start()
-        print("seller started")
-        x.join()
-        print('x joined')
-        y.join()
-        print('y joined')
-
+        threading.Thread(target=run_diller).start()
+        threading.Thread(target=run_seller).start()
+        print("Diller is running...")
