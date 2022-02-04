@@ -1,4 +1,3 @@
-from turtle import up
 from telegram import *
 from telegram.ext import *
 from admin_panel.models import Category, Product
