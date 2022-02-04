@@ -35,4 +35,3 @@ class Cvitation(models.Model):
     serial = models.CharField(max_length=100)
     img = models.ImageField(upload_to='cvitations/')
     date = models.DateTimeField(auto_now_add=True)
-

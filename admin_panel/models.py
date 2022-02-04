@@ -111,5 +111,19 @@ class Promotion(models.Model):
     price = models.IntegerField()
     ball = models.IntegerField()
     active = models.BooleanField(default=False)
-    description = models.TextField()
+    description_uz = models.TextField()
+    description_ru = models.TextField()
     count = models.IntegerField()
+    bought_count = models.IntegerField(default=0)
+    @property
+    def available(self):
+        return self.count - self.bought_count
+
+
+
+class Promotion_Order(models.Model):
+    user = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
+    promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
+    count = models.IntegerField(default=1)
+    
+    date = models.DateTimeField(auto_now_add=True)

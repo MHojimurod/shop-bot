@@ -1,6 +1,7 @@
+from click import BaseCommand
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
-from admin_panel.models import Category, Gifts, Product, i18n
+from admin_panel.models import Category, Gifts, Product, Promotion, i18n
 from diller.management.commands.decorators import distribute
 from diller.models import Busket, Diller
 import locale
@@ -248,3 +249,29 @@ def balls_keyboard_pagination(diller:Diller, page:int):
         "text": text,
         "reply_markup": InlineKeyboardMarkup(keyboard)
     }
+
+
+
+
+def promotion_keyboard(user:Diller,  context:CallbackContext):
+    keyboard = []
+    controls = []
+    promotion = context.user_data['promotion_product']
+    if context.user_data['promotion_count'] > 1:
+        controls.append(InlineKeyboardButton("-", callback_data=f"promotion_count:{context.user_data['promotion_count'] - 1}"))
+    
+    controls.append(InlineKeyboardButton(context.user_data['promotion_count'], callback_data=f"just"))
+    controls.append(InlineKeyboardButton("+", callback_data=f"promotion_count:{context.user_data['promotion_count'] + 1}"))
+    keyboard.append(controls)
+
+    for line in distribute([InlineKeyboardButton(i, callback_data=f"promotion_count:{i}") for i in range(1, 10)], 3):
+        keyboard.append(line)
+    keyboard.append(
+        [
+            InlineKeyboardButton(user.text('back'), callback_data=f"back"),
+            InlineKeyboardButton(user.text('buy'), callback_data=f"buy_promotion:{promotion.id}")
+        ]
+    )
+    keyboard.append([InlineKeyboardButton("🔙", callback_data=f"back")])
+    return InlineKeyboardMarkup(keyboard)
+

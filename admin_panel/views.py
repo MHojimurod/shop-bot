@@ -386,10 +386,7 @@ def prompt_create(request):
 def send_req(request,pk):
     data = Promotion.objects.get(pk=pk)
     ctx = {
-        "product":data.product.id,
-        "price":data.price,
-        "ball":data.ball,
-        "description":data.description,
+        "product":data.id
         }
     data = requests.get(f"http://127.0.0.1:6002/send_req", json={"data": ctx})
     return redirect("prompts")
