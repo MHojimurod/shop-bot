@@ -1,5 +1,5 @@
 from django import forms
-from admin_panel.models import Category, District, DillerGifts,Product, Promotion, Regions,Text,BaseProduct
+from admin_panel.models import Category, District, Gifts,Product, Promotion, Regions,Text,BaseProduct
 
 
 
@@ -53,9 +53,13 @@ class ProductForm(forms.ModelForm):
 class GiftsForm(forms.ModelForm):
     class Meta:
 
-        model = DillerGifts
-        fields = ["name_uz","name_ru","ball"]
+        model = Gifts
+        fields = ["gift_type","name_uz","name_ru","ball"]
         widgets = {
+            'gift_type': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible",
+                
+                }),
             'name_uz': forms.TextInput(attrs={
                 'class': "form-control ",
                 
@@ -123,11 +127,11 @@ class SoldForm(forms.ModelForm):
         fields = ['diller','product',"serial_number"]
         widgets = {
             'diller': forms.Select(attrs={
-                'class': "form-control select2 select2-hidden-accessible","value":124343
+                'class': "form-control select2 select2-hidden-accessible",
                 
                 }),
             'product': forms.Select(attrs={
-                'class': "form-control select2 select2-hidden-accessible","value":124343
+                'class': "form-control select2 select2-hidden-accessible",
                 
                 }),
             'serial_number': forms.TextInput(attrs={

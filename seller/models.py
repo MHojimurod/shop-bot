@@ -1,7 +1,7 @@
 
 from django.db import models
 
-from admin_panel.models import District, DillerGifts, Regions, Text
+from admin_panel.models import District, Gifts, Regions, Text
 
 # Create your models here.
 class Seller(models.Model):
@@ -9,8 +9,8 @@ class Seller(models.Model):
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=100)
     balls = models.IntegerField(default=0)
-    region = models.ForeignKey(Regions, on_delete=models.CASCADE, null=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, null=True)
+    region = models.ForeignKey(Regions, on_delete=models.SET_NULL, null=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
     shop = models.CharField(max_length=300,null=True,blank=True)
     language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
     
@@ -26,12 +26,12 @@ class Seller(models.Model):
 
 class OrderGiftSeller(models.Model):
     user = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    gift = models.ForeignKey("admin_panel.SellerGifts", on_delete=models.CASCADE)
+    gift = models.ForeignKey("admin_panel.Gifts", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
 
 class Cvitation(models.Model):
-    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     serial = models.CharField(max_length=100)
     img = models.ImageField(upload_to='cvitations/')
     date = models.DateTimeField(auto_now_add=True)

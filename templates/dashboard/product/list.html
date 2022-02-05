@@ -44,7 +44,8 @@
                       <th>Номи РУ</th>
                       <th>Фото</th>
                       <th>Нархи</th>
-                      <th>Балл</th>
+                      <th>Диллер Балл</th>
+                      <th>Сотувчи Балл</th>
                       <th>Тахрирлаш</th>
                       <th>Ўчириш</th>
                     </tr>
@@ -61,7 +62,8 @@
                         <a href="/media/{{i.image}}">Фото</a>
                       </td>
                       <td>{{ i.price }} сўм</td>
-                      <td>{{ i.ball }}</td>
+                      <td>{{ i.diller_ball }}</td>
+                      <td>{{ i.seller_ball }}</td>
                       <td ><a style="color: #17a2b8;" href="{% url 'product_edit' i.id i.category.id %}"><div ><i class="far fa-edit"></i></div></a></td>
                       <td><a style="color: #dc3545;" href="{% url 'product_delete' i.id %}"><div><i class="fas fa-trash-alt"></i></div></a></td>
                     </tr>

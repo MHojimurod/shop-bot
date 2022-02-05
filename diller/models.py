@@ -6,8 +6,8 @@ class Diller(models.Model):
     chat_id = models.IntegerField()
     name = models.CharField(max_length=100)
     number = models.CharField(max_length=100)
-    region = models.ForeignKey(Regions, on_delete=models.CASCADE, null=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, null=True)
+    region = models.ForeignKey(Regions, on_delete=models.SET_NULL, null=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
     status = models.IntegerField(default=0, choices=(
         (0, "Kutinmoqda"),
         (1, "Qabul qilingan"),
@@ -102,19 +102,19 @@ class Busket(models.Model):
     
     
 class Busket_item(models.Model):
-    busket = models.ForeignKey(Busket, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    busket = models.ForeignKey(Busket, on_delete=models.SET_NULL,null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     count = models.IntegerField()
     active = models.BooleanField(default=True)
     def total_price(self):
         return self.product.price * self.count
     @property
     def ball(self):
-        return self.product.ball * self.count
+        return self.product.diller_ball * self.count
 
 
 
 class OrderGiftDiller(models.Model):
-    user = models.ForeignKey(Diller, on_delete=models.CASCADE)
-    gift = models.ForeignKey(DillerGifts, on_delete=models.CASCADE)
+    user = models.ForeignKey(Diller, on_delete=models.SET_NULL,null=True)
+    gift = models.ForeignKey(Gifts, on_delete=models.SET_NULL,null=True)
     date = models.DateTimeField(auto_now_add=True)

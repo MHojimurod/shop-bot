@@ -8,7 +8,7 @@ from telegram import (
 from telegram.ext import (
     CallbackContext
 )
-from admin_panel.models import DillerGifts, i18n
+from admin_panel.models import i18n,Gifts
 
 from diller.management.commands.decorators import delete_tmp_message, get_user
 from diller.models import Busket
@@ -83,7 +83,7 @@ class Menu:
         user, db_user = get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "select_gift":
-            gift = DillerGifts.objects.filter(id=int(data[1]))
+            gift = Gifts.objects.filter(id=int(data[1]))
             if gift.exists():
                 if gift.first().ball <= db_user.balls:
                     context.user_data['current_gift'] = gift.first()
@@ -104,10 +104,13 @@ class Menu:
                 context.user_data['current_gift'].take(db_user)
                 update.callback_query.message.edit_text("Sizning so'rovingiz qabul qilindi!\nTez orada o'zimiz tilifon qivoramiz!")
                 return self.start(update, context, False)
+            else:
+                update.callback_query.message.delete()
+                context.user_data['tmp_message'] = user.send_message(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML")
+                return BALL
     
     # @delete_tmp_message
     def cart(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         if len(db_user.busket.items) > 0:
-            update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
-            return CART
+            return 

@@ -77,7 +77,8 @@ class Product(models.Model):
     def __str__(self):
         return self.name_uz
 
-class DillerGifts(models.Model):
+class Gifts(models.Model):
+    gift_type = models.IntegerField(choices=((0, "Diller"), (1, "Sotuvchi")))
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
     ball = models.IntegerField()
@@ -87,26 +88,14 @@ class DillerGifts(models.Model):
         return self.name_uz if lang == 0 else self.name_ru
 
     def take(self, user):
-        
+        user.balls -= self.ball
         return user.get_gift(gift=self)
 
-
-class SellerGifts(models.Model):
-    name_uz = models.CharField(max_length=100)
-    name_ru = models.CharField(max_length=100)
-    ball = models.IntegerField()
-    image = models.ImageField(upload_to='gifts2')
-
-    def name(self, lang:int):
-        return self.name_uz if lang == 0 else self.name_ru
-
-    def take(self, user):
-        return user.get_gift(gift=self)
 
 
 class BaseProduct(models.Model):
-    diller = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    diller = models.ForeignKey("diller.Diller", on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     serial_number = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
@@ -118,7 +107,7 @@ class BaseProduct(models.Model):
 
 
 class Promotion(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL,null=True)
     price = models.IntegerField()
     ball = models.IntegerField()
     active = models.BooleanField(default=False)

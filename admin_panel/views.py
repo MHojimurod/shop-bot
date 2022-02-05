@@ -3,7 +3,7 @@ from pyexpat import model
 from django.shortcuts import render, redirect
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
-from admin_panel.models import BaseProduct, DillerGifts, Regions, District, Category, Product, Text,Promotion
+from admin_panel.models import BaseProduct, Gifts, Regions, District, Category, Product, Text,Promotion
 from diller.models import Diller,Busket,Busket_item
 from seller.models import Cvitation, Seller
 from django.contrib.auth import authenticate, login, logout
@@ -170,7 +170,7 @@ def product_delete(request, pk):
 
 @login_required_decorator
 def gifts(request):
-    data = DillerGifts.objects.all()
+    data = Gifts.objects.all()
     ctx = {
         "gifts": data,
         "g_active":"menu-open"
@@ -179,7 +179,7 @@ def gifts(request):
 
 @login_required_decorator
 def gift_create(request):
-    model = DillerGifts()
+    model = Gifts()
     form = GiftsForm(request.POST, request.FILES, instance=model)
     if form.is_valid():
         form.save()
@@ -192,7 +192,7 @@ def gift_create(request):
 
 @login_required_decorator
 def gift_edit(request, pk):
-    model = DillerGifts.objects.get(pk=pk)
+    model = Gifts.objects.get(pk=pk)
     form = GiftsForm(request.POST or None,
                        request.FILES or None, instance=model)
     if request.POST:
@@ -206,7 +206,7 @@ def gift_edit(request, pk):
 
 @login_required_decorator
 def gift_delete(request, pk):
-    model = DillerGifts.objects.get(pk=pk)
+    model = Gifts.objects.get(pk=pk)
     model.delete()
     return redirect("gifts")
 
@@ -329,7 +329,7 @@ def orders(request):
         ball = 0
         for j in Busket_item.objects.filter(busket=i):
             text += f"{j.product.name_uz} x {j.count} = {j.product.price * j.count}<br>"
-            ball += j.product.ball*j.count
+            ball += j.product.diller_ball*j.count
 
         data.append(
         {
@@ -342,7 +342,7 @@ def orders(request):
         "items":data
 
     }
-    
+
     return render(request,"dashboard/order/list.html",ctx)
 
 def update_order(request,pk,status):

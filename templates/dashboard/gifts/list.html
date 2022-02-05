@@ -38,6 +38,7 @@
                   <th>№</th>
                   <th>Номи УЗ</th>
                   <th>Номи РУ</th>
+                  <th>Тури</th>
                   <th>Балл</th>
                   <th>Тахрирлаш</th>
                   <th>Ўчириш</th>
@@ -51,6 +52,7 @@
                   <td>{{ forloop.counter }}</td>
                   <td>{{ i.name_uz }}</td>
                   <td>{{ i.name_ru }}</td>
+                  <td>{{ i.get_gift_type_display }}</td>
                   <td>{{ i.ball }}</td>
                   <td><a style="color: #17a2b8;" href="{% url 'gift_edit' pk=i.id %}">
                     <div ><i class="far fa-edit"></i></div></a></td>

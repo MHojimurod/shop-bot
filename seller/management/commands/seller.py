@@ -4,7 +4,7 @@ from uuid import uuid4
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
-from admin_panel.models import BaseProduct, DillerGifts, SellerGifts, i18n
+from admin_panel.models import BaseProduct,  i18n
 from seller.management.commands.decorators import get_user
 
 import requests
