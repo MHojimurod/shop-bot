@@ -27,7 +27,7 @@ from .constant import (
     MENU
 )
 
-from diller.models import Diller
+from diller.models import Busket, Diller
 from diller.stages import Register, Menu, Buy
 
 
@@ -93,9 +93,45 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
 
         server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
         server.route('/send_req', methods=['POST', 'GET'])(self.promotion)
+        server.route("/update_status", methods=["POST", 'GET'])(self.update_status_order)
         server.route('/sale', methods=['POST', 'GET'])(self.saled_asdasdasdasdas)
 
         server.run("127.0.0.1",port=6002)
+
+
+
+
+
+
+
+
+    
+
+    def update_status_order(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            diller = data['diller']
+            status = data['status']
+            busket = data['busket']
+            diller:Diller = Diller.objects.filter(id=diller).first()
+            if diller:
+                busket:Busket = Busket.objects.filter(id=busket).first()
+                if busket:
+                    busket.status = status
+                    busket.save()
+                    self.bot.send_message(chat_id=diller.user.id, text=diller.text('your_order_status_update'))
+
+
+
+
+
+
+
+
+
+
+
 
     def user_state_update(self):
         data = request.get_json()
@@ -184,3 +220,17 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 return self.start(update, context, False)
             
 work = Bot(TOKEN)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
