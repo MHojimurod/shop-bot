@@ -8,7 +8,7 @@ from telegram import (
 from telegram.ext import (
     CallbackContext
 )
-from admin_panel.models import Gifts, i18n
+from admin_panel.models import DillerGifts, i18n
 
 from diller.management.commands.decorators import delete_tmp_message, get_user
 from diller.models import Busket
@@ -83,7 +83,7 @@ class Menu:
         user, db_user = get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "select_gift":
-            gift = Gifts.objects.filter(id=int(data[1]))
+            gift = DillerGifts.objects.filter(id=int(data[1]))
             if gift.exists():
                 if gift.first().ball <= db_user.balls:
                     context.user_data['current_gift'] = gift.first()

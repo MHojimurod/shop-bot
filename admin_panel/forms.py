@@ -1,5 +1,5 @@
 from django import forms
-from admin_panel.models import Category, District, Gifts,Product, Promotion, Regions,Text,BaseProduct
+from admin_panel.models import Category, District, DillerGifts,Product, Promotion, Regions,Text,BaseProduct
 
 
 
@@ -36,24 +36,24 @@ class ProductForm(forms.ModelForm):
                 'class': "form-control ",
                 
                 }),
-            'ball': forms.NumberInput(attrs={
+            'diller_ball': forms.NumberInput(attrs={
+                'class': "form-control ",
+                
+                }),
+            'seller_ball': forms.NumberInput(attrs={
                 'class': "form-control ",
                 
                 }),
             'price': forms.NumberInput(attrs={
                 'class': "form-control "
                 
-                }), 
-            'serial_number': forms.TextInput(attrs={
-                'class': "form-control ",
-                
-                }),
+                })
         }
 
 class GiftsForm(forms.ModelForm):
     class Meta:
 
-        model = Gifts
+        model = DillerGifts
         fields = ["name_uz","name_ru","ball"]
         widgets = {
             'name_uz': forms.TextInput(attrs={

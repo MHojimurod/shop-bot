@@ -1,12 +1,12 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from admin_panel.models import Gifts, i18n
+from admin_panel.models import DillerGifts, SellerGifts, i18n
 from diller.models import Diller
 from seller.management.commands.decorators import distribute
 from seller.models import Seller
 
 
 def balls_keyboard_pagination(seller:Seller, page:int):
-    gifts = list(Gifts.objects.all())
+    gifts = list(SellerGifts.objects.all())
     gifts_count = len(gifts)
     gifts_per_page = 10
     gifts_pages = gifts_count // gifts_per_page + \

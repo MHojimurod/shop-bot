@@ -3,7 +3,7 @@ from pyexpat import model
 from django.shortcuts import render, redirect
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
-from admin_panel.models import BaseProduct, Gifts, Regions, District, Category, Product, Text,Promotion
+from admin_panel.models import BaseProduct, DillerGifts, Regions, District, Category, Product, Text,Promotion
 from diller.models import Diller,Busket,Busket_item
 from seller.models import Cvitation, Seller
 from django.contrib.auth import authenticate, login, logout
@@ -170,7 +170,7 @@ def product_delete(request, pk):
 
 @login_required_decorator
 def gifts(request):
-    data = Gifts.objects.all()
+    data = DillerGifts.objects.all()
     ctx = {
         "gifts": data,
         "g_active":"menu-open"
@@ -179,7 +179,7 @@ def gifts(request):
 
 @login_required_decorator
 def gift_create(request):
-    model = Gifts()
+    model = DillerGifts()
     form = GiftsForm(request.POST, request.FILES, instance=model)
     if form.is_valid():
         form.save()
@@ -192,7 +192,7 @@ def gift_create(request):
 
 @login_required_decorator
 def gift_edit(request, pk):
-    model = Gifts.objects.get(pk=pk)
+    model = DillerGifts.objects.get(pk=pk)
     form = GiftsForm(request.POST or None,
                        request.FILES or None, instance=model)
     if request.POST:
@@ -206,7 +206,7 @@ def gift_edit(request, pk):
 
 @login_required_decorator
 def gift_delete(request, pk):
-    model = Gifts.objects.get(pk=pk)
+    model = DillerGifts.objects.get(pk=pk)
     model.delete()
     return redirect("gifts")
 
