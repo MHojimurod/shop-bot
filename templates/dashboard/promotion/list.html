@@ -36,14 +36,15 @@
               <thead>
                 <tr>
                   <th>№</th>
-                  <th>Product</th>
-                  <th>Soni</th>
-                  <th>Narxi</th>
-                  <th>Ball</th>
-                  <th>Holati</th>
-                  <th>Ma'lumot</th>
-                  <th>Yuborish</th>
-                  <th>O'chirish</th>
+                  <th>Маҳсулот</th>
+                  <th>Сони</th>
+                  <th>Нархи</th>
+                  <th>Балл</th>
+                  <th>Ҳолати</th>
+                  <th>Маълумот UZ</th>
+                  <th>Маълумот RU</th>
+                  <th>Юбориш</th>
+                  <th>Ўчириш</th>
                 </tr>
               </thead>
               <tbody>
@@ -57,9 +58,10 @@
                   <td>{{ i.price }}</td>
                   <td>{{ i.ball }}</td>
                   <td>{{ i.active }}</td>
-                  <td>{{ i.description }}</td>
-                  <td><a class="btn btn-info " href="{% url 'send_req' i.id %}">Yuborish</a></td>
-                  <td><a class="btn btn-danger " href="{% url 'del_prompt' i.id %}">O'chirish</a></td>
+                  <td>{{ i.description_uz }}</td>
+                  <td>{{ i.description_ru }}</td>
+                  <td><a style="color: #17a2b8;"  href="{% url 'send_req' i.id %}"><i class="far fa-share-square"></i></i></a></td>
+                  <td><a style="color: #dc3545;" href="{% url 'del_prompt' i.id %}"><i class="fas fa-trash-alt"></i></a></td>
                 </tr>
                 {% endfor %}
               </tbody>

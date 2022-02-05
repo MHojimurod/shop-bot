@@ -26,39 +26,46 @@
                   {% csrf_token %}
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Product</label><br>
+                    <label >Маҳсулот</label><br>
                       {{form.product}}
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Soni</label><br>
+                    <label >Сони</label><br>
                       {{form.count}}
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Narx</label><br>
+                    <label >Нархи</label><br>
                       {{form.price}}
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label >ball</label><br>
+                    <label >Балл</label><br>
                       {{form.ball}}
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
-                    <label>Holati</label><br>
+                    <label>Ҳолати</label><br>
                       {{form.active}}
                   </div>
                 </div>
                 
                 <div class="col-4">
                   <div class="form-group">
-                    <label >Malumot</label><br>
-                      {{form.description}}
+                    <label >Маълумот UZ</label><br>
+                      {{form.description_uz}}
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >Маълумот RU</label><br>
+                      {{form.description_ru}}
                   </div>
                 </div>
                 
@@ -77,9 +84,4 @@
         </div>
     </div>
 </section>
-{% endblock %}
-{% block javascript %}
-<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
-<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-
 {% endblock %}

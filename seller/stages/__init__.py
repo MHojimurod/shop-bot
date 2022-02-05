@@ -91,7 +91,7 @@ class MainHandlers:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if region:
             context.user_data['register']['region'] = region
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(db_user.text("select_district"), reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("select_district",lang), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=region)
                 ], 2), resize_keyboard=True
@@ -99,7 +99,7 @@ class MainHandlers:
             return DISTRICT
 
         else:
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(db_user.text("region_not_found"), reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("region_not_found",lang), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in Regions.objects.all()
                 ], 2), resize_keyboard=True

@@ -160,7 +160,11 @@ class PromotionForm(forms.ModelForm):
                 'class': "" 
                 
                 }),
-            'description': forms.Textarea(attrs={
+            'description_uz': forms.Textarea(attrs={
+                'class': "form-control "
+                
+                }),
+            'description_ru': forms.Textarea(attrs={
                 'class': "form-control "
                 
                 })
