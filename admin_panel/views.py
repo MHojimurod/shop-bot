@@ -342,6 +342,7 @@ def orders(request):
         "items":data
 
     }
+    
     return render(request,"dashboard/order/list.html",ctx)
 
 def update_order(request,pk,status):
