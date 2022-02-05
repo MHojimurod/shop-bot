@@ -95,15 +95,13 @@ class BaseProduct(models.Model):
     diller = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     serial_number = models.CharField(max_length=255)
-    status = models.IntegerField(choices=((0, 'New'), (1, "Saled"), (2, "Returned")),default=0)
-    saler = models.ForeignKey("seller.Seller", on_delete=models.CASCADE, null=True, blank=True, default=None)
+    is_active = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
 
-    def sale(self, seller):
-        self.status = 1
-        self.saler = seller
+   
+    def sale(self):
+        self.is_active = True
         self.save()
-
 
 
 class Promotion(models.Model):

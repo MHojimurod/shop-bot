@@ -4,7 +4,7 @@ from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
-from admin_panel.models import Promotion, Promotion_Order, i18n
+from admin_panel.models import BaseProduct, Promotion, Promotion_Order, i18n
 from diller.management.commands.decorators import get_user
 
 from diller.stages.busket import BusketHandlers
@@ -93,6 +93,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
 
         server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
         server.route('/send_req', methods=['POST', 'GET'])(self.promotion)
+        server.route('/sale', methods=['POST', 'GET'])(self.saled_asdasdasdasdas)
 
         server.run("127.0.0.1",port=6002)
 
@@ -106,6 +107,15 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 self.bot.send_message(chat_id=diller.chat_id, text = i18n("accept_message" if data['status'] == 1 else "reject_message"))
             else:
                 pass
+        return "x"
+
+    def saled_asdasdasdasdas(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            product = BaseProduct.objects.filter(serial_number=data['serial_number'])
+            product = product.first()
+            self.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name_uz if product.diller.language == 0 else product.product.name_ru}\nSeria raqami: {data['serial_number']}\nSotuvchi: {data['name']} (@{data['username']})")
         return "x"
 
     def promotion(self):

@@ -59,6 +59,7 @@ class Diller(models.Model):
 class Busket(models.Model):
     diller = models.ForeignKey(Diller, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
+    status = models.IntegerField(default=0,choices=((0,"Kutinmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))
 
     payment_type = models.IntegerField(choices=((0, "Naqd"), (1, "Nasiya")), null=True, blank=True)
 

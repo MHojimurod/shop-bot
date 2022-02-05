@@ -43,7 +43,7 @@ class MainHandlers:
     def language(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         context.user_data['register']['language'] = lang = 0 if update.message.text.startswith(
-            "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
+            "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else 1)
         if lang is not None:
             context.user_data['tmp_message'] = user.send_message(
                 i18n("request_name", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
@@ -135,8 +135,9 @@ class MainHandlers:
         user, db_user = get_user(update)
         # lang = context.user_data['register']['language']
         context.user_data['register']['shop'] = update.message.text
+        print(context.user_data['register']['language'])
         db_user: Seller = Seller.objects.create(
             **context.user_data['register'])
-        self.start(update,context)
+        return self.start(update,context)
         # context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /startkommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         # return -1
