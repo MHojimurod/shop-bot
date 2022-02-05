@@ -320,7 +320,7 @@ def settings_edit(request,pk):
 
 
 def orders(request):
-    busket = Busket.objects.all()
+    busket = Busket.objects.filter(status__in=[0,1])
     data = []
     for i in busket:
         diller = i.diller
@@ -344,6 +344,16 @@ def orders(request):
     }
     return render(request,"dashboard/order/list.html",ctx)
 
+def update_order(request,pk,status):
+    data = Busket.objects.filter(pk=pk).update(status=status)
+    requests.get("http://127.0.0.1:6002/update_status",json = {
+        "data": {
+            "diller":Busket.objects.filter(pk=pk).first().diller.id,
+            "status":status,
+            "busket":Busket.objects.filter(pk=pk).first().id
+        }
+    })
+    return redirect("orders")
 
 
 def solds(request):

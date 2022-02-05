@@ -53,6 +53,7 @@ urlpatterns = [
     path('settings_edit/<int:pk>/', settings_edit,name="settings_edit"),
 
     path('orders/', orders,name="orders"),
+    path('update_order/<int:pk>/<int:status>', update_order,name="update_order"),
 
 
     path('solds/', solds,name="solds"),
