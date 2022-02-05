@@ -1,7 +1,7 @@
 from click import BaseCommand
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
-from admin_panel.models import Category, Gifts, Product, Promotion, i18n
+from admin_panel.models import Category, DillerGifts, Product, Promotion, i18n
 from diller.management.commands.decorators import distribute
 from diller.models import Busket, Diller
 import locale
@@ -209,7 +209,7 @@ def wait_accept_keyboard(user: Diller, user_busket: Busket):
 
 
 def balls_keyboard_pagination(diller:Diller, page:int):
-    gifts = list(Gifts.objects.all())
+    gifts = list(DillerGifts.objects.all())
     gifts_count = len(gifts)
     gifts_per_page = 10
     gifts_pages = gifts_count // gifts_per_page + \

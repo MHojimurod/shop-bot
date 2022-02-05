@@ -62,10 +62,10 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
-    ball = models.IntegerField()
+    diller_ball = models.IntegerField()
+    seller_ball = models.IntegerField()
     price = models.IntegerField()
     image = models.ImageField(upload_to='products')
-    serial_number = models.CharField(max_length=255)
 
 
     def name(self, lang:int):
@@ -77,7 +77,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name_uz
 
-class Gifts(models.Model):
+class DillerGifts(models.Model):
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
     ball = models.IntegerField()
@@ -88,6 +88,19 @@ class Gifts(models.Model):
 
     def take(self, user):
         
+        return user.get_gift(gift=self)
+
+
+class SellerGifts(models.Model):
+    name_uz = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100)
+    ball = models.IntegerField()
+    image = models.ImageField(upload_to='gifts2')
+
+    def name(self, lang:int):
+        return self.name_uz if lang == 0 else self.name_ru
+
+    def take(self, user):
         return user.get_gift(gift=self)
 
 

@@ -52,7 +52,8 @@ class BusketHandlers:
         data = update.callback_query.data.split(":")
         busket = Busket.objects.filter(id=int(data[1]))
         if busket.exists():
-            balls = busket.first().purchase()
+            busket:Busket = busket.first()
+            balls = busket.purchase()
             db_user.balls += balls
             db_user.save()
             update.callback_query.message.edit_text("Sizning hisobingizga %d ball qo'shildi!" % balls, parse_mode="HTML")

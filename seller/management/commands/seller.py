@@ -4,7 +4,7 @@ from uuid import uuid4
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
-from admin_panel.models import BaseProduct, Gifts, i18n
+from admin_panel.models import BaseProduct, DillerGifts, SellerGifts, i18n
 from seller.management.commands.decorators import get_user
 
 import requests
@@ -122,7 +122,7 @@ class Bot(Updater, MainHandlers):
         user, db_user = get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "select_gift":
-            gift = Gifts.objects.filter(id=int(data[1]))
+            gift = SellerGifts.objects.filter(id=int(data[1]))
             if gift.exists():
                 if gift.first().ball <= db_user.balls:
                     context.user_data['current_gift'] = gift.first()

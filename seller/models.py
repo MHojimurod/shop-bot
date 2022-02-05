@@ -1,7 +1,7 @@
 
 from django.db import models
 
-from admin_panel.models import District, Gifts, Regions, Text
+from admin_panel.models import District, DillerGifts, Regions, Text
 
 # Create your models here.
 class Seller(models.Model):
@@ -26,7 +26,7 @@ class Seller(models.Model):
 
 class OrderGiftSeller(models.Model):
     user = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    gift = models.ForeignKey("admin_panel.Gifts", on_delete=models.CASCADE)
+    gift = models.ForeignKey("admin_panel.SellerGifts", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
 

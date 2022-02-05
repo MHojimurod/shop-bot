@@ -94,7 +94,7 @@ class Busket(models.Model):
         self.is_purchased = True
         balls = 0
         for busket_item in self.items:
-            balls += busket_item.ball
+            balls += busket_item.diller_ball
         self.save()
         return balls
     
@@ -116,5 +116,5 @@ class Busket_item(models.Model):
 
 class OrderGiftDiller(models.Model):
     user = models.ForeignKey(Diller, on_delete=models.CASCADE)
-    gift = models.ForeignKey(Gifts, on_delete=models.CASCADE)
+    gift = models.ForeignKey(DillerGifts, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
