@@ -120,13 +120,14 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 if busket:
                     try:
                         if status == 1:
-                            self.bot.send_message(chat_id=diller.user.id, text=diller.text('oreder_accepted'))
+                            self.bot.send_message(chat_id=diller.chat_id, text=diller.text('oreder_accepted'))
                         elif status == 2:
-                            self.bot.send_message(chat_id=diller.user.id, text=diller.text('order_delivered'))
+                            self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_delivered'))
                         elif status == 3:
-                            self.bot.send_message(chat_id=diller.user.id, text=diller.text('order_denied'))
+                            self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_denied'))
                     except:
                         pass
+        return "x"
 
 
 
