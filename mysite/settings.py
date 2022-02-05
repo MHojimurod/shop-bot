@@ -132,7 +132,13 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = 'media/'
+<<<<<<< HEAD
 MEDIA_ROOT = BASE_DIR / 'media'
+=======
+import os
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = BASE_DIR / 'media'
+>>>>>>> 51dcad7ecb9018a8127095ae99ae7f47e36af1b9
 
 
 
