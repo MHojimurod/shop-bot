@@ -88,7 +88,6 @@ class Gifts(models.Model):
         return self.name_uz if lang == 0 else self.name_ru
 
     def take(self, user):
-        user.balls -= self.ball
         return user.get_gift(gift=self)
 
 
