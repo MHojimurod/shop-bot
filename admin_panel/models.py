@@ -12,7 +12,7 @@ class Text(models.Model):
     uz_data = models.TextField()
     ru_data = models.TextField()
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 

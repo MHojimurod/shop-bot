@@ -122,7 +122,7 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
 
 
 
-def busket_keyboard(user: Diller, context:CallbackContext) -> dict:
+def busket_keyboard(user: Diller, context:CallbackContext):
     text:str = f"<b>Cart</b>\n\n"
     keyboard:list = []
     for item in user.busket.items:
