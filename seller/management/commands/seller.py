@@ -3,8 +3,8 @@ import threading
 from uuid import uuid4
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
-from admin_panel.models import BaseProduct,  i18n
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update, User
+from admin_panel.models import BaseProduct, Gifts,  i18n
 from seller.management.commands.decorators import get_user
 
 import requests
@@ -69,7 +69,11 @@ class Bot(Updater, MainHandlers):
 
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        user.send_message(i18n("send_cvitation"))
+        user.send_message(i18n("send_cvitation"), reply_markup=ReplyKeyboardMarkup([
+            [
+                ""
+            ]
+        ]))
         return CVI_PHOTO
     
     def cvi_photo(self, update:Update, context:CallbackContext):
@@ -122,7 +126,7 @@ class Bot(Updater, MainHandlers):
         user, db_user = get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "select_gift":
-            gift = SellerGifts.objects.filter(id=int(data[1]))
+            gift = Gifts.objects.filter(id=int(data[1]))
             if gift.exists():
                 if gift.first().ball <= db_user.balls:
                     context.user_data['current_gift'] = gift.first()

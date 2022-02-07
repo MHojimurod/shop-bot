@@ -69,10 +69,20 @@ class Menu:
 
 
     # @delete_tmp_message
+    delete_tmp_message
     def my_balls(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         if update.message:
-            context.user_data['tmp_message'] = user.send_message(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML",)
+            if 'tmp_message' in context.user_data:
+                try:
+                    context.user_data['tmp_message'].delete()
+                except:
+                    pass
+            try:
+                update.message.delete() if update.message else update.callback_query.message.delete()
+            except:
+                pass
+            context.user_data['tmp_message'] = user.send_message(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML")
             return BALL
         else:
             data = update.callback_query.data.split(":")
