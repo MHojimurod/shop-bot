@@ -5,7 +5,7 @@ from admin_panel.models import Category, Gifts, Product, Promotion, i18n
 from diller.management.commands.decorators import distribute
 from diller.models import Busket, Diller
 import locale
-locale.setlocale(locale.LC_ALL, 'en_CA.UTF-8')
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 
