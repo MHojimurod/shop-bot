@@ -5,7 +5,7 @@ from admin_panel.models import Category, Gifts, Product, Promotion, i18n
 from diller.management.commands.decorators import distribute
 from diller.models import Busket, Diller
 import locale
-locale.setlocale(locale.LC_ALL, 'en_CA.UTF-8')
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 
@@ -122,7 +122,7 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
 
 
 
-def busket_keyboard(user: Diller, context:CallbackContext) -> dict:
+def busket_keyboard(user: Diller, context:CallbackContext):
     text:str = f"<b>Cart</b>\n\n"
     keyboard:list = []
     for item in user.busket.items:
