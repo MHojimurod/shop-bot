@@ -55,7 +55,7 @@ class Bot(Updater, MainHandlers):
                 ],
                 CVI: [MessageHandler(Filters.photo, self.cvi_photo)],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo)],
-                CVI_SERIAL_NUMBER: [MessageHandler(Filters.text, self.cvi_serial_number)],
+                CVI_SERIAL_NUMBER: [MessageHandler(Filters.text & not_start, self.cvi_serial_number)],
                 BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
             },
             fallbacks=[CommandHandler("start", self.start)],
