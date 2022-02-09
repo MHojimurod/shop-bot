@@ -111,7 +111,8 @@ class Bot(Updater, MainHandlers):
                  update.message.delete() if update.message else update.callback_query.message.delete()
              except:
                  pass
-            user.send_message("Kechirasiz seria raqamni topilmadi!")
+            context.user_data['tmp_message'] = user.send_message(
+                "Kechirasiz seria raqamni topilmadi!")
         return CVI_SERIAL_NUMBER
     
     def my_balls(self, update:Update, context:CallbackContext):
