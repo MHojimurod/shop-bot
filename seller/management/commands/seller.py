@@ -69,11 +69,7 @@ class Bot(Updater, MainHandlers):
 
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        user.send_message(i18n("send_cvitation"), reply_markup=ReplyKeyboardMarkup([
-            [
-                ""
-            ]
-        ]))
+        user.send_message(i18n("send_cvitation"))
         return CVI_PHOTO
     
     def cvi_photo(self, update:Update, context:CallbackContext):
