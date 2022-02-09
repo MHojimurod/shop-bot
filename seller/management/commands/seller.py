@@ -5,6 +5,7 @@ from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContex
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update, User
 from admin_panel.models import BaseProduct, Gifts,  i18n
+from diller.management.commands.decorators import delete_tmp_message
 from seller.management.commands.decorators import get_user
 
 import requests
@@ -65,7 +66,7 @@ class Bot(Updater, MainHandlers):
         print('x')
         self.idle()
         
-
+    @delete_tmp_message
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         context.user_data['tmp_message'] = user.send_message(
