@@ -77,7 +77,8 @@ class Bot(Updater, MainHandlers):
         user, db_user = get_user(update)
         img = update.message.photo[0].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
         context.user_data['cvitation_img'] = img
-        user.send_message(i18n("send_cvi_serial_number"), reply_markup=ReplyKeyboardRemove())
+        context.user_data['tmp_message'] = user.send_message(
+            i18n("send_cvi_serial_number"), reply_markup=ReplyKeyboardRemove())
         return CVI_SERIAL_NUMBER
     
     def cvi_serial_number(self, update:Update, context:CallbackContext):
