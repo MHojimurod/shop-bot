@@ -102,6 +102,15 @@ class Bot(Updater, MainHandlers):
                 user.send_message("Kechirasiz bu maxsulot allaqachon sotilgan!")
                 return CVI_SERIAL_NUMBER
         else:
+            if 'tmp_message' in context.user_data:
+             try:
+                 context.user_data['tmp_message'].delete()
+             except:
+                 pass
+             try:
+                 update.message.delete() if update.message else update.callback_query.message.delete()
+             except:
+                 pass
             user.send_message("Kechirasiz seria raqamni topilmadi!")
         return CVI_SERIAL_NUMBER
     
