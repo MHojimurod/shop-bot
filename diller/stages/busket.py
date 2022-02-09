@@ -26,7 +26,7 @@ class BusketHandlers:
             if len(db_user.busket.items) > 0:
                 update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
             else:
-                update.callback_query.answer("Kechirasiz bo'limda hech qanday mahsulot qolmadi!", show_alert=True)
+                update.callback_query.answer(db_user.text("empty_busket"), show_alert=True)
                 update.callback_query.message.delete()
                 return self.start(update, context)
     
@@ -36,7 +36,7 @@ class BusketHandlers:
             # db_user.busket.order()
             # update.callback_query.message.edit_text("Sizning buyurtmalaringiz qabul qilindi!", parse_mode="HTML")
             # return self.start(update, context)
-            update.callback_query.message.edit_text("Pulini naqd to'laysizmi yoki nasiyadami?", parse_mode="HTML", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Naqd", callback_data="payment_type:0"), InlineKeyboardButton("Nasiya", callback_data="payment_type:1")]]))
+            update.callback_query.message.edit_text(text=db_user.text("pay_type"), parse_mode="HTML", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(db_user.text("cash"), callback_data="payment_type:0"), InlineKeyboardButton(db_user.text("loan"), callback_data="payment_type:1")]]))
             return PAYMENT_TYPE
     
     def payment_type(self, update: Update, context: CallbackContext):
@@ -56,5 +56,9 @@ class BusketHandlers:
             balls = busket.purchase()
             db_user.balls += balls
             db_user.save()
-            update.callback_query.message.edit_text("Sizning hisobingizga %d ball qo'shildi!" % balls, parse_mode="HTML")
+            text = {
+                0:"Sizning hisobingizga %d ball qo'shildi!"% balls,
+                1:"На ваш счет добавлено %d баллов!" % balls
+            }
+            update.callback_query.message.edit_text(text[db_user.language] % balls, parse_mode="HTML")
         

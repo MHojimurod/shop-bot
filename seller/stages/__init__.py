@@ -114,14 +114,7 @@ class MainHandlers:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if district:
             context.user_data['register']['district'] = district
-            # db_user: Seller = Seller.objects.create(
-            #     **context.user_data['register'])
-            # # context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
-            # #     distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
-            # # ), parse_mode="HTML")
-            # context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /start kommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
-            # return -1
-            context.user_data['tmp_message'] = user.send_message("Iltimos endi do'kon nomini yozing!", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            context.user_data['tmp_message'] = user.send_message(db_user.text("shop_name"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return SHOP
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
@@ -139,5 +132,3 @@ class MainHandlers:
         db_user: Seller = Seller.objects.create(
             **context.user_data['register'])
         return self.start(update,context)
-        # context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /startkommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
-        # return -1

@@ -56,7 +56,7 @@ class Menu:
             if len(db_user.products()) > 0:
                 context.user_data['tmp_message'] = user.send_message(**diller_products_paginator(db_user,1), parse_mode="HTML")
             else:
-                context.user_data['tmp_message'] = user.send_message("Sizda hech qanday buyurtma yo'q", parse_mode="HTML")
+                context.user_data['tmp_message'] = user.send_message(db_user.text("no_orders"), parse_mode="HTML")
                 return self.start(update, context, False)
         else:
             data = update.callback_query.data.split(":")
@@ -106,14 +106,14 @@ class Menu:
                     ]))
                     return BALL
                 else:
-                    update.callback_query.answer("Sizning balansingizda kifayot emas")
+                    update.callback_query.answer("not_enought_balls")
     def selct_gift_sure(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "sure_select_gift":
             if data[1] == "yes":
                 context.user_data['current_gift'].take(db_user)
-                update.callback_query.message.edit_text("Sizning so'rovingiz qabul qilindi!\nTez orada o'zimiz tilifon qivoramiz!")
+                update.callback_query.message.edit_text(db_user.text("accept_your_prompt"))
                 return self.start(update, context, False)
             else:
                 update.callback_query.message.delete()
@@ -127,5 +127,5 @@ class Menu:
             update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
             return CART
         else:
-            update.callback_query.answer("Savatcha bo'sh", show_alert=True)
+            update.callback_query.answer(db_user.text("empty_cart"), show_alert=True)
             return SELECT_CATEGORY

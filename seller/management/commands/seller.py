@@ -63,7 +63,6 @@ class Bot(Updater, MainHandlers):
         self.dispatcher.add_handler(self.conversation)
         self.start_polling()
         print('polling')
-        print('x')
         self.idle()
         
     @delete_tmp_message
@@ -89,7 +88,7 @@ class Bot(Updater, MainHandlers):
             product:BaseProduct = product.first()
             if not product.is_active:
                 Cvitation.objects.create(seller=db_user, serial=update.message.text, img=context.user_data['cvitation_img'])
-                user.send_message("Sizning kvitansiyangiz qabul qilindi!\nBiz dillerga sotilgani haqida habaar beramiz!")
+                user.send_message(db_user.text("cvitation_success"))
                 product.sale()
                 db_user.balls += product.product.seller_ball
                 print(product.product.seller_ball)
@@ -104,7 +103,7 @@ class Bot(Updater, MainHandlers):
                     pass
                 return self.start(update, context,False)
             else:
-                user.send_message("Kechirasiz bu maxsulot allaqachon sotilgan!")
+                user.send_message(db_user.text("already_sold"))
                 return CVI_SERIAL_NUMBER
         else:
             if 'tmp_message' in context.user_data:
@@ -116,8 +115,7 @@ class Bot(Updater, MainHandlers):
                  update.message.delete() if update.message else update.callback_query.message.delete()
              except:
                  pass
-            context.user_data['tmp_message'] = user.send_message(
-                "Kechirasiz seria raqamni topilmadi!")
+            context.user_data['tmp_message'] = user.send_message(db_user.text("seria_not_found"))
         return CVI_SERIAL_NUMBER
     
     def my_balls(self, update:Update, context:CallbackContext):
@@ -159,14 +157,14 @@ class Bot(Updater, MainHandlers):
                     ]))
                     return BALL
                 else:
-                    update.callback_query.answer("Sizning balansingizda kifayot emas")
+                    update.callback_query.answer(db_user.text("not_enough_balls"))
     def selct_gift_sure(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "sure_select_gift":
             if data[1] == "yes":
                 context.user_data['current_gift'].take(db_user)
-                update.callback_query.message.edit_text("Sizning so'rovingiz qabul qilindi!\nTez orada o'zimiz tilifon qivoramiz!")
+                update.callback_query.message.edit_text(db_user.text("accept_your_prompt"))
                 return self.start(update, context, False)
             else:
                 return self.my_balls(update, context)
