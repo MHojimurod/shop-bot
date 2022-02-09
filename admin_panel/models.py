@@ -100,7 +100,7 @@ class BaseProduct(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
    
-    def sale(self, seller):
+    def sale(self):
         self.is_active = True
         self.save()
 

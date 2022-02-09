@@ -75,7 +75,8 @@ class Bot(Updater, MainHandlers):
     
     def cvi_photo(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        img = update.message.photo[0].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
+        print(update.message.photo)
+        img = update.message.photo[-1].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
         context.user_data['cvitation_img'] = img
         context.user_data['tmp_message'] = user.send_message(
             i18n("send_cvi_serial_number"), reply_markup=ReplyKeyboardRemove())
@@ -91,6 +92,7 @@ class Bot(Updater, MainHandlers):
                 user.send_message("Sizning kvitansiyangiz qabul qilindi!\nBiz dillerga sotilgani haqida habaar beramiz!")
                 product.sale()
                 db_user.balls += product.product.seller_ball
+                print(product.product.seller_ball)
                 db_user.save()
                 try:
                     requests.get("http://127.0.0.1:6002/sale", json={"data": {
