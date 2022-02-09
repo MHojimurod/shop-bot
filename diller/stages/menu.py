@@ -124,4 +124,8 @@ class Menu:
     def cart(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         if len(db_user.busket.items) > 0:
-            return 
+            update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
+            return CART
+        else:
+            update.callback_query.answer("Savatcha bo'sh", show_alert=True)
+            return SELECT_CATEGORY
