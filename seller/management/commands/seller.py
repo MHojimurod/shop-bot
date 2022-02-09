@@ -90,6 +90,8 @@ class Bot(Updater, MainHandlers):
                 Cvitation.objects.create(seller=db_user, serial=update.message.text, img=context.user_data['cvitation_img'])
                 user.send_message("Sizning kvitansiyangiz qabul qilindi!\nBiz dillerga sotilgani haqida habaar beramiz!")
                 product.sale()
+                db_user.balls += product.product.seller_ball
+                db_user.save()
                 try:
                     requests.get("http://127.0.0.1:6002/sale", json={"data": {
                         "serial_number":update.message.text,
