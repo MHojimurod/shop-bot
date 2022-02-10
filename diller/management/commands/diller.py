@@ -271,6 +271,6 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                     ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
                 ], resize_keyboard=True
             ), parse_mode="HTML")
-            return LANGUAGE
+            return SELECT_NEW_LANGUAGE
 
 work = Bot(TOKEN)

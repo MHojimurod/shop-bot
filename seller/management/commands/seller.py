@@ -16,6 +16,7 @@ from .constant import (
     CVI_PHOTO,
     CVI_SERIAL_NUMBER,
     LANGUAGE,
+    SELECT_NEW_LANGUAGE,
     SHOP,
     TOKEN,
     NUMBER,
@@ -53,10 +54,13 @@ class Bot(Updater, MainHandlers):
                 MENU: [
                     MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
+                    CommandHandler('language', self.change_language),
                 ],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), ],
                 CVI_SERIAL_NUMBER: [MessageHandler(Filters.text & not_start, self.cvi_serial_number), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), ],
                 BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
+                SELECT_NEW_LANGUAGE: [MessageHandler(
+                    Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.new_language)]
             },
             fallbacks=[CommandHandler("start", self.start)],
         )
@@ -168,6 +172,33 @@ class Bot(Updater, MainHandlers):
                 return self.start(update, context, False)
             else:
                 return self.my_balls(update, context)
+    
+    @delete_tmp_message
+    def change_language(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        update.message.reply_text()
+        context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(text=Text.objects.filter(name='start').first().uz_data, reply_markup=ReplyKeyboardMarkup(
+            [
+                ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
+            ],
+            resize_keyboard=True
+        ), parse_mode="HTML")
+        return SELECT_NEW_LANGUAGE
+
+    @delete_tmp_message
+    def new_language(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['register']['language'] = lang = 0 if update.message.text.startswith(
+            "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
+        if lang is not None:
+            return self.start(update, context, False)
+        else:
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("language_not_found", reply_markup=ReplyKeyboardMarkup(
+                [
+                    ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
+                ], resize_keyboard=True
+            ), parse_mode="HTML")
+            return SELECT_NEW_LANGUAGE
 
 
 x = Bot(TOKEN)
