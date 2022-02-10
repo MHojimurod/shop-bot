@@ -1,6 +1,7 @@
 from email.message import Message
 import threading
 from uuid import uuid4
+from django import db
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update, User
@@ -69,7 +70,7 @@ class Bot(Updater, MainHandlers):
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         context.user_data['tmp_message'] = user.send_message(
-            i18n("send_cvitation"))
+            i18n("send_cvitation",db_user.language))
         return CVI_PHOTO
     
     def cvi_photo(self, update:Update, context:CallbackContext):
@@ -78,7 +79,7 @@ class Bot(Updater, MainHandlers):
         img = update.message.photo[-1].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
         context.user_data['cvitation_img'] = img
         context.user_data['tmp_message'] = user.send_message(
-            i18n("send_cvi_serial_number"), reply_markup=ReplyKeyboardRemove())
+            i18n("send_cvi_serial_number",db_user.language), reply_markup=ReplyKeyboardRemove())
         return CVI_SERIAL_NUMBER
     
     def cvi_serial_number(self, update:Update, context:CallbackContext):

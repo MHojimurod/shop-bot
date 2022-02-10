@@ -16,7 +16,7 @@ class Diller(models.Model):
         (1, "Qabul qilingan"),
         (2, "Rad etilgan"),
     ))
-    balls = models.IntegerField(default=2)
+    balls = models.IntegerField(default=0)
 
     def get_gift(self, gift):
         return OrderGiftDiller.objects.create(user=self, gift=gift)
@@ -103,12 +103,13 @@ class Busket(models.Model):
         return balls
     
     @property
-    def ball(self) -> int:
+    def balls(self) -> int:
         res = 0
         now = datetime.now()
+        date = now-self.ordered_date
         for busket_item in self.items:
-            res += (busket_item.product.diller_ball if (now - self.ordered_date)
-                    >= 3 else busket_item.product.diller_nasiya_ball) * busket_item.count
+            res += (busket_item.product.diller_ball if date.days
+                < 3 else busket_item.product.diller_nasiya_ball) * busket_item.count    
         return res
     
 
@@ -132,3 +133,4 @@ class OrderGiftDiller(models.Model):
     user = models.ForeignKey(Diller, on_delete=models.SET_NULL,null=True)
     gift = models.ForeignKey(Gifts, on_delete=models.SET_NULL,null=True)
     date = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(choices=((0,"Kutinmoqda"),(1,"Qabul qilingan"),(3,"Rad etilgan")),default=0)

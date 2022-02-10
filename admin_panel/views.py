@@ -4,8 +4,8 @@ from django.shortcuts import render, redirect
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text,Promotion
-from diller.models import Diller,Busket,Busket_item
-from seller.models import Cvitation, Seller
+from diller.models import Diller,Busket,Busket_item, OrderGiftDiller
+from seller.models import Cvitation, OrderGiftSeller, Seller
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 import requests
@@ -440,3 +440,14 @@ def update_prompt(request,pk,status):
         }
     })
     return redirect("promotion_order")
+
+
+def order_gift(request):
+    diller:OrderGiftDiller = OrderGiftDiller.objects.all()
+    seller:OrderGiftSeller =  OrderGiftSeller.objects.all()
+
+    ctx = {
+        "diller": diller,
+        "seller": seller
+    }
+    return render(request,"dashboard/gifts/order.html",ctx)
