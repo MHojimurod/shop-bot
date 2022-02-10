@@ -94,6 +94,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
         server.route('/send_req', methods=['POST', 'GET'])(self.promotion)
         server.route("/update_status", methods=["POST", 'GET'])(self.update_status_order)
+        server.route("/update_status_prompt", methods=["POST", 'GET'])(self.update_status_prompt)
         server.route('/sale', methods=['POST', 'GET'])(self.saled_asdasdasdasdas)
 
         server.run("127.0.0.1",port=6002)
@@ -129,6 +130,28 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                             self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_denied'))
                     except:
                         pass
+        return "x"
+
+    def update_status_prompt(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            diller = data['diller']
+            status = data['status']
+            ball = data['ball']
+            diller:Diller = Diller.objects.filter(id=diller).first()
+            if diller:
+                try:
+                    if status == 1:
+                        self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_accepted'))
+                        diller.balls -= ball
+                        diller.save()
+                    elif status == 2:
+                        self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_delivered'))
+                    elif status == 3:
+                        self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_denied'))
+                except:
+                    pass
         return "x"
 
 

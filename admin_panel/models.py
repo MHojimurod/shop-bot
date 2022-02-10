@@ -113,7 +113,7 @@ class Promotion(models.Model):
     description_uz = models.TextField()
     description_ru = models.TextField()
     count = models.IntegerField()
-    bought_count = models.IntegerField(default=0)
+    bought_count = models.IntegerField(default=0,null=True,blank=True)
     @property
     def available(self):
         return self.count - self.bought_count
@@ -123,6 +123,6 @@ class Promotion(models.Model):
 class Promotion_Order(models.Model):
     user = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
-    count = models.IntegerField(default=1)
-    
+    count = models.IntegerField(default=1)  
     date = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0,choices=((0,"Kutinmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))

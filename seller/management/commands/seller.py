@@ -51,7 +51,7 @@ class Bot(Updater, MainHandlers):
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
                 MENU: [
-                    MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation),
+                    MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
                 ],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), ],
