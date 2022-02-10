@@ -47,45 +47,69 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
          </li>
          
-        <li class="nav-item {{b_active}}">
+        <li class="nav-item {{s_active}}">
           <a href="{% url 'solds' %}" class="nav-link">
             <i class="nav-icon fas fa-list-ol"></i>
-            <p>Sotilganlar</p>
+            <p>Сотилганлар</p>
           </a>
         </li>
         <li class="nav-item {{b_active}}">
-          <a href="{% url 'orders' %}" class="nav-link">
-            <i class="nav-icon fas fa-list-ol"></i>
-            <p>Buyurtmalar</p>
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-list"></i>
+            <p>
+              Буюртмалар
+              <i class="right fas fa-angle-left"></i>
+            </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item ">
+              <a href="{% url 'orders' %}" class="nav-link {{dil_active}}">
+                <!-- <i class="nav-icon fas fa-hotdog"></i> -->
+                <p>Диллер буйуртмалари</p>
+              </a>
+            </li>
+            <li class="nav-item  ">
+              <a href="{% url 'promotion_order' %}" class="nav-link {{p_active}}">
+                <!-- <i class="nav-icon fas fa-seedling"></i> -->
+                <p>Акция буйуртмалари</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a href="{% url 'order_gift' %}" class="nav-link  {{gift_active}}">
+                <!-- <i class="nav-icon fas fa-seedling"></i> -->
+                <p>Совғалар</p>
+              </a>
+            </li>
+          </ul>
         </li>
+
         <li class="nav-item {{d_active}}">
           <a href="{% url 'home' %}" class="nav-link">
             <i class="nav-icon fas fa-user-tie"></i>
             <p>Диллерлар</p>
           </a>
         </li>
-        <li class="nav-item {{s_active}}">
+        <li class="nav-item {{sel_active}}">
           <a href="{% url 'sellers_list' %}" class="nav-link ">
             <i class="nav-icon fas fa-user"></i>
             <p>Сотувчилар</p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{cat_active}}">
           <a href="{% url 'categories' %}" class="nav-link">
             <i class="nav-icon fas fa-list"></i>
             <!-- <i class="fa-sign-out"></i> -->
             <p>Каталоглар</p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{r_active}}">
           <a href="{% url 'regions' %}" class="nav-link">
             <i class="nav-icon fas fa-globe-asia"></i>
             <!-- <i class="fa-sign-out"></i> -->
             <p>Вилоятлар</p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{ch_active}}">
           <a href="{% url 'checks' %}" class="nav-link">
             <i class="nav-icon fas fa-images"></i>
             <!-- <i class="fa-sign-out"></i> -->
@@ -99,18 +123,18 @@
             <p>Совғалар</p>
           </a>
         </li>
-        <li class="nav-item {{s_active}}">
+        <li class="nav-item {{se_active}}">
           <a href="{% url 'settings' %}" class="nav-link">
             <i class="nav-icon fas fa-cog"></i>
             <!-- <i class="fa-sign-out"></i> -->
             <p>Созламалар</p>
           </a>
         </li>
-        <li class="nav-item {{s_active}}">
+        <li class="nav-item {{pr_active}}">
           <a href="{% url 'prompts' %}" class="nav-link">
             <i class="nav-icon fas fa-cog"></i>
             <!-- <i class="fa-sign-out"></i> -->
-            <p>Aksiya</p>
+            <p>Акция</p>
           </a>
         </li>
         <li class="nav-item">

@@ -35,6 +35,8 @@ urlpatterns = [
     path('gift_create/', gift_create,name="gift_create"),
     path('gift_edit/<int:pk>', gift_edit,name="gift_edit"),
     path('gift_delete/<int:pk>/', gift_delete,name="gift_delete"),
+    path('order_gift/', order_gift,name="order_gift"),
+    path('update_gift/<int:pk>/<int:status>/<int:type_order>', update_gift,name="update_gift"),
 
 
     path('regions/', regions,name="regions"),
@@ -61,6 +63,8 @@ urlpatterns = [
 
 
     path('prompts/', promotion,name="prompts"),
+    path('promotion_order/', promotion_order,name="promotion_order"),
+    path('update_prompt/<int:pk>/<int:status>', update_prompt,name="update_prompt"),
     path('prompt_create/', prompt_create,name="prompt_create"),
     path('send_req/<int:pk>', send_req,name="send_req"),
     path('del_prompt/<int:pk>', del_prompt,name="del_prompt"),

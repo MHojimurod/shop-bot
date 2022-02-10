@@ -40,6 +40,7 @@
                   <th>Номи РУ</th>
                   <th>Тури</th>
                   <th>Балл</th>
+                  <th>Сони</th>
                   <th>Тахрирлаш</th>
                   <th>Ўчириш</th>
                 </tr>
@@ -54,6 +55,7 @@
                   <td>{{ i.name_ru }}</td>
                   <td>{{ i.get_gift_type_display }}</td>
                   <td>{{ i.ball }}</td>
+                  <td>{{ i.amount }}</td>
                   <td><a style="color: #17a2b8;" href="{% url 'gift_edit' pk=i.id %}">
                     <div ><i class="far fa-edit"></i></div></a></td>
                   <td><a style="color: #dc3545;" href="{% url 'gift_delete' pk=i.id %}">

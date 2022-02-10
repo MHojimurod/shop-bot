@@ -54,7 +54,7 @@ class GiftsForm(forms.ModelForm):
     class Meta:
 
         model = Gifts
-        fields = ["gift_type","name_uz","name_ru","ball"]
+        fields = ["gift_type","name_uz","name_ru","ball","amount"]
         widgets = {
             'gift_type': forms.Select(attrs={
                 'class': "form-control select2 select2-hidden-accessible",
@@ -69,6 +69,10 @@ class GiftsForm(forms.ModelForm):
                 
                 }),
             'ball': forms.NumberInput(attrs={
+                'class': "form-control ",
+                
+                }),
+            'amount': forms.NumberInput(attrs={
                 'class': "form-control ",
                 
                 }),
@@ -145,7 +149,7 @@ class PromotionForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             'product': forms.Select(attrs={
-                'class': "form-control select2 select2-hidden-accessible","value":124343
+                'class': "form-control select2 select2-hidden-accessible"
                 
                 }),
             'price': forms.NumberInput(attrs={

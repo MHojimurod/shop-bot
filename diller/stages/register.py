@@ -2,7 +2,7 @@
 from tokenize import Number
 from telegram.ext import (CallbackContext)
 from telegram import (Update, ReplyKeyboardMarkup,
-                      ReplyKeyboardRemove, KeyboardButton)
+                        ReplyKeyboardRemove, KeyboardButton)
 from diller.management.commands.constant import (
     TOKEN,
     LANGUAGE,
@@ -46,11 +46,11 @@ class Register:
         else:
             if db_user.status == 1:
                 context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
-                    distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
+                    distribute([db_user.text("buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
                 ), parse_mode="HTML")
                 return MENU
             else:
-               context.user_data['tmp_message'] = user.send_message("kechirasiz hali kirish uchun ruhsat berilmagan!") 
+               context.user_data['tmp_message'] = user.send_message(db_user.text("not_access")) 
 
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
@@ -78,7 +78,7 @@ class Register:
             [
                 [
                     KeyboardButton(i18n("send_number", lang),
-                                   request_contact=True),
+                                    request_contact=True),
                 ]
             ], resize_keyboard=True
         ), parse_mode="HTML")
@@ -132,7 +132,7 @@ class Register:
             # context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
             #     distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
             # ), parse_mode="HTML")
-            context.user_data['tmp_message'] = user.send_message("Ro'yhatdan o'tildi! endi ruhsat berilishini kuting!\n\n\Ruhsat berilganda o'zimiz habar beramiz yoki /start kommandasini yuboring", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            context.user_data['tmp_message'] = user.send_message(db_user.text("wait_accept"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return -1
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(

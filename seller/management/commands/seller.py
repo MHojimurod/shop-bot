@@ -1,6 +1,7 @@
 from email.message import Message
 import threading
 from uuid import uuid4
+from django import db
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update, User
@@ -51,7 +52,7 @@ class Bot(Updater, MainHandlers):
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
                 MENU: [
-                    MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation),
+                    MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
                 ],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), ],
@@ -63,22 +64,22 @@ class Bot(Updater, MainHandlers):
         self.dispatcher.add_handler(self.conversation)
         self.start_polling()
         print('polling')
-        print('x')
         self.idle()
         
     @delete_tmp_message
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         context.user_data['tmp_message'] = user.send_message(
-            i18n("send_cvitation"))
+            i18n("send_cvitation",db_user.language))
         return CVI_PHOTO
     
     def cvi_photo(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        img = update.message.photo[0].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
+        print(update.message.photo)
+        img = update.message.photo[-1].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
         context.user_data['cvitation_img'] = img
         context.user_data['tmp_message'] = user.send_message(
-            i18n("send_cvi_serial_number"), reply_markup=ReplyKeyboardRemove())
+            i18n("send_cvi_serial_number",db_user.language), reply_markup=ReplyKeyboardRemove())
         return CVI_SERIAL_NUMBER
     
     def cvi_serial_number(self, update:Update, context:CallbackContext):
@@ -88,8 +89,11 @@ class Bot(Updater, MainHandlers):
             product:BaseProduct = product.first()
             if not product.is_active:
                 Cvitation.objects.create(seller=db_user, serial=update.message.text, img=context.user_data['cvitation_img'])
-                user.send_message("Sizning kvitansiyangiz qabul qilindi!\nBiz dillerga sotilgani haqida habaar beramiz!")
+                user.send_message(db_user.text("cvitation_success"))
                 product.sale()
+                db_user.balls += product.product.seller_ball
+                print(product.product.seller_ball)
+                db_user.save()
                 try:
                     requests.get("http://127.0.0.1:6002/sale", json={"data": {
                         "serial_number":update.message.text,
@@ -100,7 +104,7 @@ class Bot(Updater, MainHandlers):
                     pass
                 return self.start(update, context,False)
             else:
-                user.send_message("Kechirasiz bu maxsulot allaqachon sotilgan!")
+                user.send_message(db_user.text("already_sold"))
                 return CVI_SERIAL_NUMBER
         else:
             if 'tmp_message' in context.user_data:
@@ -112,8 +116,7 @@ class Bot(Updater, MainHandlers):
                  update.message.delete() if update.message else update.callback_query.message.delete()
              except:
                  pass
-            context.user_data['tmp_message'] = user.send_message(
-                "Kechirasiz seria raqamni topilmadi!")
+            context.user_data['tmp_message'] = user.send_message(db_user.text("seria_not_found"))
         return CVI_SERIAL_NUMBER
     
     def my_balls(self, update:Update, context:CallbackContext):
@@ -155,14 +158,14 @@ class Bot(Updater, MainHandlers):
                     ]))
                     return BALL
                 else:
-                    update.callback_query.answer("Sizning balansingizda kifayot emas")
+                    update.callback_query.answer(db_user.text("not_enough_balls"))
     def selct_gift_sure(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         data = update.callback_query.data.split(":")
         if data[0] == "sure_select_gift":
             if data[1] == "yes":
                 context.user_data['current_gift'].take(db_user)
-                update.callback_query.message.edit_text("Sizning so'rovingiz qabul qilindi!\nTez orada o'zimiz tilifon qivoramiz!")
+                update.callback_query.message.edit_text(db_user.text("accept_your_prompt"))
                 return self.start(update, context, False)
             else:
                 return self.my_balls(update, context)

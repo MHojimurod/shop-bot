@@ -1,3 +1,4 @@
+from itertools import count
 from django.db import models
 from django.urls import include
 
@@ -63,6 +64,7 @@ class Product(models.Model):
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
     diller_ball = models.IntegerField()
+    diller_nasiya_ball = models.IntegerField()
     seller_ball = models.IntegerField()
     price = models.IntegerField()
     image = models.ImageField(upload_to='products')
@@ -82,6 +84,7 @@ class Gifts(models.Model):
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
     ball = models.IntegerField()
+    amount = models.IntegerField()
     image = models.ImageField(upload_to='gifts')
 
     def name(self, lang:int):
@@ -113,7 +116,7 @@ class Promotion(models.Model):
     description_uz = models.TextField()
     description_ru = models.TextField()
     count = models.IntegerField()
-    bought_count = models.IntegerField(default=0)
+    bought_count = models.IntegerField(default=0,null=True,blank=True)
     @property
     def available(self):
         return self.count - self.bought_count
@@ -123,6 +126,6 @@ class Promotion(models.Model):
 class Promotion_Order(models.Model):
     user = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
-    count = models.IntegerField(default=1)
-    
+    count = models.IntegerField(default=1)  
     date = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))

@@ -1,0 +1,109 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Совғалар</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Совғалар</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Совғалар</h3>
+
+            
+          </div>
+
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Совға</th>
+                  <th>Олувчи</th>
+                  <th>Исми</th>
+                  <th>Телефон</th>
+                  <th>Ҳолати</th>
+                  <th>Қабул қилиш</th>
+                  <th>Рад этиш</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in diller %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.gift.name_uz }}</td>
+                  <td>{{ i.gift.get_gift_type_display }}</td>
+                  <td>{{ i.user.name }}</td>
+                  <td>{{ i.user.number }}</td>
+                  <td>{{ i.get_status_display }}</td>
+                  {% if i.status == 0 %}
+                  <td><a style="color:green" href="{% url  'update_gift' pk=i.id status=1 type_order=0 %}" 
+                    ><i class="p-1 fas fa-check-circle"></i
+                  > Қабул қилиш</a></td>
+                  <td><a style="color: tomato;" href="{% url  'update_gift' pk=i.id status=3 type_order=0 %}" 
+                    ><i class="p-1 fas fa-times-circle"></i
+                      ></i
+                  > Рад этиш</a></td>
+                  {% else %}
+                  <td class="disabled"><a class="disabled"  style="color:rgb(70, 70, 70)" 
+                    ><i class="p-1 fas fa-check-circle"></i
+                  > Қабул қилиш</a></td>
+                  <td class="disabled"><a class="disabled" style="color: rgb(51, 49, 49);" 
+                    ><i class="p-1 fas fa-times-circle"></i
+                      ></i
+                  > Рад этиш</a></td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+                {% for i in seller %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.gift.name_uz }}</td>
+                  <td>{{ i.gift.get_gift_type_display }}</td>
+                  <td>{{ i.user.name }}</td>
+                  <td>{{ i.user.number }}</td>
+                  <td>{{ i.get_status_display }}</td>
+                  {% if i.status == 0 %}
+                  <td><a style="color:green" href="{% url  'update_gift' pk=i.id status=1 type_order=1 %}" 
+                    ><i class="p-1 fas fa-check-circle"></i
+                  > Қабул қилиш</a></td>
+                  <td><a style="color: tomato;" href="{% url  'update_gift' pk=i.id status=3 type_order=1 %}" 
+                    ><i class="p-1 fas fa-times-circle"></i
+                      ></i
+                  > Рад этиш</a></td>
+                  {% else %}
+                  <td><a class="disabled" style="color:rgb(46, 46, 46)" 
+                    ><i class="p-1 fas fa-check-circle"></i
+                  > Қабул қилиш</a></td>
+                  <td><a class="disabled" style="color: rgb(44, 43, 43);"
+                    ><i class="p-1 fas fa-times-circle"></i
+                      ></i
+                  > Рад этиш</a></td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

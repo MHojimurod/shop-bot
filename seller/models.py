@@ -28,6 +28,7 @@ class OrderGiftSeller(models.Model):
     user = models.ForeignKey(Seller, on_delete=models.CASCADE)
     gift = models.ForeignKey("admin_panel.Gifts", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(3,"Rad etilgan")),default=0)
 
 
 class Cvitation(models.Model):
