@@ -94,7 +94,7 @@ class Busket(models.Model):
         self.is_purchased = True
         balls = 0
         for busket_item in self.items:
-            balls += busket_item.diller_ball
+            balls += busket_item.product.diller_ball
         self.save()
         return balls
     
