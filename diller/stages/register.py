@@ -2,7 +2,7 @@
 from tokenize import Number
 from telegram.ext import (CallbackContext)
 from telegram import (Update, ReplyKeyboardMarkup,
-                      ReplyKeyboardRemove, KeyboardButton)
+                        ReplyKeyboardRemove, KeyboardButton)
 from diller.management.commands.constant import (
     TOKEN,
     LANGUAGE,
@@ -50,7 +50,7 @@ class Register:
                 ), parse_mode="HTML")
                 return MENU
             else:
-               context.user_data['tmp_message'] = user.send_message(db_user("not_access")) 
+                context.user_data['tmp_message'] = user.send_message(db_user("not_access")) 
 
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
@@ -78,7 +78,7 @@ class Register:
             [
                 [
                     KeyboardButton(i18n("send_number", lang),
-                                   request_contact=True),
+                                    request_contact=True),
                 ]
             ], resize_keyboard=True
         ), parse_mode="HTML")
