@@ -168,8 +168,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             data = data['data']
             diller = Diller.objects.filter(id=data['id'])
             if diller.exists():
-                diller = diller.first()
-                self.bot.send_message(chat_id=diller.chat_id, text = i18n("accept_message" if data['status'] == 1 else "reject_message"))
+                diller:Diller = diller.first()
+                self.bot.send_message(chat_id=diller.chat_id, text = diller.text("accept_message" if data['status'] == 1 else "reject_message",))
             else:
                 pass
         return "x"
