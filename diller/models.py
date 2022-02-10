@@ -1,3 +1,6 @@
+from ctypes import Union
+from datetime import datetime
+from typing import List
 from django.db import models
 from admin_panel.models import *
 
@@ -22,7 +25,7 @@ class Diller(models.Model):
     language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
     @property
     def busket(self):
-        b = Busket.objects.filter(diller=self, active=True, is_ordered=False).first()
+        b = Busket.objects.filter(diller=self, is_ordered=False).first()
         return b if b is not None else Busket.objects.create(diller=self)
     
     def text(self, name):
@@ -30,7 +33,7 @@ class Diller(models.Model):
         return (text.first().uz_data if self.language == 0 else text.first().ru_data) if text.exists() else ""
 
     def products(self):
-        buskets = Busket.objects.filter(diller=self, active=True, is_ordered=True, is_purchased=True)
+        buskets = Busket.objects.filter(diller=self, is_ordered=True)
         d = {}
         for busket in buskets:
             for item in busket.items:
@@ -58,10 +61,10 @@ class Diller(models.Model):
 
 class Busket(models.Model):
     diller = models.ForeignKey(Diller, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
     status = models.IntegerField(default=0,choices=((0,"Kutinmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))
 
     payment_type = models.IntegerField(choices=((0, "Naqd"), (1, "Nasiya")), null=True, blank=True)
+    ordered_date = models.DateTimeField(null=True, blank=True)
 
     is_ordered = models.BooleanField(default=False)
     is_purchased = models.BooleanField(default=False)
@@ -69,7 +72,7 @@ class Busket(models.Model):
     def total_price(self):
         return sum([item.total_price for item in self.items])
 
-    def add_product(self, product:Product, count:int):
+    def add_product(self, product:Product, count:int) -> "Busket_item":
         item = self.item(product)
         if item:
             item.count = count
@@ -79,35 +82,46 @@ class Busket(models.Model):
         return item
 
     @property
-    def items(self):
+    def items(self) -> "List[Busket_item]":
         return Busket_item.objects.filter(busket=self)
     
-    def item(self, product:Product):
+    def item(self, product:Product) -> "Busket_item":
         return Busket_item.objects.filter(busket=self, product=product).first()
 
-    def order(self, payment_type:int):
+    def order(self, payment_type:int) -> None:
         self.payment_type = payment_type
+        self.ordered_date = datetime.now()
         self.is_ordered = True
         self.save()
     
-    def purchase(self):
+    def purchase(self) -> int:
         self.is_purchased = True
         balls = 0
         for busket_item in self.items:
-            balls += busket_item.product.diller_ball
+            balls += busket_item.product.diller_ball * busket_item.count
         self.save()
         return balls
+    
+    @property
+    def ball(self) -> int:
+        res = 0
+        now = datetime.now()
+        for busket_item in self.items:
+            res += (busket_item.product.diller_ball if (now - self.ordered_date)
+                    >= 3 else busket_item.product.diller_nasiya_ball) * busket_item.count
+        return res
     
 
     
     
 class Busket_item(models.Model):
     busket = models.ForeignKey(Busket, on_delete=models.SET_NULL,null=True)
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    product:Product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     count = models.IntegerField()
     active = models.BooleanField(default=True)
     def total_price(self):
         return self.product.price * self.count
+    
     @property
     def ball(self):
         return self.product.diller_ball * self.count

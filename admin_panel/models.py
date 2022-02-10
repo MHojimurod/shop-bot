@@ -63,6 +63,7 @@ class Product(models.Model):
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
     diller_ball = models.IntegerField()
+    diller_nasiya_ball = models.IntegerField()
     seller_ball = models.IntegerField()
     price = models.IntegerField()
     image = models.ImageField(upload_to='products')
