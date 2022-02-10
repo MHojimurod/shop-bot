@@ -52,7 +52,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                         "^(Sotib olingan|Купленные)"), self.purchased),
                     MessageHandler(Filters.regex(
                         "^(Mening ballarim|Мои баллы)"), self.my_balls),
-                    CallbackQueryHandler(self.get_promotion, pattern="^get_promotion")
+                    CallbackQueryHandler(self.get_promotion, pattern="^get_promotion"),
+                CommandHandler('language', self.change_language),
             ],
             states={
                 LANGUAGE: [MessageHandler(Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.language)],
