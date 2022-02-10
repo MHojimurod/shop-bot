@@ -2,10 +2,10 @@ import threading
 from click import BaseCommand
 from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
-                          Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, User
-from admin_panel.models import BaseProduct, Promotion, Promotion_Order, i18n
-from diller.management.commands.decorators import get_user
+                            Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
+from admin_panel.models import BaseProduct, Promotion, Promotion_Order, Text, i18n
+from diller.management.commands.decorators import delete_tmp_message, get_user
 
 from diller.stages.busket import BusketHandlers
 from diller.utils import promotion_keyboard
@@ -24,7 +24,8 @@ from .constant import (
     NUMBER,
     REGION,
     DISTRICT,
-    MENU
+    MENU,
+    SELECT_NEW_LANGUAGE
 )
 
 from diller.models import Busket, Diller
@@ -65,7 +66,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                     MessageHandler(Filters.regex(
                         "^(Sotib olingan|Купленные)"), self.purchased),
                     MessageHandler(Filters.regex(
-                        "^(Mening ballarim|Мои баллы)"), self.my_balls)
+                        "^(Mening ballarim|Мои баллы)"), self.my_balls),
+                    CommandHandler('language', self.change_language),
                 ],
                 SELECT_CATEGORY: [CallbackQueryHandler(self.buy, pattern="^category_pagination"), CallbackQueryHandler(self.start, pattern="^cancel_pagination"), CallbackQueryHandler(self.select_category, pattern="^select_category"), CallbackQueryHandler(self.cart, pattern="^cart")],
                 
@@ -77,6 +79,9 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 PAYMENT_TYPE: [CallbackQueryHandler(self.payment_type, pattern="^payment_type"), CallbackQueryHandler(self.start, pattern="^back")],
                 BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
                 PROMOTION_COUNT: [CallbackQueryHandler(self.get_promotion, pattern="^get_promotion"), CallbackQueryHandler(self.get_promotion, pattern="^promotion_count"), CallbackQueryHandler(self.buy_promotion, pattern="^buy_promotion")],
+                SELECT_NEW_LANGUAGE: [MessageHandler(
+                    Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.new_language)]
+            
             },
             fallbacks=[
                 CommandHandler('start', self.start),
@@ -154,16 +159,6 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 except:
                     pass
         return "x"
-
-
-
-
-
-
-
-
-
-
 
 
     def user_state_update(self):
@@ -251,5 +246,30 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             else:
                 update.callback_query.answer(text=db_user.text("prompt_end"), show_alert=True)
                 return self.start(update, context, False)
-            
+    @delete_tmp_message
+    def change_language(self, update:Update, context:CallbackContext):
+        user, db_user = get_user(update)
+        update.message.reply_text()
+        context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(text=Text.objects.filter(name='start').first().uz_data, reply_markup=ReplyKeyboardMarkup(
+            [
+                ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
+            ],
+            resize_keyboard=True
+        ), parse_mode="HTML")
+        return SELECT_NEW_LANGUAGE
+    @delete_tmp_message
+    def new_language(self, update:Update, context:CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['register']['language'] = lang = 0 if update.message.text.startswith(
+            "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
+        if lang is not None:
+            return self.start(update, context, False)
+        else:
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("language_not_found", reply_markup=ReplyKeyboardMarkup(
+                [
+                    ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
+                ], resize_keyboard=True
+            ), parse_mode="HTML")
+            return LANGUAGE
+
 work = Bot(TOKEN)
