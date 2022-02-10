@@ -3,7 +3,7 @@ from pyexpat import model
 from django.shortcuts import render, redirect
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
-from admin_panel.models import BaseProduct, Gifts, Regions, District, Category, Product, Text,Promotion
+from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text,Promotion
 from diller.models import Diller,Busket,Busket_item
 from seller.models import Cvitation, Seller
 from django.contrib.auth import authenticate, login, logout
@@ -298,14 +298,16 @@ def district_delete(request, pk):
     model.delete()
     return redirect(f"/districts/{model.region_id}")
 
+@login_required_decorator
 def settings(request):
     texts = Text.objects.all()
     ctx = {
         "texts": texts,
-        "s_active":"menu-open"
+        "se_active":"menu-open"
     }
     return render(request, "dashboard/settings/list.html",ctx)
 
+@login_required_decorator
 def settings_edit(request,pk):
     model = Text.objects.get(pk=pk)
     form = TextForm(request.POST or None, instance=model)
@@ -318,7 +320,7 @@ def settings_edit(request,pk):
     }
     return render(request,"dashboard/settings/form.html",ctx)
 
-
+@login_required_decorator
 def orders(request):
     busket = Busket.objects.filter(status__in=[0,1])
     data = []
@@ -339,12 +341,14 @@ def orders(request):
             "busket":i
         })
     ctx = {
-        "items":data
+        "items":data,
+        "o_active":"active"
 
     }
 
     return render(request,"dashboard/order/list.html",ctx)
 
+@login_required_decorator
 def update_order(request,pk,status):
     data = Busket.objects.filter(pk=pk).update(status=status)
     requests.get("http://127.0.0.1:6002/update_status",json = {
@@ -356,15 +360,16 @@ def update_order(request,pk,status):
     })
     return redirect("orders")
 
-
+@login_required_decorator
 def solds(request):
     all = BaseProduct.objects.order_by("-id").all()
     ctx  = {
         "baseproduct":all,
-        "b_active":"menu-open"
+        "s_active":"menu-open"
     }
     return render(request,"dashboard/sold/list.html",ctx)
 
+@login_required_decorator
 def sold_create(request):
     model = BaseProduct()
     form  = SoldForm(request.POST, instance=model)
@@ -374,26 +379,32 @@ def sold_create(request):
 
     return render(request,"dashboard/sold/form.html",{"form":form})
 
-
-
+@login_required_decorator
 def promotion(request):
     data = Promotion.objects.all()
     ctx = {
-        "prompts":data
+        "prompts":data,
+        "pr_active":"menu-open"
+        
     }
     return render(request,"dashboard/promotion/list.html",ctx)
 
-
+@login_required_decorator
 def prompt_create(request):
     model = Promotion()
     form = PromotionForm(request.POST, instance=model)
+    # print(request.POST)
     if form.is_valid():
+        print("aa")
         form.save()
         return redirect("prompts")
+    else:
+        print(form.errors)
+       
 
     return render(request,"dashboard/promotion/form.html",{"form":form})
 
-
+@login_required_decorator
 def send_req(request,pk):
     data = Promotion.objects.get(pk=pk)
     ctx = {
@@ -402,7 +413,30 @@ def send_req(request,pk):
     data = requests.get(f"http://127.0.0.1:6002/send_req", json={"data": ctx})
     return redirect("prompts")
 
+@login_required_decorator
 def del_prompt(request,pk):
     data = Promotion.objects.get(pk=pk)
     data.delete()
     return redirect("prompts")
+
+@login_required_decorator
+def promotion_order(request):
+    data = Promotion_Order.objects.filter(status__in=[0,1])
+    ctx = {
+        "data": data,
+        "p_active":"active",
+        "b_active":"menu-open"
+    }
+    return render(request,"dashboard/promotion/list1.html",ctx)
+
+@login_required_decorator   
+def update_prompt(request,pk,status):
+    data = Promotion_Order.objects.filter(pk=pk).update(status=status)
+    requests.get("http://127.0.0.1:6002/update_status_prompt",json = {
+        "data": {
+            "diller":Promotion_Order.objects.filter(pk=pk).first().user.id,
+            "status":status,
+            "ball":Promotion_Order.objects.filter(pk=pk).first().promotion.ball,
+        }
+    })
+    return redirect("promotion_order")

@@ -47,18 +47,36 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
          </li>
          
-        <li class="nav-item {{b_active}}">
+        <li class="nav-item {{s_active}}">
           <a href="{% url 'solds' %}" class="nav-link">
             <i class="nav-icon fas fa-list-ol"></i>
-            <p>Sotilganlar</p>
+            <p>Сотилганлар</p>
           </a>
         </li>
         <li class="nav-item {{b_active}}">
-          <a href="{% url 'orders' %}" class="nav-link">
-            <i class="nav-icon fas fa-list-ol"></i>
-            <p>Buyurtmalar</p>
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-mug-hot"></i>
+            <p>
+              Буюртмалар
+              <i class="right fas fa-angle-left"></i>
+            </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item ">
+              <a href="{% url 'orders' %}" class="nav-link {{o_active}}">
+                <i class="nav-icon fas fa-hotdog"></i>
+                <p>Диллер буйуртмалари</p>
+              </a>
+            </li>
+            <li class="nav-item  ">
+              <a href="{% url 'promotion_order' %}" class="nav-link {{p_active}}">
+                <i class="nav-icon fas fa-seedling"></i>
+                <p>Акция буйуртмалари</p>
+              </a>
+            </li>
+          </ul>
         </li>
+
         <li class="nav-item {{d_active}}">
           <a href="{% url 'home' %}" class="nav-link">
             <i class="nav-icon fas fa-user-tie"></i>
@@ -110,7 +128,7 @@
           <a href="{% url 'prompts' %}" class="nav-link">
             <i class="nav-icon fas fa-cog"></i>
             <!-- <i class="fa-sign-out"></i> -->
-            <p>Aksiya</p>
+            <p>Акция</p>
           </a>
         </li>
         <li class="nav-item">

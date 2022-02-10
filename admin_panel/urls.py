@@ -61,6 +61,8 @@ urlpatterns = [
 
 
     path('prompts/', promotion,name="prompts"),
+    path('promotion_order/', promotion_order,name="promotion_order"),
+    path('update_prompt/<int:pk>/<int:status>', update_prompt,name="update_prompt"),
     path('prompt_create/', prompt_create,name="prompt_create"),
     path('send_req/<int:pk>', send_req,name="send_req"),
     path('del_prompt/<int:pk>', del_prompt,name="del_prompt"),

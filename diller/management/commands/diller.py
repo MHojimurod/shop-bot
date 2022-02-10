@@ -94,6 +94,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         server.route('/diller_status', methods=['POST', 'GET'])(self.user_state_update)
         server.route('/send_req', methods=['POST', 'GET'])(self.promotion)
         server.route("/update_status", methods=["POST", 'GET'])(self.update_status_order)
+        server.route("/update_status_prompt", methods=["POST", 'GET'])(self.update_status_prompt)
         server.route('/sale', methods=['POST', 'GET'])(self.saled_asdasdasdasdas)
 
         server.run("127.0.0.1",port=6002)
@@ -120,7 +121,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 if busket:
                     try:
                         if status == 1:
-                            self.bot.send_message(chat_id=diller.chat_id, text=diller.text('oreder_accepted'))
+                            self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_accepted'))
                             diller.balls -= self.ball
                             diller.save()
                         elif status == 2:
@@ -129,6 +130,28 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                             self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_denied'))
                     except:
                         pass
+        return "x"
+
+    def update_status_prompt(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            diller = data['diller']
+            status = data['status']
+            ball = data['ball']
+            diller:Diller = Diller.objects.filter(id=diller).first()
+            if diller:
+                try:
+                    if status == 1:
+                        self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_accepted'))
+                        diller.balls -= ball
+                        diller.save()
+                    elif status == 2:
+                        self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_delivered'))
+                    elif status == 3:
+                        self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_denied'))
+                except:
+                    pass
         return "x"
 
 
@@ -197,16 +220,16 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                     context.user_data['promotion_product'] = product
                     update.callback_query.message.edit_text("xxxx", reply_markup=promotion_keyboard(db_user, context))
                 else:
-                    update.callback_query.message.edit_text("Kechirasiz aksiya tugadi!")
+                    update.callback_query.message.edit_text(db_user.text("prompt_end"))
             else:
-                update.callback_query.message.edit_text("Kechirasiz aksiya tugadi!")
+                update.callback_query.message.edit_text(db_user.text("prompt_end"))
         elif data[0] == "promotion_count":
             count = int(data[1])
             if count <= context.user_data['promotion_product'].count:
                 context.user_data['promotion_count'] = count
-                update.callback_query.message.edit_text(text=i18n("promotion_count_message") + str(count), reply_markup=promotion_keyboard(db_user,context))
+                update.callback_query.message.edit_text(text=db_user.text("promotion_count_message") + str(count), reply_markup=promotion_keyboard(db_user,context))
             else:
-                update.callback_query.answer(text=i18n("promotion_count_error") +  "x", show_alert=True)
+                update.callback_query.answer(text=db_user.text("promotion_count_error"), show_alert=True)
 
         return PROMOTION_COUNT
 
@@ -222,10 +245,10 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 product.bought_count += count
                 product.save()
                 order = Promotion_Order.objects.create(user=db_user, promotion=product, count=count)
-                update.callback_query.message.edit_text('Sizning buyurtmangiz qabul qilindi', reply_markup=InlineKeyboardMarkup([]))
+                update.callback_query.message.edit_text(text=db_user.text("order_accepted"),reply_markup=InlineKeyboardMarkup([]))
                 return self.start(update, context, False)
             else:
-                update.callback_query.answer("Kechirasiz aksiyalar soni tugadi!", show_alert=True)
+                update.callback_query.answer(text=db_user.text("prompt_end"), show_alert=True)
                 return self.start(update, context, False)
             
 work = Bot(TOKEN)
