@@ -36,7 +36,7 @@ urlpatterns = [
     path('gift_edit/<int:pk>', gift_edit,name="gift_edit"),
     path('gift_delete/<int:pk>/', gift_delete,name="gift_delete"),
     path('order_gift/', order_gift,name="order_gift"),
-    path('update_gift/<int:pk>/<int:status>', order_gift,name="update_gift"),
+    path('update_gift/<int:pk>/<int:status>/<int:type_order>', update_gift,name="update_gift"),
 
 
     path('regions/', regions,name="regions"),

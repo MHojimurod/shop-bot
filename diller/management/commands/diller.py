@@ -249,7 +249,6 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
     @delete_tmp_message
     def change_language(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        update.message.reply_text()
         context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(text=Text.objects.filter(name='start').first().uz_data, reply_markup=ReplyKeyboardMarkup(
             [
                 ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
@@ -260,8 +259,9 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
     @delete_tmp_message
     def new_language(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        context.user_data['register']['language'] = lang = 0 if update.message.text.startswith(
+        db_user.language = lang = 0 if update.message.text.startswith(
             "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
+        db_user.save()
         if lang is not None:
             return self.start(update, context, False)
         else:

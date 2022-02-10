@@ -50,11 +50,7 @@ class Register:
                 ), parse_mode="HTML")
                 return MENU
             else:
-<<<<<<< HEAD
-                context.user_data['tmp_message'] = user.send_message(db_user("not_access")) 
-=======
                context.user_data['tmp_message'] = user.send_message(db_user.text("not_access")) 
->>>>>>> 3ae55093f9a6876a8d1f7f4cf29fa67ef4480e42
 
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):

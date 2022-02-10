@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='promotion_order',
             name='status',
-            field=models.IntegerField(choices=[(0, 'Kutinmoqda'), (1, 'Qabul qilingan'), (2, 'Yuborilgan'), (3, 'Rad etilgan')], default=0),
+            field=models.IntegerField(choices=[(0, 'Kutilmoqda'), (1, 'Qabul qilingan'), (2, 'Yuborilgan'), (3, 'Rad etilgan')], default=0),
         ),
     ]

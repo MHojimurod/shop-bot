@@ -3,8 +3,8 @@ from pyexpat import model
 from django.shortcuts import render, redirect
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
-from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text,Promotion
-from diller.models import Diller,Busket,Busket_item, OrderGiftDiller
+from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
+from diller.models import Diller, Busket, Busket_item, OrderGiftDiller
 from seller.models import Cvitation, OrderGiftSeller, Seller
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -13,6 +13,7 @@ import requests
 
 def login_required_decorator(f):
     return login_required(f, login_url="login")
+
 
 def dashboard_login(request):
     if request.POST:
@@ -24,12 +25,14 @@ def dashboard_login(request):
             return redirect("home")
     return render(request, "dashboard/login.html")
 
+
 @login_required_decorator
 def dashboard_logout(request):
     logout(request)
     res = redirect("login")
     res.delete_cookie("sessionid")
     return res
+
 
 @login_required_decorator
 def dillers_list(request):
@@ -40,15 +43,17 @@ def dillers_list(request):
     }
     return render(request, "dashboard/diller.html", ctx)
 
+
 @login_required_decorator
 def sellers_list(request):
     sellers = Seller.objects.order_by('-id').all()
     print(sellers)
     ctx = {
         "sellers": sellers,
-        "s_active": "menu-open"
+        "sel_active": "menu-open"
     }
     return render(request, "dashboard/seller.html", ctx)
+
 
 @login_required_decorator
 def diller_update(request, pk, status):
@@ -60,11 +65,13 @@ def diller_update(request, pk, status):
     print(data.status_code)
     return redirect("home")
 
+
 @login_required_decorator
 def diller_delete(request, pk):
     model = Diller.objects.get(pk=pk)
     model.delete()
     return redirect("home")
+
 
 @login_required_decorator
 def seller_delete(request, pk):
@@ -72,13 +79,16 @@ def seller_delete(request, pk):
     model.delete()
     return redirect("sellers_list")
 
+
 @login_required_decorator
 def checks(request):
-    cvitation =  Cvitation.objects.order_by("-id").all()
+    cvitation = Cvitation.objects.order_by("-id").all()
     ctx = {
-        "checks":cvitation
+        "checks": cvitation,
+        "ch_active":"menu-open"
     }
-    return render(request, "dashboard/checks.html",ctx)
+    return render(request, "dashboard/checks.html", ctx)
+
 
 @login_required_decorator
 def categories(request):
@@ -86,8 +96,10 @@ def categories(request):
 
     ctx = {
         "categories": category,
+        "cat_active":"menu-open"
     }
     return render(request, "dashboard/category/list.html", ctx)
+
 
 @login_required_decorator
 def category_create(request):
@@ -101,6 +113,7 @@ def category_create(request):
         "form": form,
     }
     return render(request, "dashboard/category/form.html", ctx)
+
 
 @login_required_decorator
 def category_edit(request, pk):
@@ -116,11 +129,13 @@ def category_edit(request, pk):
     ctx = {"form": form}
     return render(request, "dashboard/category/form.html", ctx)
 
+
 @login_required_decorator
 def category_delete(request, pk):
     model = Category.objects.get(pk=pk)
     model.delete()
     return redirect("categories")
+
 
 @login_required_decorator
 def products(request, category_id):
@@ -131,6 +146,7 @@ def products(request, category_id):
         "category": category,
     }
     return render(request, "dashboard/product/list.html", ctx)
+
 
 @login_required_decorator
 def product_create(request, pk):
@@ -145,6 +161,7 @@ def product_create(request, pk):
         "pk": pk
     }
     return render(request, "dashboard/product/form.html", ctx)
+
 
 @login_required_decorator
 def product_edit(request, pk, category_id):
@@ -162,20 +179,23 @@ def product_edit(request, pk, category_id):
            }
     return render(request, "dashboard/product/form.html", ctx)
 
+
 @login_required_decorator
 def product_delete(request, pk):
     model = Product.objects.get(pk=pk)
     model.delete()
     return redirect(f"/products/{model.category_id}")
 
+
 @login_required_decorator
 def gifts(request):
     data = Gifts.objects.all()
     ctx = {
         "gifts": data,
-        "g_active":"menu-open"
+        "g_active": "menu-open"
     }
-    return render(request, "dashboard/gifts/list.html",ctx)
+    return render(request, "dashboard/gifts/list.html", ctx)
+
 
 @login_required_decorator
 def gift_create(request):
@@ -190,11 +210,12 @@ def gift_create(request):
     }
     return render(request, "dashboard/gifts/form.html", ctx)
 
+
 @login_required_decorator
 def gift_edit(request, pk):
     model = Gifts.objects.get(pk=pk)
     form = GiftsForm(request.POST or None,
-                       request.FILES or None, instance=model)
+                     request.FILES or None, instance=model)
     if request.POST:
         if form.is_valid():
             data = form.save()
@@ -204,11 +225,13 @@ def gift_edit(request, pk):
     ctx = {"form": form}
     return render(request, "dashboard/gifts/form.html", ctx)
 
+
 @login_required_decorator
 def gift_delete(request, pk):
     model = Gifts.objects.get(pk=pk)
     model.delete()
     return redirect("gifts")
+
 
 @login_required_decorator
 def regions(request):
@@ -216,8 +239,10 @@ def regions(request):
 
     ctx = {
         "regions": region,
+        "r_active":"menu-open"
     }
     return render(request, "dashboard/region/list.html", ctx)
+
 
 @login_required_decorator
 def region_create(request):
@@ -229,28 +254,32 @@ def region_create(request):
 
     ctx = {
         "form": form,
+        "r_active":"menu-open"
     }
     return render(request, "dashboard/region/form.html", ctx)
+
 
 @login_required_decorator
 def region_edit(request, pk):
     model = Regions.objects.get(pk=pk)
     form = RegionsForm(request.POST or None,
-                        request.FILES or None, instance=model)
+                       request.FILES or None, instance=model)
     if request.POST:
         if form.is_valid():
             form.save()
             return redirect("regions")
         else:
             print(form.errors)
-    ctx = {"form": form}
+    ctx = {"form": form,"r_active":"menu-open"}
     return render(request, "dashboard/region/form.html", ctx)
+
 
 @login_required_decorator
 def region_delete(request, pk):
     model = Regions.objects.get(pk=pk)
     model.delete()
     return redirect("regions")
+
 
 @login_required_decorator
 def districts(request, region_id):
@@ -259,8 +288,10 @@ def districts(request, region_id):
     ctx = {
         "region": region,
         "districts": district,
+        "r_active":"menu-open"
     }
     return render(request, "dashboard/district/list.html", ctx)
+
 
 @login_required_decorator
 def district_create(request, pk):
@@ -272,15 +303,17 @@ def district_create(request, pk):
 
     ctx = {
         "form": form,
-        "pk": pk
+        "pk": pk,
+        "r_active":"menu-open"
     }
     return render(request, "dashboard/district/form.html", ctx)
+
 
 @login_required_decorator
 def district_edit(request, pk, region_id):
     model = District.objects.get(pk=pk)
     form = DistrictForm(request.POST or None,
-                       request.FILES or None, instance=model)
+                        request.FILES or None, instance=model)
     if request.POST:
         if form.is_valid():
             data = form.save()
@@ -288,9 +321,11 @@ def district_edit(request, pk, region_id):
         else:
             print(form.errors)
     ctx = {"form": form,
-           "pk": region_id
+           "pk": region_id,
+           "r_active":"menu-open"
            }
     return render(request, "dashboard/district/form.html", ctx)
+
 
 @login_required_decorator
 def district_delete(request, pk):
@@ -298,17 +333,19 @@ def district_delete(request, pk):
     model.delete()
     return redirect(f"/districts/{model.region_id}")
 
+
 @login_required_decorator
 def settings(request):
     texts = Text.objects.all()
     ctx = {
         "texts": texts,
-        "se_active":"menu-open"
+        "se_active": "menu-open"
     }
-    return render(request, "dashboard/settings/list.html",ctx)
+    return render(request, "dashboard/settings/list.html", ctx)
+
 
 @login_required_decorator
-def settings_edit(request,pk):
+def settings_edit(request, pk):
     model = Text.objects.get(pk=pk)
     form = TextForm(request.POST or None, instance=model)
     if request.POST:
@@ -316,13 +353,14 @@ def settings_edit(request,pk):
             form.save()
             return redirect("settings")
     ctx = {
-        "form":form
+        "form": form
     }
-    return render(request,"dashboard/settings/form.html",ctx)
+    return render(request, "dashboard/settings/form.html", ctx)
+
 
 @login_required_decorator
 def orders(request):
-    busket = Busket.objects.filter(status__in=[0,1])
+    busket = Busket.objects.filter(status__in=[0, 1])
     data = []
     for i in busket:
         diller = i.diller
@@ -334,60 +372,65 @@ def orders(request):
             ball += j.product.diller_ball*j.count
 
         data.append(
-        {
-            "diller":diller,
-            "text":text,
-            "ball":ball,
-            "busket":i
-        })
+            {
+                "diller": diller,
+                "text": text,
+                "ball": ball,
+                "busket": i
+            })
     ctx = {
-        "items":data,
-        "o_active":"active"
+        "items": data,
+        "dil_active": "active"
 
     }
 
-    return render(request,"dashboard/order/list.html",ctx)
+    return render(request, "dashboard/order/list.html", ctx)
+
 
 @login_required_decorator
-def update_order(request,pk,status):
+def update_order(request, pk, status):
     data = Busket.objects.filter(pk=pk).update(status=status)
-    requests.get("http://127.0.0.1:6002/update_status",json = {
+    requests.get("http://127.0.0.1:6002/update_status", json={
         "data": {
-            "diller":Busket.objects.filter(pk=pk).first().diller.id,
-            "status":status,
-            "busket":Busket.objects.filter(pk=pk).first().id
+            "diller": Busket.objects.filter(pk=pk).first().diller.id,
+            "status": status,
+            "busket": Busket.objects.filter(pk=pk).first().id
         }
     })
     return redirect("orders")
 
+
 @login_required_decorator
 def solds(request):
     all = BaseProduct.objects.order_by("-id").all()
-    ctx  = {
-        "baseproduct":all,
-        "s_active":"menu-open"
+    ctx = {
+        "baseproduct": all,
+        "s_active": "menu-open"
     }
-    return render(request,"dashboard/sold/list.html",ctx)
+    return render(request, "dashboard/sold/list.html", ctx)
+
 
 @login_required_decorator
 def sold_create(request):
     model = BaseProduct()
-    form  = SoldForm(request.POST, instance=model)
+    form = SoldForm(request.POST, instance=model)
     if form.is_valid():
         form.save()
         return redirect("solds")
 
-    return render(request,"dashboard/sold/form.html",{"form":form})
+    return render(request, "dashboard/sold/form.html", {"form": form})
+
 
 @login_required_decorator
 def promotion(request):
     data = Promotion.objects.all()
     ctx = {
-        "prompts":data,
-        "pr_active":"menu-open"
-        
+        "prompts": data,
+        "pr_active": "menu-open"
+
     }
-    return render(request,"dashboard/promotion/list.html",ctx)
+    return render(request, "dashboard/promotion/list.html", ctx)
+
 
 @login_required_decorator
 def prompt_create(request):
@@ -400,54 +443,66 @@ def prompt_create(request):
         return redirect("prompts")
     else:
         print(form.errors)
-       
 
-    return render(request,"dashboard/promotion/form.html",{"form":form})
+    return render(request, "dashboard/promotion/form.html", {"form": form})
+
 
 @login_required_decorator
-def send_req(request,pk):
+def send_req(request, pk):
     data = Promotion.objects.get(pk=pk)
     ctx = {
-        "product":data.id
-        }
+        "product": data.id
+    }
     data = requests.get(f"http://127.0.0.1:6002/send_req", json={"data": ctx})
     return redirect("prompts")
 
+
 @login_required_decorator
-def del_prompt(request,pk):
+def del_prompt(request, pk):
     data = Promotion.objects.get(pk=pk)
     data.delete()
     return redirect("prompts")
 
+
 @login_required_decorator
 def promotion_order(request):
-    data = Promotion_Order.objects.filter(status__in=[0,1])
+    data = Promotion_Order.objects.filter(status__in=[0, 1])
     ctx = {
         "data": data,
-        "p_active":"active",
-        "b_active":"menu-open"
+        "p_active": "active",
+        "b_active": "menu-open"
     }
-    return render(request,"dashboard/promotion/list1.html",ctx)
+    return render(request, "dashboard/promotion/list1.html", ctx)
 
-@login_required_decorator   
-def update_prompt(request,pk,status):
+
+@login_required_decorator
+def update_prompt(request, pk, status):
     data = Promotion_Order.objects.filter(pk=pk).update(status=status)
-    requests.get("http://127.0.0.1:6002/update_status_prompt",json = {
+    requests.get("http://127.0.0.1:6002/update_status_prompt", json={
         "data": {
-            "diller":Promotion_Order.objects.filter(pk=pk).first().user.id,
-            "status":status,
-            "ball":Promotion_Order.objects.filter(pk=pk).first().promotion.ball,
+            "diller": Promotion_Order.objects.filter(pk=pk).first().user.id,
+            "status": status,
+            "ball": Promotion_Order.objects.filter(pk=pk).first().promotion.ball,
         }
     })
     return redirect("promotion_order")
 
 
 def order_gift(request):
-    diller:OrderGiftDiller = OrderGiftDiller.objects.all()
-    seller:OrderGiftSeller =  OrderGiftSeller.objects.all()
+    diller: OrderGiftDiller = OrderGiftDiller.objects.all()
+    seller: OrderGiftSeller = OrderGiftSeller.objects.all()
 
     ctx = {
         "diller": diller,
-        "seller": seller
+        "seller": seller,
+        "gift_active": "active"
     }
-    return render(request,"dashboard/gifts/order.html",ctx)
+    return render(request, "dashboard/gifts/order.html", ctx)
+
+
+def update_gift(request, pk, status, type_order):
+    if type_order == 0:
+        OrderGiftDiller.objects.filter(pk=pk).update(status=status)
+    elif type_order == 1:
+        OrderGiftSeller.objects.filter(pk=pk).update(status=status)
+    return redirect("order_gift")
