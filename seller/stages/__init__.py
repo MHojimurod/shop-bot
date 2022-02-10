@@ -114,7 +114,7 @@ class MainHandlers:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if district:
             context.user_data['register']['district'] = district
-            context.user_data['tmp_message'] = user.send_message(db_user.text("shop_name"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            context.user_data['tmp_message'] = user.send_message(i18n("shop_name",lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return SHOP
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(

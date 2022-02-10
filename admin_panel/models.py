@@ -1,3 +1,4 @@
+from itertools import count
 from django.db import models
 from django.urls import include
 
@@ -83,6 +84,7 @@ class Gifts(models.Model):
     name_uz = models.CharField(max_length=100)
     name_ru = models.CharField(max_length=100)
     ball = models.IntegerField()
+    amount = models.IntegerField()
     image = models.ImageField(upload_to='gifts')
 
     def name(self, lang:int):
