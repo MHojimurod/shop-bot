@@ -360,7 +360,7 @@ def settings_edit(request, pk):
 
 @login_required_decorator
 def orders(request):
-    busket = Busket.objects.filter(status__in=[0, 1])
+    busket = Busket.objects.filter(status__in=[0, 1],is_ordered=True)
     data = []
     for i in busket:
         diller = i.diller
