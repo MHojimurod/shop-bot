@@ -4,8 +4,8 @@ from uuid import uuid4
 from django import db
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update, User
-from admin_panel.models import BaseProduct, Gifts,  i18n
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
+from admin_panel.models import BaseProduct, Gifts, Text,  i18n
 from diller.management.commands.decorators import delete_tmp_message
 from seller.management.commands.decorators import get_user
 
@@ -61,7 +61,8 @@ class Bot(Updater, MainHandlers):
                 CVI_SERIAL_NUMBER: [MessageHandler(Filters.text & not_start, self.cvi_serial_number), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), ],
                 BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
                 SELECT_NEW_LANGUAGE: [MessageHandler(
-                    Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.new_language)]
+                    Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.new_language)
+                    ]
             },
             fallbacks=[CommandHandler("start", self.start)],
         )
@@ -112,14 +113,14 @@ class Bot(Updater, MainHandlers):
                 return CVI_SERIAL_NUMBER
         else:
             if 'tmp_message' in context.user_data:
-             try:
-                 context.user_data['tmp_message'].delete()
-             except:
-                 pass
-             try:
-                 update.message.delete() if update.message else update.callback_query.message.delete()
-             except:
-                 pass
+                try:
+                    context.user_data['tmp_message'].delete()
+                except:
+                    pass
+                try:
+                    update.message.delete() if update.message else update.callback_query.message.delete()
+                except:
+                    pass
             context.user_data['tmp_message'] = user.send_message(db_user.text("seria_not_found"))
         return CVI_SERIAL_NUMBER
     
