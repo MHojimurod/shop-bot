@@ -128,4 +128,4 @@ class Promotion_Order(models.Model):
     promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
     count = models.IntegerField(default=1)  
     date = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(default=0,choices=((0,"Kutinmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))
+    status = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))
