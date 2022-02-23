@@ -13,7 +13,6 @@ import requests
 from seller.models import Cvitation, Seller
 from seller.utils import balls_keyboard_pagination
 from .constant import (
-    CVI,
     CVI_PHOTO,
     CVI_SERIAL_NUMBER,
     LANGUAGE,
@@ -25,7 +24,10 @@ from .constant import (
     REGION,
     DISTRICT,
     MENU,
-    BALL
+    BALL,
+    SHOP_LOCATION,
+    PASSPORT_PHOTO,
+    SHOP_PASSPORT_PHOTO
 )
 from flask import Flask, request, request_finished
 
@@ -51,7 +53,11 @@ class Bot(Updater, MainHandlers):
                 NUMBER: [MessageHandler(Filters.contact & not_start, self.number)],
                 REGION: [MessageHandler(Filters.text & not_start, self.region)],
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district)],
+                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location)],
+                PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
+                SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo)],
+                
                 MENU: [
                     MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
@@ -63,8 +69,9 @@ class Bot(Updater, MainHandlers):
                 SELECT_NEW_LANGUAGE: [MessageHandler(
                     Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.new_language)
                     ]
+
             },
-            fallbacks=[CommandHandler("start", self.start)],
+            fallbacks=[CommandHandler("start", self.start), MessageHandler(Filters.all, self.start)],
         )
         self.dispatcher.add_handler(self.conversation)
         self.start_polling()
