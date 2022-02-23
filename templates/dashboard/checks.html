@@ -25,7 +25,7 @@
               <div class="filter-container p-0 row">
                 {% for i in checks %}
                 <div class="filtr-item col-3" data-category="3" data-sort="white sample">
-                  <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}}  {{i.serial}}">
+                  <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}}   {{i.seller.number}}&#13;{{i.seller.region.uz_data}}   {{i.seller.district.uz_data}}&#13;{{i.serial}}">
                     <img src="/{{i.img}}" class="img-fluid mb-2" alt="white sample"/>
                   </a>
                 </div>
