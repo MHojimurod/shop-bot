@@ -20,16 +20,18 @@ from admin_panel.models import District, Regions, Text, i18n
 class Register:
     # @delete_tmp_message
 
-    def start(self, update: Update, context: CallbackContext, delete:bool=True):
+    def start(self, update: Update, context: CallbackContext, delete: bool = True):
         if delete:
             try:
                 update.message.delete() if update.message else update.callback_query.message.delete()
-            except: pass
+            except:
+                pass
             if 'tmp_message' in context.user_data:
                 try:
                     context.user_data['tmp_message'].delete()
-                except:pass
-        
+                except:
+                    pass
+
         user, db_user = get_user(update)
         context.user_data['register'] = {
             "chat_id": user.id,
@@ -50,7 +52,12 @@ class Register:
                 ), parse_mode="HTML")
                 return MENU
             else:
+<<<<<<< HEAD
+                context.user_data['tmp_message'] = user.send_message(
+                    db_user.text("not_access"))
+=======
                context.user_data['tmp_message'] = user.send_message(db_user.text("not_access")) 
+>>>>>>> 867278ace558b67593109953dd9169803183107b
 
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
@@ -132,7 +139,8 @@ class Register:
             # context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
             #     distribute([db_user.text("Buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
             # ), parse_mode="HTML")
-            context.user_data['tmp_message'] = user.send_message(db_user.text("wait_accept"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            context.user_data['tmp_message'] = user.send_message(db_user.text(
+                "wait_accept"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return -1
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
@@ -141,3 +149,7 @@ class Register:
                 ], 2), resize_keyboard=True
             ), parse_mode="HTML")
             return LANGUAGE
+
+
+
+        
