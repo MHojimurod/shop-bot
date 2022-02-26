@@ -52,9 +52,9 @@ class Buy:
             data = update.callback_query.data.split(":")
             
             
-
-            if int(data[1]) > 1000:
-                update.callback_query.answer(db_user.text("product_count_limit"), show_alert=True)
+            if int(data[1]) > 1000 or (context.user_data['product']['count'] * 10) + int(data[1]) > 1000:
+                update.callback_query.answer(db_user.text(
+                    "product_count_limit"), show_alert=True)
                 return SELECT_PRODUCT_COUNT
 
             print(data[1], context.user_data['product']['count'])
@@ -64,12 +64,13 @@ class Buy:
             else:
                 context.user_data['product']['count'] = int(data[1])
                 context.user_data['product']['count_selected'] = True
-            keyboard = product_count_inline(
+            try:
+                keyboard = product_count_inline(
                 db_user.language, context.user_data['buy']['product'], context)
+            except:pass
             keyboard.pop('photo')
             context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
                 **keyboard, parse_mode="HTML")
-            return SELECT_PRODUCT_COUNT
             return SELECT_PRODUCT_COUNT
             
 
