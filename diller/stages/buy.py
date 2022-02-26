@@ -54,6 +54,7 @@ class Buy:
             
             
             if int(data[1]) > 1000 or (context.user_data['product']['count'] * 10) + int(data[1]) > 1000:
+                print(data[1])
                 print((context.user_data['product']
                       ['count'] * 10) + int(data[1]), data[1])
                 update.callback_query.answer(db_user.text(
