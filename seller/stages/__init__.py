@@ -1,11 +1,12 @@
 
 
 
+from tracemalloc import start
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
 from admin_panel.models import District, Regions, Text, i18n
-from seller.management.commands.constant import DISTRICT, LANGUAGE, MENU, NAME, NUMBER, REGION, SHOP
-
+from seller.management.commands.constant import DISTRICT, LANGUAGE, MENU, NAME, NUMBER, PASSPORT_PHOTO, REGION, SHOP, SHOP_LOCATION, SHOP_PASSPORT_PHOTO
+from django.core.files.images import ImageFile
 from seller.management.commands.decorators import delete_tmp_message, distribute, get_user
 from seller.models import Seller
 
@@ -114,21 +115,56 @@ class MainHandlers:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if district:
             context.user_data['register']['district'] = district
-            context.user_data['tmp_message'] = user.send_message(i18n("shop_name",lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
-            return SHOP
+            context.user_data['tmp_message'] = user.send_message(i18n("shop_location",lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            return SHOP_LOCATION
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=context.user_data['register']['region'])
                 ], 2), resize_keyboard=True
             ), parse_mode="HTML")
-            return LANGUAGE
-    
+            return SHOP_LOCATION
+    @delete_tmp_message
     def shop(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        # lang = context.user_data['register']['language']
+        lang = context.user_data['register']['language']
         context.user_data['register']['shop'] = update.message.text
         print(context.user_data['register']['language'])
+        context.user_data['tmp_message'] = user.send_message(
+            i18n('shop_passport_photo', lang))
+        return SHOP_PASSPORT_PHOTO
+    
+    @delete_tmp_message
+    def shop_location(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        lang = context.user_data['register']['language']
+        context.user_data['register']['shop_location'] = {
+            "latitude":update.message.location.latitude,
+            "nongtitude":update.message.location.longitude
+        }
+        # db_user: Seller = Seller.objects.create(
+        #     **context.user_data['register'])
+        context.user_data['tmp_message'] = user.send_message(
+            (i18n("passport_photo", lang)))
+        return PASSPORT_PHOTO
+    
+    @delete_tmp_message
+    def passport_photo(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        lang = context.user_data['register']['language']
+        
+        context.user_data['register']['passport_photo'] = ImageFile(
+            open(update.message.photo[-1].get_file().download(), 'rb'))
+        context.user_data['tmp_message'] = user.send_message(i18n(
+            "shop_name", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+        return SHOP
+    
+    @delete_tmp_message
+    def shop_passport_photo(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        lang = context.user_data['register']['language']
+        context.user_data['register']['shop_passport_photo'] = ImageFile(
+            open(update.message.photo[-1].get_file().download(), 'rb'))
         db_user: Seller = Seller.objects.create(
             **context.user_data['register'])
         return self.start(update,context)

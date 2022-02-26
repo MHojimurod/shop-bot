@@ -13,6 +13,9 @@ class Seller(models.Model):
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
     shop = models.CharField(max_length=300,null=True,blank=True)
     language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
+    shop_location = models.JSONField(default=dict)
+    shop_passport_photo = models.ImageField(upload_to='shop_passport_photo', null=True, blank=True)
+    passport_photo = models.ImageField(upload_to='passport_photo', null=True, blank=True)
     
     def text(self, name):
         text = Text.objects.filter(name=name)
