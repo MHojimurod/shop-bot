@@ -62,7 +62,8 @@ class Buy:
                 return SELECT_PRODUCT_COUNT
 
             if context.user_data['product']['count_selected']:
-                context.user_data['product']['count'] = (context.user_data['product']['count'] * 10) + int(data[1])
+                context.user_data['product']['count'] = (
+                    context.user_data['product']['count'] * 10) + (int(data[1]) if data[-1] != "zero" else 0)
                 context.user_data['product']['count_selected'] = True
             else:
                 context.user_data['product']['count'] = int(data[1])
