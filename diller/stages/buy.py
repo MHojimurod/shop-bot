@@ -58,6 +58,17 @@ class Buy:
             context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
                 **keyboard, parse_mode="HTML")
             return SELECT_PRODUCT_COUNT
+    
+    def clear_product_count(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['product']['count'] = 1
+        keyboard = product_count_inline(
+            db_user.language, context.user_data['buy']['product'], context)
+        keyboard.pop('photo')
+        context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
+            **keyboard, parse_mode="HTML")
+        return SELECT_PRODUCT_COUNT
+
 
     @delete_tmp_message
     def add_to_cart(self, update: Update, context: CallbackContext):

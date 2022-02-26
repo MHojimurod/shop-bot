@@ -73,7 +73,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 SELECT_CATEGORY: [CallbackQueryHandler(self.buy, pattern="^category_pagination"), CallbackQueryHandler(self.start, pattern="^cancel_pagination"), CallbackQueryHandler(self.select_category, pattern="^select_category"), CallbackQueryHandler(self.cart, pattern="^cart")],
                 
                 SELECT_PRODUCT: [ CallbackQueryHandler(self.select_category, pattern="^product_pagination"), CallbackQueryHandler(self.buy, pattern="^cancel_pagination"), CallbackQueryHandler(self.select_category, pattern="^select_product")],
-                SELECT_PRODUCT_COUNT: [CallbackQueryHandler(self.product_count, pattern="^product_count"), CallbackQueryHandler(self.start, pattern="^cancel_count"), CallbackQueryHandler(self.add_to_cart, pattern="^add_to_cart"), CallbackQueryHandler(self.buy, pattern="^back")],
+                SELECT_PRODUCT_COUNT: [CallbackQueryHandler(self.product_count, pattern="^product_count"), CallbackQueryHandler(self.clear_product_count, pattern="^clear_product_count"), CallbackQueryHandler(self.start, pattern="^cancel_count"), CallbackQueryHandler(self.add_to_cart, pattern="^add_to_cart"), CallbackQueryHandler(self.buy, pattern="^back")],
                 CART: [CallbackQueryHandler(self.busket_item_count, pattern="^busket_item_count"),
                 CallbackQueryHandler(self.busket_item_remove, pattern="^remove_busket_item"), CallbackQueryHandler(self.buy, pattern="^continue"), CallbackQueryHandler(self.order, pattern="^order"), CallbackQueryHandler(self.buy, pattern="^back")],
                 PURCHASED: [ CallbackQueryHandler(self.purchased, pattern="product_pagination"), CallbackQueryHandler(self.start, pattern="^back")],
