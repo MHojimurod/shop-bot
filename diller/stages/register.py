@@ -21,7 +21,8 @@ class Register:
     # @delete_tmp_message
 
     def start(self, update: Update, context: CallbackContext, delete: bool = True):
-        if delete:
+        user, db_user = get_user(update)
+        if delete and db_user:
             try:
                 update.message.delete() if update.message else update.callback_query.message.delete()
             except:
@@ -32,7 +33,6 @@ class Register:
                 except:
                     pass
 
-        user, db_user = get_user(update)
         context.user_data['register'] = {
             "chat_id": user.id,
         }
