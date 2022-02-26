@@ -51,8 +51,10 @@ class Buy:
                 update.callback_query.answer(db_user.text("product_count_limit"), show_alert=True)
                 return SELECT_PRODUCT_COUNT
 
-            context.user_data['product']['count'] = ((context.user_data['product']['count'] * 10) + int(data[1]) if context.user_data['product']['count'] > 1 else int(data[1]))
+            
             if context.user_data['product']['count'] != data[1]:
+                context.user_data['product']['count'] = ((context.user_data['product']['count'] * 10) + int(
+                    data[1]) if context.user_data['product']['count'] > 1 else int(data[1]))
                 keyboard = product_count_inline(
                     db_user.language, context.user_data['buy']['product'], context)
                 keyboard.pop('photo')
