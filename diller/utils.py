@@ -11,8 +11,7 @@ locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 def money(number:int, grouping:bool=True, lang=1):
-    res = locale.currency(number, grouping=grouping).split(".")[0]
-    return f"{res} {i18n('som', lang)}"
+    return f"{locale.currency(number, grouping=grouping).split('.')[0]} {i18n('sum', lang)}"
 
 
 
@@ -94,7 +93,7 @@ def product_pagination_inline(lang: int, page: int, product: Category, context: 
 
 def product_count_inline(lang: int, product: Product, context: CallbackContext):
     count = context.user_data['product']['count']
-    text = f"{product.name(lang)} <b><i>{product.price} {i18n('ball', lang)}</i></b>\n\n<b>{count} x {money(product.price, True, lang)[1:]} = {money(count * product.price, True, lang)[1:]}</b>"
+    text = f"{product.name(lang)} <b><i>{product.price}</i></b>\n\n<b>{count} x {money(product.price, True, lang)[1:]} = {money(count * product.price, True, lang)[1:]}</b>"
     controls = []
 
     controls.append(InlineKeyboardButton(
