@@ -1,5 +1,5 @@
 import threading
-from click import BaseCommand
+from django.core.management.base import BaseCommand
 from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                             Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
@@ -271,3 +271,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             return SELECT_NEW_LANGUAGE
 
 work = Bot(TOKEN)
+
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        pass
