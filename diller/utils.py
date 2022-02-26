@@ -94,7 +94,7 @@ def product_pagination_inline(lang: int, page: int, product: Category, context: 
 
 def product_count_inline(lang: int, product: Product, context: CallbackContext):
     count = context.user_data['product']['count']
-    text = f"{product.name(lang)} <b><i>{product.diller_ball} {i18n('ball', lang)}</i></b>\n\n<b>{count} x {money(product.price, True, lang)[1:]} = {money(count * product.price, True, lang)[1:]}</b>"
+    text = f"{product.name(lang)} <b><i>{product.price} {i18n('ball', lang)}</i></b>\n\n<b>{count} x {money(product.price, True, lang)[1:]} = {money(count * product.price, True, lang)[1:]}</b>"
     controls = []
 
     controls.append(InlineKeyboardButton(
