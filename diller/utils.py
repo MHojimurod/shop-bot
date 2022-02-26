@@ -11,7 +11,7 @@ locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 def money(number:int, grouping:bool=True, lang=1):
-    return f"{locale.currency(number, grouping=grouping).split('.')[0]} {i18n('sum', lang)}"
+    return f"{locale.currency(number, grouping=grouping).split('.')[0][0:]} {i18n('sum', lang)}"
 
 
 
