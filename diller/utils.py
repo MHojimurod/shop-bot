@@ -69,7 +69,7 @@ def product_pagination_inline(lang: int, page: int, product: Category, context: 
     text = "Categorys\n\n"
     for i in range(len(product_page)):
         product = product_page[i]
-        text += f"<b>{i + 1}.</b> {product.name(lang)} <b><i>{locale.currency(product.price)} {i18n('sum', lang)}</i></b>\n"
+        text += f"<b>{i + 1}.</b> {product.name(lang)} <b><i>{money(product.price)} {i18n('sum', lang)}</i></b>\n"
         products_page_inline.append(
             InlineKeyboardButton(
                 i + 1, callback_data=f"select_products:{product.id}")
