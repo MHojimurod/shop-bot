@@ -1,3 +1,5 @@
+from click import BaseCommand
+from django.core.management.base import BaseCommand
 from telegram import *
 from telegram.ext import *
 from admin_panel.models import Category, Product, i18n
@@ -39,6 +41,7 @@ class Buy:
                 context.user_data['buy']['product'] = product
                 context.user_data['product']['count'] = 1 if not db_user.busket.item(
                     product) else context.user_data['current_busket'].item(product).count
+                context.user_data['product']['count_selected'] = False
                 context.user_data['tmp_message'] = user.send_photo(
                     **product_count_inline(db_user.language, product, context), parse_mode="HTML")
                 return SELECT_PRODUCT_COUNT
@@ -47,26 +50,34 @@ class Buy:
         user, db_user = get_user(update)
         if update.callback_query:
             data = update.callback_query.data.split(":")
+            
+            
+
             if int(data[1]) > 1000:
                 update.callback_query.answer(db_user.text("product_count_limit"), show_alert=True)
                 return SELECT_PRODUCT_COUNT
 
             print(data[1], context.user_data['product']['count'])
-            if context.user_data['product']['count'] != data[1]:
-                context.user_data['product']['count'] = ((context.user_data['product']['count'] * 10) + int(
-                    data[1]) if context.user_data['product']['count'] > 1 else int(data[1]))
-                keyboard = product_count_inline(
-                    db_user.language, context.user_data['buy']['product'], context)
-                keyboard.pop('photo')
-                context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
-                    **keyboard, parse_mode="HTML")
-                return SELECT_PRODUCT_COUNT
+            if context.user_data['product']['count_selected']:
+                context.user_data['product']['count'] = (context.user_data['product']['count'] * 10) + int(data[1])
+                context.user_data['product']['count_selected'] = True
+            else:
+                context.user_data['product']['count'] = int(data[1])
+                context.user_data['product']['count_selected'] = True
+            keyboard = product_count_inline(
+                db_user.language, context.user_data['buy']['product'], context)
+            keyboard.pop('photo')
+            context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
+                **keyboard, parse_mode="HTML")
+            return SELECT_PRODUCT_COUNT
             return SELECT_PRODUCT_COUNT
             
+
     
     def clear_product_count(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         context.user_data['product']['count'] = 1
+        context.user_data['product']['count_selected'] = False
         keyboard = product_count_inline(
             db_user.language, context.user_data['buy']['product'], context)
         keyboard.pop('photo')
@@ -87,3 +98,5 @@ class Buy:
             context.user_data['tmp_message'] = user.send_message(**category_pagination_inline(
                 db_user.language, context.user_data['buy']['pagination'], context), parse_mode="HTML")
             return SELECT_CATEGORY
+
+
