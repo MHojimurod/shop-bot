@@ -117,6 +117,9 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
                 "000", callback_data=f"product_count:{count * 1000}")
         ]
     )
+    keyboard.append([InlineKeyboardButton(
+        "C", callback_data=f"product_count:1"
+    )])
     # add back button
 
     keyboard.append([InlineKeyboardButton("🔙", callback_data='back'), InlineKeyboardButton(
