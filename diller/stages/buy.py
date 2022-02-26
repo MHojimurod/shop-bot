@@ -52,12 +52,15 @@ class Buy:
                 return SELECT_PRODUCT_COUNT
 
             context.user_data['product']['count'] = ((context.user_data['product']['count'] * 10) + int(data[1]) if context.user_data['product']['count'] > 1 else int(data[1]))
-            keyboard = product_count_inline(
-                db_user.language, context.user_data['buy']['product'], context)
-            keyboard.pop('photo')
-            context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
-                **keyboard, parse_mode="HTML")
+            if context.user_data['product']['count'] != data[1]:
+                keyboard = product_count_inline(
+                    db_user.language, context.user_data['buy']['product'], context)
+                keyboard.pop('photo')
+                context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
+                    **keyboard, parse_mode="HTML")
+                return SELECT_PRODUCT_COUNT
             return SELECT_PRODUCT_COUNT
+            
     
     def clear_product_count(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
