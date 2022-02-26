@@ -25,7 +25,7 @@ def category_pagination_inline(lang: int, page: int, context: CallbackContext):
     categorys_page = categorys[(
         page - 1) * categorys_per_page:page * categorys_per_page]
     categorys_page_inline = []
-    text = "Categorys\n\n"
+    text = "Catalog\n\n"
     for i in range(len(categorys_page)):
         category = categorys_page[i]
         # text += f"{i + 1}. {category.name(lang)}\n"
