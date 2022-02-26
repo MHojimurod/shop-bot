@@ -1,3 +1,4 @@
+from re import L
 from click import BaseCommand
 from django.core.management.base import BaseCommand
 from telegram import *
@@ -57,7 +58,6 @@ class Buy:
                     "product_count_limit"), show_alert=True)
                 return SELECT_PRODUCT_COUNT
 
-            print(data[1], context.user_data['product']['count'])
             if context.user_data['product']['count_selected']:
                 context.user_data['product']['count'] = (context.user_data['product']['count'] * 10) + int(data[1])
                 context.user_data['product']['count_selected'] = True
@@ -100,4 +100,14 @@ class Buy:
                 db_user.language, context.user_data['buy']['pagination'], context), parse_mode="HTML")
             return SELECT_CATEGORY
 
-
+    def plus_minus_count(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        if update.callback_query:
+            data = update.callback_query.data.split(":")
+            if data[1] == "plus":
+                context.user_data['product']['count'] += 1
+            elif data[1] == "minus":
+                context.user_data['product']['count'] -= 1
+            context.user_data['tmp_message'] = user.send_photo(
+                **product_count_inline(db_user.language, context.user_data['buy']['product'], context), parse_mode="HTML")
+            return SELECT_PRODUCT_COUNT

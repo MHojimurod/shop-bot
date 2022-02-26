@@ -97,11 +97,11 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
     controls = []
 
     controls.append(InlineKeyboardButton(
-        "-", callback_data=f"product_count:{count - 1}")) if count > 1 else None
+        "-", callback_data=f"product_count:minus:{count - 1}")) if count > 1 else None
     controls.append(InlineKeyboardButton(
         count, callback_data=f"cancel_product"))
     controls.append(InlineKeyboardButton(
-        "+", callback_data=f"product_count:{count + 1}"))
+        "+", callback_data=f"product_count:plus:{count + 1}"))
     keyboard = []
     keyboard.append(controls)
     for line in distribute([InlineKeyboardButton(i, callback_data=f"product_count:{i}") for i in range(1, 10)], 3):
