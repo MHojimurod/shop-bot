@@ -52,8 +52,13 @@ class Register:
                 ), parse_mode="HTML")
                 return MENU
             else:
+<<<<<<< HEAD
                 context.user_data['tmp_message'] = user.send_message(
                     db_user.text("not_access"))
+=======
+               context.user_data['tmp_message'] = user.send_message(db_user.text("not_access")) 
+
+>>>>>>> 0d569f5750c42ac79be389778554b73be0af2d9f
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
@@ -76,6 +81,9 @@ class Register:
         user, db_user = get_user(update)
         context.user_data['register']['name'] = name = update.message.text
         lang = context.user_data['register']['language']
+        if not len(name.split()) > 1:
+            update.message.reply_text(i18n("invalid_name", lang))
+            return NAME
         context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("request_number", lang), reply_markup=ReplyKeyboardMarkup(
             [
                 [

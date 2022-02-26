@@ -7,7 +7,6 @@ from diller.utils import category_pagination_inline, product_pagination_inline, 
 
 from ..management.commands.constant import SELECT_CATEGORY, SELECT_PRODUCT, SELECT_PRODUCT_COUNT
 
-
 class Buy:
 
     @delete_tmp_message
@@ -48,6 +47,9 @@ class Buy:
         user, db_user = get_user(update)
         if update.callback_query:
             data = update.callback_query.data.split(":")
+            if int(data[1]) > 1000:
+                update.callback_query.answer(db_user.text("product_count_limit"), show_alert=True)
+                return SELECT_PRODUCT_COUNT
             context.user_data['product']['count'] = int(data[1])
             keyboard = product_count_inline(
                 db_user.language, context.user_data['buy']['product'], context)

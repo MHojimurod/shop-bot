@@ -24,11 +24,10 @@
             <div>
               <div class="filter-container p-0 row">
                 {% for i in checks %}
-                <div class="filtr-item col-3" data-category="3" data-sort="white sample">
-                  <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}} {{i.seller.number}}    
-                                                                          {{i.seller.region.uz_data}}   {{i.seller.district.uz_data}}    
-                                                                          {{i.serial}}">
-                    <img src="/{{i.img}}" class="img-fluid mb-2" alt="white sample"/>
+                <div class="filtr-item col-3" style="box-shadow: 0 5px 15px 0 rgba(0,0,0,0.2);" data-category="3" data-sort="white sample">
+                  <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}}   {{i.seller.number}}   
+                                                                          {{i.seller.region.uz_data}}   {{i.seller.district.uz_data}}   {{i.serial}}">
+                    <img src="/{{i.img}}" class="img-fluid mb-2" alt="white sample"/>Ismi: <i>{{i.seller.name}}</i>  Telefon: <i>{{i.seller.number}}</i><br>Viloyat: <i>{{i.seller.region.uz_data}}</i>  Tuman: <i>{{i.seller.district.uz_data}}</i><br>Seria: <i>{{i.serial}}</i>
                   </a>
                 </div>
                 {% endfor %}

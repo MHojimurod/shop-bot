@@ -125,18 +125,15 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             if diller:
                 busket:Busket = Busket.objects.filter(id=busket).first()
                 if busket:
-                    # try:
+                        
                         if status == 1:
                             self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_accepted'))
-                            
                             diller.balls += busket.balls
                             diller.save()
                         elif status == 2:
                             self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_delivered'))
                         elif status == 3:
                             self.bot.send_message(chat_id=diller.chat_id, text=diller.text('order_denied'))
-                    # except:
-                        # pass
         return "x"
 
     def update_status_prompt(self):

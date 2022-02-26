@@ -2,7 +2,7 @@ from telegram import *
 from telegram.ext import *
 from diller.models import Diller
 
-def get_user(update:Update):
+def get_user(update:Update) -> "tuple[User, Diller]":
     user = update.message.from_user if update.message else update.callback_query.from_user
     return user, Diller.objects.filter(chat_id=user.id).first()
 
