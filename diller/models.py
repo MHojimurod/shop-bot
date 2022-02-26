@@ -109,7 +109,7 @@ class Busket(models.Model):
         date = now-self.ordered_date
         for busket_item in self.items:
             res += (busket_item.product.diller_ball if date.days
-                < 3 else busket_item.product.diller_nasiya_ball) * busket_item.count    
+                <= 3 else busket_item.product.diller_nasiya_ball) * busket_item.count    
         return res
     
 
