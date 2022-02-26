@@ -77,7 +77,7 @@ class Register:
         context.user_data['register']['name'] = name = update.message.text
         lang = context.user_data['register']['language']
         if not len(name.split()) > 1:
-            update.message.reply_text(i18n("invalid_name", lang))
+            context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_name", lang))
             return NAME
         context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("request_number", lang), reply_markup=ReplyKeyboardMarkup(
             [
