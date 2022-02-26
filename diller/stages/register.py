@@ -109,7 +109,7 @@ class Register:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if region:
             context.user_data['register']['region'] = region
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("select_district", lang), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=region)
                 ], 2), resize_keyboard=True
