@@ -53,7 +53,7 @@ class Buy:
             data = update.callback_query.data.split(":")
             
             
-            if int(data[1]) > 1000 or (context.user_data['product']['count'] * 10) + int(data[1]) > 1000:
+            if int(data[1]) > 1000 or (context.user_data['product']['count'] * 10) + (int(data[1]) if data[-1] != "zero" else 0) > 1000:
                 print(data[1])
                 print((context.user_data['product']
                       ['count'] * 10) + int(data[1]), data[1])
