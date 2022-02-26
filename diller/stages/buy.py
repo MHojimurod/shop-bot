@@ -103,6 +103,7 @@ class Buy:
     def plus_minus_count(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         if update.callback_query:
+            context.user_data['product']['count_selected'] = True
             data = update.callback_query.data.split(":")
             if data[1] == "plus":
                 context.user_data['product']['count'] += 1
