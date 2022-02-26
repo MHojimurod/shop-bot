@@ -51,7 +51,7 @@ class Buy:
                 update.callback_query.answer(db_user.text("product_count_limit"), show_alert=True)
                 return SELECT_PRODUCT_COUNT
 
-            
+            print(data[1], context.user_data['product']['count'])
             if context.user_data['product']['count'] != data[1]:
                 context.user_data['product']['count'] = ((context.user_data['product']['count'] * 10) + int(
                     data[1]) if context.user_data['product']['count'] > 1 else int(data[1]))
