@@ -108,6 +108,9 @@ class Buy:
                 context.user_data['product']['count'] += 1
             elif data[1] == "minus":
                 context.user_data['product']['count'] -= 1
-            context.user_data['tmp_message'] = user.send_photo(
-                **product_count_inline(db_user.language, context.user_data['buy']['product'], context), parse_mode="HTML")
+            data = product_count_inline(
+                db_user.language, context.user_data['buy']['product'], context)
+            data.pop('photo')
+            context.user_data['tmp_message'] = update.callback_query.message.edit_caption(
+                **data, parse_mode="HTML")
             return SELECT_PRODUCT_COUNT
