@@ -1,5 +1,3 @@
-from email.message import Message
-import threading
 from uuid import uuid4
 from django import db
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
@@ -29,7 +27,7 @@ from .constant import (
     PASSPORT_PHOTO,
     SHOP_PASSPORT_PHOTO
 )
-from flask import Flask, request, request_finished
+
 
 from seller.stages import MainHandlers
 
@@ -102,7 +100,7 @@ class Bot(Updater, MainHandlers):
                 NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all, )],
                 REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all, incorrect_region)],
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all, incorrect_district)],
-                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all, )],
+                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all, incorrect_shop_location)],
                 PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all, invalid_passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
                 SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all, invalid_shop_passport_photo)],
