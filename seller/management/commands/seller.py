@@ -79,7 +79,7 @@ def incorrect_district(update: Update, context: CallbackContext):
 
 def incorrect_shop_location(update: Update, context: CallbackContext):
     update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
-        [[KeyboardButton(i18n('request_location', context.user_data['register']['language']))]]))
+        [[KeyboardButton(i18n('request_location', context.user_data['register']['language']))]], resize_keyboard=True))
     return SHOP_LOCATION
 
 
