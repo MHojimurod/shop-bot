@@ -123,7 +123,7 @@ class MainHandlers:
                     region.name(lang) for region in District.objects.filter(region=context.user_data['register']['region'])
                 ], 2), resize_keyboard=True
             ), parse_mode="HTML")
-            return SHOP_LOCATION
+            return DISTRICT
     @delete_tmp_message
     def shop(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
