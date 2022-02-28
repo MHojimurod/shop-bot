@@ -44,7 +44,14 @@ def register_incorrent_data(message:str, state:int, reply_markup=ReplyKeyboardRe
 
 def invalid_number(update: Update, context: CallbackContext):
     user, db_user = get_user(update)
-    update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
+    update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+        [
+            [
+                KeyboardButton(i18n("send_number", lang),
+                               request_contact=True),
+            ]
+        ], resize_keyboard=True
+    ))
     return NUMBER
 
 
@@ -97,13 +104,13 @@ class Bot(Updater, MainHandlers):
             states={
                 LANGUAGE: [MessageHandler(Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.language)],
                 NAME: [MessageHandler(Filters.text & not_start, self.name)],
-                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all, invalid_number)],
-                REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all, incorrect_region)],
-                DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all, incorrect_district)],
-                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all, incorrect_shop_location)],
-                PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all, invalid_passport_photo)],
+                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all & not_start, invalid_number)],
+                REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all & not_start, incorrect_region)],
+                DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all & not_start, incorrect_district)],
+                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, incorrect_shop_location)],
+                PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all & not_start, invalid_passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
-                SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all, invalid_shop_passport_photo)],
+                SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all & not_start, invalid_shop_passport_photo)],
                 
                 MENU: [
                     MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
