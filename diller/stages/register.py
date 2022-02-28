@@ -21,7 +21,8 @@ class Register:
     # @delete_tmp_message
 
     def start(self, update: Update, context: CallbackContext, delete: bool = True):
-        if delete:
+        user, db_user = get_user(update)
+        if delete and db_user:
             try:
                 update.message.delete() if update.message else update.callback_query.message.delete()
             except:
@@ -32,7 +33,6 @@ class Register:
                 except:
                     pass
 
-        user, db_user = get_user(update)
         context.user_data['register'] = {
             "chat_id": user.id,
         }
@@ -52,7 +52,7 @@ class Register:
                 ), parse_mode="HTML")
                 return MENU
             else:
-               context.user_data['tmp_message'] = user.send_message(db_user.text("not_access")) 
+               context.user_data['tmp_message'] = user.send_message(db_user.text("not_access"))
 
     @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
@@ -77,7 +77,7 @@ class Register:
         context.user_data['register']['name'] = name = update.message.text
         lang = context.user_data['register']['language']
         if not len(name.split()) > 1:
-            update.message.reply_text(i18n("invalid_name", lang))
+            context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_name", lang))
             return NAME
         context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("request_number", lang), reply_markup=ReplyKeyboardMarkup(
             [
@@ -109,7 +109,7 @@ class Register:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if region:
             context.user_data['register']['region'] = region
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("select_district", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("select_district", lang), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=region)
                 ], 2), resize_keyboard=True
