@@ -41,7 +41,7 @@ def register_incorrent_data(message:str, state:int, reply_markup=ReplyKeyboardRe
     return wrapper
 
 
-
+@delete_tmp_message
 def invalid_number(update: Update, context: CallbackContext):
     user, db_user = get_user(update)
     update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
@@ -55,6 +55,7 @@ def invalid_number(update: Update, context: CallbackContext):
     return NUMBER
 
 
+@delete_tmp_message
 def incorrect_region(update: Update, context: CallbackContext):
     user, db_user = get_user(update)
     update.message.reply_text(i18n("incorrect_region", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
@@ -65,6 +66,7 @@ def incorrect_region(update: Update, context: CallbackContext):
     return REGION
 
 
+@delete_tmp_message
 def incorrect_district(update: Update, context: CallbackContext):
     user, db_user = get_user(update)
     update.message.reply_text(i18n("incorrect_districtn", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
@@ -77,19 +79,23 @@ def incorrect_district(update: Update, context: CallbackContext):
 
 
 
+@delete_tmp_message
 def incorrect_shop_location(update: Update, context: CallbackContext):
     update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
         [[KeyboardButton(i18n('request_location', context.user_data['register']['language']))]], resize_keyboard=True))
     return SHOP_LOCATION
 
 
+@delete_tmp_message
 def invalid_passport_photo(update: Update, context: CallbackContext):
     update.message.reply_text(i18n("invalid_passport_photo", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
     return PASSPORT_PHOTO
 
+@delete_tmp_message
 def invalid_shop_passport_photo(update: Update, context: CallbackContext):
     update.message.reply_text(i18n("invalid_shop_passport_photo", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
     return SHOP_PASSPORT_PHOTO
+
 
 class Bot(Updater, MainHandlers):
     def __init__(self, token: str = None):
