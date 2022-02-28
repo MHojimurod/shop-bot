@@ -2,7 +2,7 @@ from uuid import uuid4
 from django import db
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
 from admin_panel.models import BaseProduct, District, Gifts, Regions, Text,  i18n
 from diller.management.commands.decorators import delete_tmp_message, distribute
 from seller.management.commands.decorators import get_user
@@ -47,7 +47,7 @@ def invalid_number(update: Update, context: CallbackContext):
     update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
         [
             [
-                KeyboardButton(i18n("send_number", lang),
+                KeyboardButton(i18n("send_number", context.user_data['register']['language']),
                                request_contact=True),
             ]
         ], resize_keyboard=True
