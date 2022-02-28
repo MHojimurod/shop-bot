@@ -252,7 +252,7 @@ class Bot(Updater, MainHandlers):
     @delete_tmp_message
     def incorrect_shop_location(self, update: Update, context: CallbackContext):
         context.user_data['tmp_message'] = update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
-            [[KeyboardButton(i18n('request_location', context.user_data['register']['language']))]], resize_keyboard=True))
+            [[KeyboardButton(i18n('request_location', context.user_data['register']['language']),request_location=True)]], resize_keyboard=True))
         return SHOP_LOCATION
 
 
