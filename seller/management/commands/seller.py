@@ -97,7 +97,7 @@ class Bot(Updater, MainHandlers):
             states={
                 LANGUAGE: [MessageHandler(Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.language)],
                 NAME: [MessageHandler(Filters.text & not_start, self.name)],
-                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all, )],
+                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all, invalid_number)],
                 REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all, incorrect_region)],
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all, incorrect_district)],
                 SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all, incorrect_shop_location)],
