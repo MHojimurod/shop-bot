@@ -1,5 +1,6 @@
 from uuid import uuid4
 from django import db
+from flask import Flask, request
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
@@ -77,7 +78,25 @@ class Bot(Updater, MainHandlers):
         self.dispatcher.add_handler(self.conversation)
         self.start_polling()
         print('polling')
-        self.idle()
+
+        server = Flask(__name__)
+        print('x')
+
+        server.route('/delete_seller',
+                     methods=['POST', 'GET'])(self.delete_seller)
+
+        server.run("127.0.0.1", port=6002)
+    
+    def delete_seller(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            seller:Seller = Seller.objects.filter(id=data['id'])
+            self.bot.send_message(chat_id=seller.chat_id, text=seller.text('you_are_deleted'), reply_markup=ReplyKeyboardRemove())
+            seller.delete()
+            return 'ok'
+        return 'error'
+        
         
     @delete_tmp_message
     def cvitation(self, update:Update, context:CallbackContext):
