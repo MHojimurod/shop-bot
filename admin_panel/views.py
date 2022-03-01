@@ -75,7 +75,7 @@ def diller_delete(request, pk):
 @login_required_decorator
 def seller_delete(request, pk):
     model = Seller.objects.get(pk=pk)
-    requests.get(f"http://127.0.0.1:6002/delete_seller", json={"data": {
+    requests.get(f"http://127.0.0.1:6003/delete_seller", json={"data": {
         "id": pk,
     }})
     return redirect("sellers_list")
