@@ -91,7 +91,7 @@ class Bot(Updater, MainHandlers):
         data = request.get_json()
         if data:
             data = data['data']
-            seller:Seller = Seller.objects.filter(id=data['id'])
+            seller:Seller = Seller.objects.filter(id=data['id']).first()
             self.bot.send_message(chat_id=seller.chat_id, text=seller.text('you_are_deleted'), reply_markup=ReplyKeyboardRemove())
             seller.delete()
             return 'ok'
