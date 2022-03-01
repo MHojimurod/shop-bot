@@ -8,7 +8,7 @@ from seller.models import Seller
 
 class MainHandlers:
     def start(self, update: Update, context: CallbackContext, delete:bool=True):
-        if delete:
+        if delete and db_user:
             try:
                 update.message.delete() if update.message else update.callback_query.message.delete()
             except: pass
