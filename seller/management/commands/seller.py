@@ -85,7 +85,7 @@ class Bot(Updater, MainHandlers):
         server.route('/delete_seller',
                      methods=['POST', 'GET'])(self.delete_seller)
 
-        server.run("127.0.0.1", port=6002)
+        server.run("127.0.0.1", port=6003)
     
     def delete_seller(self):
         data = request.get_json()
