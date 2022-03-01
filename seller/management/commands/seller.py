@@ -249,7 +249,7 @@ class Bot(Updater, MainHandlers):
     @delete_tmp_message
     def incorrect_region(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
-        context.user_data['tmp_message'] = update.message.reply_text(i18n("incorrect_region", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("region_not_found", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
             distribute([
                 region.name(context.user_data['register']['language']) for region in Regions.objects.all()
             ], 2), resize_keyboard=True
@@ -260,7 +260,7 @@ class Bot(Updater, MainHandlers):
     @delete_tmp_message
     def incorrect_district(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
-        context.user_data['tmp_message'] = update.message.reply_text(i18n("incorrect_districtn", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("district_not_found", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
             distribute([
                 region.name(context.user_data['register']['language']) for region in District.objects.all()
             ], 2), resize_keyboard=True
