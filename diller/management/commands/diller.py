@@ -3,9 +3,9 @@ from django.core.management.base import BaseCommand
 from flask import Flask, request
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                             Filters, ConversationHandler, CallbackContext, CallbackQueryHandler)
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
-from admin_panel.models import BaseProduct, Promotion, Promotion_Order, Text, i18n
-from diller.management.commands.decorators import delete_tmp_message, get_user
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
+from admin_panel.models import BaseProduct, District, Promotion, Promotion_Order, Regions, Text, i18n
+from diller.management.commands.decorators import delete_tmp_message, distribute, get_user
 
 from diller.stages.busket import BusketHandlers
 from diller.utils import promotion_keyboard
@@ -58,9 +58,9 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             states={
                 LANGUAGE: [MessageHandler(Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.language)],
                 NAME: [MessageHandler(Filters.text & not_start, self.name)],
-                NUMBER: [MessageHandler(Filters.contact & not_start, self.number)],
-                REGION: [MessageHandler(Filters.text & not_start, self.region)],
-                DISTRICT: [MessageHandler(Filters.text & not_start, self.district)],
+                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all & not_start, self.invalid_number)],
+                REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all & not_start, self.incorrect_region)],
+                DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all & not_start, self.incorrect_district)],
                 MENU: [
                     MessageHandler(Filters.regex(
                         "^(Sotib olish|Купить)"), self.buy),
@@ -269,6 +269,39 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                 ], resize_keyboard=True
             ), parse_mode="HTML")
             return SELECT_NEW_LANGUAGE
+    
+    @delete_tmp_message
+    def invalid_number(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            [
+                [
+                    KeyboardButton(i18n("send_number", context.user_data['register']['language']),
+                                   request_contact=True),
+                ]
+            ], resize_keyboard=True
+        ))
+        return NUMBER
+    
+    @delete_tmp_message
+    def incorrect_region(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("region_not_found", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            distribute([
+                region.name(context.user_data['register']['language']) for region in Regions.objects.all()
+            ], 2), resize_keyboard=True
+        ))
+        return REGION
+
+    @delete_tmp_message
+    def incorrect_district(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("district_not_found", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            distribute([
+                region.name(context.user_data['register']['language']) for region in District.objects.all()
+            ], 2), resize_keyboard=True
+        ))
+        return REGION
 
 work = Bot(TOKEN)
 
