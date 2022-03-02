@@ -59,6 +59,8 @@ urlpatterns = [
 
 
     path('solds/', solds,name="solds"),
+    path('diller_sold/<int:pk>/', diller_sold,name="diller_sold"),
+    path('series/<str:strs>/<int:pk>', series,name="series"),
     path('sold_create/', sold_create,name="sold_create"),
 
 

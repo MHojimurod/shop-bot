@@ -23,10 +23,6 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Сотилаганлар</h3>
-
-                <div class="card-tools">
-                    <a href="{% url 'sold_create' %}"><div class="btn btn-block btn-success">Добавлять</div></a>
-                </div>
               </div>
 
               <div class="card-body table-responsive p-0">
@@ -34,20 +30,18 @@
                   <thead>
                     <tr>
                       <th>№</th>
-                      <th>Диллер</th>
-                      <th>Viloyat</th>
-                      <th>Maxsulotlar</th>
-                      <th>Сони</th>
+                      <th>Махсулот</th>
+                      <th>Serai Nomer</th>
+                      <th>Sana</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for i in baseproduct %}
+                    {% for i in data %}
                       <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td><a href="/diller_sold/{{i.diller.id}}">{{ i.diller.name }}</a></td>
-                        <td><a href="/diller_sold/{{i.diller.id}}">{{ i.diller.region.uz_data }}</a></td>
-                        <td><a href="/diller_sold/{{i.diller.id}}">Maxsulotlar</a></td>
-                        <td>{{ i.count }} шт</td>
+                        <td>{{i.product.name_uz}}</td>
+                        <td>{{i.serial_number}}</td>
+                        <td>{{i.date|date:"d/m/Y H:i"}}</td>
                       </tr>
                     {% endfor %}
                   </tbody>

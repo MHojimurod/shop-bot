@@ -138,8 +138,8 @@ class SoldForm(forms.ModelForm):
                 'class': "form-control select2 select2-hidden-accessible",
                 
                 }),
-            'serial_number': forms.TextInput(attrs={
-                'class': "form-control ","value":124343
+            'serial_number': forms.Textarea(attrs={
+                'class': "form-control "
                 
                 })
         }
