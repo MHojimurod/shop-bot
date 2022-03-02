@@ -141,7 +141,7 @@ class Register:
                 "wait_accept"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return -1
         else:
-            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("district_not_found",), reply_markup=ReplyKeyboardMarkup(
                 distribute([
                     region.name(lang) for region in District.objects.filter(region=context.user_data['register']['region'])
                 ], 2), resize_keyboard=True

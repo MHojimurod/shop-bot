@@ -1,7 +1,3 @@
-
-
-
-from tracemalloc import start
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
 from admin_panel.models import District, Regions, Text, i18n
@@ -12,7 +8,8 @@ from seller.models import Seller
 
 class MainHandlers:
     def start(self, update: Update, context: CallbackContext, delete:bool=True):
-        if delete:
+        user, db_user = get_user(update)
+        if delete and db_user:
             try:
                 update.message.delete() if update.message else update.callback_query.message.delete()
             except: pass
@@ -21,7 +18,6 @@ class MainHandlers:
                     context.user_data['tmp_message'].delete()
                 except:pass
         
-        user, db_user = get_user(update)
         context.user_data['register'] = {
             "chat_id": user.id,
         }
@@ -62,6 +58,10 @@ class MainHandlers:
         user, db_user = get_user(update)
         context.user_data['register']['name'] = name = update.message.text
         lang = context.user_data['register']['language']
+        if not len(name.split()) > 1:
+            context.user_data['tmp_message'] = update.message.reply_text(
+                i18n("invalid_name", lang))
+            return NAME
         context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(i18n("request_number", lang), reply_markup=ReplyKeyboardMarkup(
             [
                 [
@@ -115,7 +115,7 @@ class MainHandlers:
             **{"uz_data" if lang == 0 else "ru_data": update.message.text}).first()
         if district:
             context.user_data['register']['district'] = district
-            context.user_data['tmp_message'] = user.send_message(i18n("shop_location",lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+            context.user_data['tmp_message'] = user.send_message(i18n("shop_location",lang), reply_markup=ReplyKeyboardMarkup([[KeyboardButton(i18n('request_location', lang),request_location=True)]], resize_keyboard=True), parse_mode="HTML")
             return SHOP_LOCATION
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
@@ -123,7 +123,7 @@ class MainHandlers:
                     region.name(lang) for region in District.objects.filter(region=context.user_data['register']['region'])
                 ], 2), resize_keyboard=True
             ), parse_mode="HTML")
-            return SHOP_LOCATION
+            return DISTRICT
     @delete_tmp_message
     def shop(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)

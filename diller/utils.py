@@ -132,8 +132,10 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
 def busket_keyboard(user: Diller, context:CallbackContext):
     text:str = f"<b>Cart</b>\n\n"
     keyboard:list = []
+    total = 0
     for item in user.busket.items:
         text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {money(item.count * item.product.price, True, user.language)}</b>\n"
+        total += item.count * item.product.price
         controls = []
         if item.count > 1:
             controls.append(InlineKeyboardButton("-", callback_data=f"busket_item_count:{item.id}:{item.count - 1}"))
@@ -151,7 +153,7 @@ def busket_keyboard(user: Diller, context:CallbackContext):
         i18n("add_again_btn",user.language), callback_data=f"continue")])
     keyboard.append([InlineKeyboardButton(
         i18n("back_btn",user.language), callback_data=f"back")])
-
+    text += f"{user.text('total')}: {total}\n"
     return {
         "text": text,
         "reply_markup": InlineKeyboardMarkup(keyboard)

@@ -1,10 +1,9 @@
-from email.message import Message
-import threading
 from uuid import uuid4
 from django import db
+from flask import Flask, request
 from telegram.ext import (Updater, Filters, CallbackQueryHandler, CallbackContext, ConversationHandler, CommandHandler, MessageHandler)
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update, User
 from admin_panel.models import BaseProduct, District, Gifts, Regions, Text,  i18n
 from diller.management.commands.decorators import delete_tmp_message, distribute
 from seller.management.commands.decorators import get_user
@@ -29,61 +28,15 @@ from .constant import (
     PASSPORT_PHOTO,
     SHOP_PASSPORT_PHOTO
 )
-from flask import Flask, request, request_finished
+
 
 from seller.stages import MainHandlers
 
 user: User = None
 db_user: Seller = None
 
-def register_incorrent_data(message:str, state:int, reply_markup=ReplyKeyboardRemove()):
-    def wrapper(update: Update, context: CallbackContext):
-        update.message.reply_text(message, reply_markup="HTML") if update.message else update.callback_query.message.reply_text    (message, reply_markup=reply_markup)
-        return state
-    return wrapper
 
 
-
-def invalid_number(update: Update, context: CallbackContext):
-    user, db_user = get_user(update)
-    update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
-    return NUMBER
-
-
-def incorrect_region(update: Update, context: CallbackContext):
-    user, db_user = get_user(update)
-    update.message.reply_text(i18n("incorrect_region", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
-        distribute([
-            region.name(context.user_data['register']['language']) for region in Regions.objects.all()
-        ], 2), resize_keyboard=True
-    ))
-    return REGION
-
-
-def incorrect_district(update: Update, context: CallbackContext):
-    user, db_user = get_user(update)
-    update.message.reply_text(i18n("incorrect_districtn", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
-        distribute([
-            region.name(context.user_data['register']['language']) for region in District.objects.all()
-        ], 2), resize_keyboard=True
-    ))
-    return REGION
-
-
-
-
-def incorrect_shop_location(update: Update, context: CallbackContext):
-    update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup())
-    return SHOP_LOCATION
-
-
-def invalid_passport_photo(update: Update, context: CallbackContext):
-    update.message.reply_text(i18n("invalid_passport_photo", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
-    return PASSPORT_PHOTO
-
-def invalid_shop_passport_photo(update: Update, context: CallbackContext):
-    update.message.reply_text(i18n("invalid_shop_passport_photo", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
-    return SHOP_PASSPORT_PHOTO
 
 class Bot(Updater, MainHandlers):
     def __init__(self, token: str = None):
@@ -99,13 +52,13 @@ class Bot(Updater, MainHandlers):
             states={
                 LANGUAGE: [MessageHandler(Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.language)],
                 NAME: [MessageHandler(Filters.text & not_start, self.name)],
-                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all, )],
-                REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all, incorrect_region)],
-                DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all, incorrect_district)],
-                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all, )],
-                PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all, invalid_passport_photo)],
+                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all & not_start, self.invalid_number)],
+                REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all & not_start, self.incorrect_region)],
+                DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all & not_start, self.incorrect_district)],
+                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
+                PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all & not_start, self.invalid_passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
-                SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all, invalid_shop_passport_photo)],
+                SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all & not_start, self.invalid_shop_passport_photo)],
                 
                 MENU: [
                     MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
@@ -125,7 +78,25 @@ class Bot(Updater, MainHandlers):
         self.dispatcher.add_handler(self.conversation)
         self.start_polling()
         print('polling')
-        self.idle()
+
+        server = Flask(__name__)
+        print('x')
+
+        server.route('/delete_seller',
+                     methods=['POST', 'GET'])(self.delete_seller)
+
+        server.run("127.0.0.1", port=6003)
+    
+    def delete_seller(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            seller:Seller = Seller.objects.filter(id=data['id']).first()
+            self.bot.send_message(chat_id=seller.chat_id, text=seller.text('you_are_deleted'), reply_markup=ReplyKeyboardRemove())
+            seller.delete()
+            return 'ok'
+        return 'error'
+        
         
     @delete_tmp_message
     def cvitation(self, update:Update, context:CallbackContext):
@@ -257,6 +228,71 @@ class Bot(Updater, MainHandlers):
                 ], resize_keyboard=True
             ), parse_mode="HTML")
             return SELECT_NEW_LANGUAGE
+    
+
+
+
+    @delete_tmp_message
+    def invalid_number(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            [
+                [
+                    KeyboardButton(i18n("send_number", context.user_data['register']['language']),
+                                   request_contact=True),
+                ]
+            ], resize_keyboard=True
+        ))
+        return NUMBER
+
+
+    @delete_tmp_message
+    def incorrect_region(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("region_not_found", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            distribute([
+                region.name(context.user_data['register']['language']) for region in Regions.objects.all()
+            ], 2), resize_keyboard=True
+        ))
+        return REGION
+
+
+    @delete_tmp_message
+    def incorrect_district(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("district_not_found", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            distribute([
+                region.name(context.user_data['register']['language']) for region in District.objects.all()
+            ], 2), resize_keyboard=True
+        ))
+        return REGION
+
+
+    @delete_tmp_message
+    def incorrect_shop_location(self, update: Update, context: CallbackContext):
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
+            [[KeyboardButton(i18n('request_location', context.user_data['register']['language']),request_location=True)]], resize_keyboard=True))
+        return SHOP_LOCATION
+
+
+    @delete_tmp_message
+    def invalid_passport_photo(self, update: Update, context: CallbackContext):
+        context.user_data['tmp_message'] = update.message.reply_text(i18n(
+            "invalid_passport_photo", context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
+        return PASSPORT_PHOTO
+
+
+    @delete_tmp_message
+    def invalid_shop_passport_photo(self, update: Update, context: CallbackContext):
+        context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_shop_passport_photo",
+                                  context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
+        return SHOP_PASSPORT_PHOTO
 
 
 x = Bot(TOKEN)
+
+from django.core.management.base import BaseCommand
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        pass
