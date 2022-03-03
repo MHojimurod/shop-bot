@@ -63,7 +63,7 @@ class Busket(models.Model):
     diller = models.ForeignKey(Diller, on_delete=models.CASCADE)
     status = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))
 
-    payment_type = models.IntegerField(choices=((0, "Naqd"), (1, "Nasiya")), null=True, blank=True)
+    payment_type = models.IntegerField(choices=((0, "Variant 1"), (1, "Variant 2")), null=True, blank=True)
     ordered_date = models.DateTimeField(null=True, blank=True)
 
     is_ordered = models.BooleanField(default=False)
