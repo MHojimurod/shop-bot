@@ -101,8 +101,12 @@ def reject_check(requset,seria):
     cv = Cvitation.objects.filter(serial=seria)
     if product:
         product.update(is_active=False)
+        seller =  Seller.objects.filter(id=cv.first().seller.id)
+        seller.update(balls=seller.first().balls-product.first().seller_ball)
         requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
         "id": cv.first().seller.id,
+        "serial":seria,
+        "ball":product.first().seller_ball
     }})
         os.remove(cv.first().img.path)
         cv.delete()
@@ -165,7 +169,6 @@ def products(request, category_id):
         "category": category,
     }
     return render(request, "dashboard/product/list.html", ctx)
-
 
 @login_required_decorator
 def product_create(request, pk):
@@ -381,13 +384,17 @@ def settings_edit(request, pk):
 def orders(request):
     busket = Busket.objects.filter(status__in=[0, 1], is_ordered=True)
     data = []
+    a = {"total": 0,}
+    sub_total = 0
     for i in busket:
         diller = i.diller
 
         text = ""
         ball = 0
         for j in Busket_item.objects.filter(busket=i):
-            text += f"{j.product.name_uz} x {j.count} = {j.product.price * j.count}<br>"
+            text += f"{j.product.name_uz} x <b>{j.count}</b> = {j.product.price * j.count}<br>"
+            a["total"]+= j.product.price * j.count
+            sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
 
         data.append(
@@ -395,10 +402,47 @@ def orders(request):
                 "diller": diller,
                 "text": text,
                 "ball": ball,
-                "busket": i
+                "busket": i,
+                "sub_total":sub_total
             })
+        sub_total = 0
     ctx = {
         "items": data,
+        "total": a,
+        "dil_active": "active"
+
+    }
+
+    return render(request, "dashboard/order/list.html", ctx)
+@login_required_decorator
+def send_orders(request):
+    busket = Busket.objects.filter(status__in=[2, 4], is_ordered=True)
+    data = []
+    a = {"total": 0,}
+    sub_total = 0
+    for i in busket:
+        diller = i.diller
+
+        text = ""
+        ball = 0
+        for j in Busket_item.objects.filter(busket=i):
+            text += f"{j.product.name_uz} x <b>{j.count}</b> = {j.product.price * j.count}<br>"
+            a["total"]+= j.product.price * j.count
+            sub_total += j.product.price * j.count
+            ball += j.product.diller_ball*j.count
+
+        data.append(
+            {
+                "diller": diller,
+                "text": text,
+                "ball": ball,
+                "busket": i,
+                "sub_total":sub_total
+            })
+        sub_total = 0
+    ctx = {
+        "items": data,
+        "total": a,
         "dil_active": "active"
 
     }
