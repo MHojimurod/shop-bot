@@ -111,6 +111,13 @@ def reject_check(requset,seria):
         os.remove(f"{cv.first().img.name}")
         cv.delete()
         return redirect("checks")
+    else:
+        try:
+            os.remove(f"{cv.first().img.name}")
+            cv.delete()
+            return redirect("checks")
+        except:return redirect("checks")
+
 
 
 @login_required_decorator
