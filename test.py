@@ -50,6 +50,48 @@
 # # print(len(string[-1]))
 
 
+<<<<<<< HEAD
+
+import time
+
+
+x = -123
+data = ""
+# while x != 0:
+#     if "-" in str(x):
+#         print("aa",x)
+#         data += "-"
+#         x = int(x)*-1
+#         print(x)
+#     y=x%pow(10,(len(str(x))-1))
+#     print(y)
+#     time.sleep(1)
+    
+    
+#     data+=str(y)
+#     x = x//10**(len(str(x))-1)
+#     print(x,"ya")
+#     time.sleep(1)
+#     # print(x)
+# # print(data)
+
+# y = [ i for i in str(x) ] if x > 0 else x
+# y.reverse()
+# res = "".join(y)
+
+# print(y)
+
+class Solution(object):
+    def reverse(self, x):
+        y = [ i for i in str(x) if i != "-"]
+        y.reverse()
+        res = "".join(y)
+        return int(res) if x > 0 else -int(res)
+
+print(
+    Solution().reverse(-120)
+)
+=======
 class Solution:
     def moveZeroes(self, nums: "List[int]") -> None:
         """
@@ -80,3 +122,4 @@ s.moveZeroes([0,0,1])
 
 def is_even(n):
     return n % 2 == 0
+>>>>>>> ea5b30747a4e68c60a82b42613374922b8b2d6e8
