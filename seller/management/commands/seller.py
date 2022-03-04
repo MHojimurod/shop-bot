@@ -84,9 +84,29 @@ class Bot(Updater, MainHandlers):
 
         server.route('/delete_seller',
                      methods=['POST', 'GET'])(self.delete_seller)
+        server.route('/reject_check',
+                     methods=['POST', 'GET'])(self.reject_ball)
+        
 
         server.run("127.0.0.1", port=6003)
     
+
+
+
+    def reject_ball(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            seller: Seller = Seller.objects.filter(id=data['id']).first()
+            if seller:
+                try:
+                    self.bot.send_message(seller.text("reject_check_text").format(serial=data['serial'], ball=data['ball']), seller.chat_id)
+                except:
+                    pass
+            return 'ok'
+        return 'error'
+
+
     def delete_seller(self):
         data = request.get_json()
         if data:
