@@ -1,8 +1,10 @@
 import datetime
+import os
 import pstats
 from pyexpat import model
 import re
 from django.shortcuts import render, redirect
+from itsdangerous import Serializer
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
@@ -92,6 +94,19 @@ def checks(request):
         "ch_active": "menu-open"
     }
     return render(request, "dashboard/checks.html", ctx)
+
+@login_required_decorator
+def reject_check(requset,seria):
+    product = BaseProduct.objects.filter(serial_number=seria)
+    cv = Cvitation.objects.filter(serial=seria)
+    if product:
+        product.update(is_active=False)
+        requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
+        "id": cv.first().seller.id,
+    }})
+        os.remove(cv.first().img.path)
+        cv.delete()
+        return redirect("checks")
 
 
 @login_required_decorator

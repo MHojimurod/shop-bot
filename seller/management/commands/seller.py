@@ -130,7 +130,9 @@ class Bot(Updater, MainHandlers):
                     requests.get("http://127.0.0.1:6002/sale", json={"data": {
                         "serial_number":update.message.text,
                         "username":user.username,
-                        "name":db_user.name
+                        "name":db_user.name,
+                        "name":db_user.phone,
+                        "name":db_user.region,
                     }})
                 except:
                     pass

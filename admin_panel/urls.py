@@ -15,7 +15,9 @@ urlpatterns = [
     path('diller_update/<int:pk>/<int:status>/', diller_update,name="diller_update"),
     path('diller_delete/<int:pk>/', diller_delete,name="diller_delete"),
     path('seller_delete/<int:pk>/', seller_delete,name="seller_delete"),
+
     path('checks', checks,name="checks"),
+    path('reject_check/<int:seria>', reject_check,name="reject_check"),
 
 
 

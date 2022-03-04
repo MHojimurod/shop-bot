@@ -177,7 +177,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             data = data['data']
             product = BaseProduct.objects.filter(serial_number=data['serial_number'])
             product = product.first()
-            self.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name_uz if product.diller.language == 0 else product.product.name_ru}\nSeria raqami: {data['serial_number']}\nSotuvchi: {data['name']} (@{data['username']})")
+            self.bot.send_message(product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name_uz if product.diller.language == 0 else product.product.name_ru}\nSeria raqami: {data['serial_number']}\nSotuvchi: {data['name']} (@{data['username']})\nTelefon: {data['number']}\nViloyat: {data['region']}")
         return "x"
 
     def promotion(self):
