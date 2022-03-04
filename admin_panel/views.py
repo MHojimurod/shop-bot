@@ -108,7 +108,7 @@ def reject_check(requset,seria):
         "serial":seria,
         "ball":product.first().product.seller_ball
     }})
-        os.remove(cv.first().img.path)
+        os.remove(f"{cv.first().img.name}")
         cv.delete()
         return redirect("checks")
 
