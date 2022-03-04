@@ -106,7 +106,7 @@ def reject_check(requset,seria):
         requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
         "id": cv.first().seller.id,
         "serial":seria,
-        "ball":product.first().seller_ball
+        "ball":product.first().product.seller_ball
     }})
         os.remove(cv.first().img.path)
         cv.delete()
