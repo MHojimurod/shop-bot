@@ -102,7 +102,7 @@ def reject_check(requset,seria):
     if product:
         product.update(is_active=False)
         seller =  Seller.objects.filter(id=cv.first().seller.id)
-        seller.update(balls=seller.first().balls-product.first().seller_ball)
+        seller.update(balls=seller.first().balls-product.first().product.seller_ball)
         requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
         "id": cv.first().seller.id,
         "serial":seria,
