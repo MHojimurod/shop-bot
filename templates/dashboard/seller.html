@@ -58,7 +58,6 @@
                   <th>ПФ</th>
                   <th>Тил</th>
                   <th>Балл</th>
-                  <th>Сана</th>
                   <th>Ўчириш</th>
                 </tr>
               </thead>
@@ -76,7 +75,6 @@
                   <td><a href="/media/{{i.passport_photo}}">ПФ</a></td>
                   <td>{{i.get_language_display}}</td>
                   <td>{{i.balls}}</td>
-                  <td>{{i.created_at|date:"d-m-Y H:i"}}</td>
                   <td>
                     <a href="{% url 'seller_delete' i.pk %}" class="btn btn-xs btn-danger"
                       ><i class="p-1 far fa-trash-alt"></i></a>
