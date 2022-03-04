@@ -153,7 +153,7 @@ def busket_keyboard(user: Diller, context:CallbackContext):
         i18n("add_again_btn",user.language), callback_data=f"continue")])
     keyboard.append([InlineKeyboardButton(
         i18n("back_btn",user.language), callback_data=f"back")])
-    text += f"{user.text('total')}: {total}\n"
+    text += f"<b>{user.text('total')}: {total}</b>\n"
     return {
         "text": text,
         "reply_markup": InlineKeyboardMarkup(keyboard)

@@ -447,7 +447,7 @@ def send_orders(request):
 
     }
 
-    return render(request, "dashboard/order/list.html", ctx)
+    return render(request, "dashboard/order/send_orders.html", ctx)
 
 
 @login_required_decorator
