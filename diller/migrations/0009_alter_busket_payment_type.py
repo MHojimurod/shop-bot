@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='busket',
             name='payment_type',
-            field=models.IntegerField(blank=True, choices=[(0, 'Naqd'), (1, 'Nasiya')], null=True),
+            field=models.IntegerField(blank=True, choices=[(0, 'Variant 1'), (1, 'Variaant 2')], null=True),
         ),
     ]

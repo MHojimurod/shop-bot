@@ -8,7 +8,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Асосий</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
               <li class="breadcrumb-item active">Квитансиялар</li>
             </ol>
           </div>
@@ -24,12 +24,22 @@
             <div>
               <div class="filter-container p-0 row">
                 {% for i in checks %}
-                <div class="filtr-item col-3" style="box-shadow: 0 5px 15px 0 rgba(0,0,0,0.2);" data-category="3" data-sort="white sample">
-                  <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}}   {{i.seller.number}}   
-                                                                          {{i.seller.region.uz_data}}   {{i.seller.district.uz_data}}   {{i.serial}}">
-                    <img src="/{{i.img}}" class="img-fluid mb-2" alt="white sample"/>Ismi: <i>{{i.seller.name}}</i>  Telefon: <i>{{i.seller.number}}</i><br>Viloyat: <i>{{i.seller.region.uz_data}}</i>  Tuman: <i>{{i.seller.district.uz_data}}</i><br>Seria: <i>{{i.serial}}</i>
-                  </a>
+                <div class="d-flex col-6">
+                  <div class="product-image-thumb"  data-category="3" data-sort="white sample">
+                    <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}}   {{i.seller.number}}   
+                                                                            {{i.seller.region.uz_data}}   {{i.seller.district.uz_data}}   {{i.serial}}">
+                      <img src="/{{i.img}}" style=" width: 10vw; height: 7vh;" alt="white sample"/>
+                    </a>
+                    
+                  </div>
+                  <div>
+                    Ismi: <i>{{i.seller.name}}</i>  Telefon: <i>{{i.seller.number}}</i><br>Viloyat: <i>{{i.seller.region.uz_data}}</i>  Tuman: <i>{{i.seller.district.uz_data}}</i>  Seria: <i>{{i.serial}}</i><br>
+                    <a href="/reject_check/{{i.serial}}" class="btn btn-xs btn-secondary">Rad etish</a>
+
+                  </div>
                 </div>
+
+                <!-- <div class="product-image-thumb"><img src="/static/dashboard/img/prod-3.jpg" alt="Product Image"></div> -->
                 {% endfor %}
               </div>
             </div>

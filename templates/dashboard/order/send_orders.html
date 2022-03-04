@@ -1,3 +1,5 @@
+
+
 {% extends 'dashboard/base.html' %} {% load static %} {% block style %}
 <link
   rel="stylesheet"
@@ -49,82 +51,44 @@
               <thead>
                 <tr>
                   <th>№</th>
-                  <th>ФИО</th>
-                  <th>Телефон</th>
-                  <th>Вилоят</th>
-                  <th>Туман</th>
-                  <th>Тил</th>
-                  <th>Балл</th>
-                  <th>Ҳолати</th>
-                  <th>Тасдиқлаш</th>
-                  <th>Рад этиш</th>
-                  <th>Ўчириш</th>
+                  <th>Диллер</th>
+                  <th>Телефон Номер</th>
+                  <th>Тўлов тури</th>
+                  <th>Буюртмалар</th>
+                  <th>Умумий балл</th>
+                  <th>Holat</th>
                 </tr>
               </thead>
               <tbody>
-                {% for i in dillers %}
-                <tr>
-                  <td>{{forloop.counter}}</td>
-                  <td>{{i.name}}</td>
-                  <td><a href="tel:{{i.number}}">{{i.number}}</a></td>
-
-                  <td>{{i.region.ru_data}}</td>
-                  <td>{{i.district.ru_data}}</td>
-                  <td>{{i.get_language_display}}</td>
-                  <td>{{i.balls}}</td>
-                  {% if i.status == 0 %}
-                  <td><span class="badge badge-warning">{{i.get_status_display}}</span></td>
-                  <td>
-                    <a href="{% url 'diller_update' pk=i.pk status=1 %}" class="btn btn-xs btn-success"
-                      ><i class="p-1 fas fa-check-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a href="{% url 'diller_update' pk=i.pk status=2 %}" class="btn btn-xs btn-danger"
-                      ><i class="p-1 fas fa-times-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 far fa-trash-alt"></i></a>
-                  </td>
-                  {% elif i.status == 1 %}
-                  <td><span class="badge badge-success">{{i.get_status_display}}</span></td>
-                  <td>
-                    <a  class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-check-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-times-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a href="{% url 'diller_delete' i.pk %}" class="btn btn-xs btn-danger"
-                      ><i class="p-1 far fa-trash-alt"></i></a>
-                  </td>
-                  {% else %}
-                  <td><span class="badge badge-danger">{{i.get_status_display}}</span></td>
-                  <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-check-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-times-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a href="{% url 'diller_delete' i.pk %}" class="btn btn-xs btn-danger"
-                      ><i class="p-1 far fa-trash-alt"></i></a>
-                  </td>
-                  {% endif %}
-                  
-                </tr>
-                {% endfor %}
+                {% for i in items %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{i.diller.name}}</td>
+                      <td>{{i.diller.number}}</td>
+                      <td>{{i.busket.get_payment_type_display}}</td>
+                      <td>{{i.text|safe}}<b>{{i.sub_total}}</b></td>
+                      <td>{{i.ball}}</td>
+                      {% if i.busket.status == 2 %}
+                      <td><i class="p-1 fas fa-check-circle"></i
+                      > Yuborilgan</td>
+                      {% elif i.busket.status == 4 %}
+                      <td><i class="p-1 fas fa-check-circle"></i
+                      > Yuborish</td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><b>Umumiy summa</b></td>
+                  <td><b>{{total.total}}</b></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

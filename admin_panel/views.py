@@ -1,9 +1,14 @@
+import datetime
+import os
 import pstats
 from pyexpat import model
+import re
 from django.shortcuts import render, redirect
+from itsdangerous import Serializer
 from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
+import diller
 from diller.models import Diller, Busket, Busket_item, OrderGiftDiller
 from seller.models import Cvitation, OrderGiftSeller, Seller
 from django.contrib.auth import authenticate, login, logout
@@ -86,9 +91,26 @@ def checks(request):
     cvitation = Cvitation.objects.order_by("-id").all()
     ctx = {
         "checks": cvitation,
-        "ch_active":"menu-open"
+        "ch_active": "menu-open"
     }
     return render(request, "dashboard/checks.html", ctx)
+
+@login_required_decorator
+def reject_check(requset,seria):
+    product = BaseProduct.objects.filter(serial_number=seria)
+    cv = Cvitation.objects.filter(serial=seria)
+    if product:
+        product.update(is_active=False)
+        seller =  Seller.objects.filter(id=cv.first().seller.id)
+        seller.update(balls=seller.first().balls-product.first().seller_ball)
+        requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
+        "id": cv.first().seller.id,
+        "serial":seria,
+        "ball":product.first().seller_ball
+    }})
+        os.remove(cv.first().img.path)
+        cv.delete()
+        return redirect("checks")
 
 
 @login_required_decorator
@@ -97,7 +119,7 @@ def categories(request):
 
     ctx = {
         "categories": category,
-        "cat_active":"menu-open"
+        "cat_active": "menu-open"
     }
     return render(request, "dashboard/category/list.html", ctx)
 
@@ -147,7 +169,6 @@ def products(request, category_id):
         "category": category,
     }
     return render(request, "dashboard/product/list.html", ctx)
-
 
 @login_required_decorator
 def product_create(request, pk):
@@ -240,7 +261,7 @@ def regions(request):
 
     ctx = {
         "regions": region,
-        "r_active":"menu-open"
+        "r_active": "menu-open"
     }
     return render(request, "dashboard/region/list.html", ctx)
 
@@ -255,7 +276,7 @@ def region_create(request):
 
     ctx = {
         "form": form,
-        "r_active":"menu-open"
+        "r_active": "menu-open"
     }
     return render(request, "dashboard/region/form.html", ctx)
 
@@ -271,7 +292,7 @@ def region_edit(request, pk):
             return redirect("regions")
         else:
             print(form.errors)
-    ctx = {"form": form,"r_active":"menu-open"}
+    ctx = {"form": form, "r_active": "menu-open"}
     return render(request, "dashboard/region/form.html", ctx)
 
 
@@ -289,7 +310,7 @@ def districts(request, region_id):
     ctx = {
         "region": region,
         "districts": district,
-        "r_active":"menu-open"
+        "r_active": "menu-open"
     }
     return render(request, "dashboard/district/list.html", ctx)
 
@@ -305,7 +326,7 @@ def district_create(request, pk):
     ctx = {
         "form": form,
         "pk": pk,
-        "r_active":"menu-open"
+        "r_active": "menu-open"
     }
     return render(request, "dashboard/district/form.html", ctx)
 
@@ -323,7 +344,7 @@ def district_edit(request, pk, region_id):
             print(form.errors)
     ctx = {"form": form,
            "pk": region_id,
-           "r_active":"menu-open"
+           "r_active": "menu-open"
            }
     return render(request, "dashboard/district/form.html", ctx)
 
@@ -361,15 +382,19 @@ def settings_edit(request, pk):
 
 @login_required_decorator
 def orders(request):
-    busket = Busket.objects.filter(status__in=[0, 1],is_ordered=True)
+    busket = Busket.objects.filter(status__in=[0, 1], is_ordered=True)
     data = []
+    a = {"total": 0,}
+    sub_total = 0
     for i in busket:
         diller = i.diller
 
         text = ""
         ball = 0
         for j in Busket_item.objects.filter(busket=i):
-            text += f"{j.product.name_uz} x {j.count} = {j.product.price * j.count}<br>"
+            text += f"{j.product.name_uz} x <b>{j.count}</b> = {j.product.price * j.count}<br>"
+            a["total"]+= j.product.price * j.count
+            sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
 
         data.append(
@@ -377,15 +402,52 @@ def orders(request):
                 "diller": diller,
                 "text": text,
                 "ball": ball,
-                "busket": i
+                "busket": i,
+                "sub_total":sub_total
             })
+        sub_total = 0
     ctx = {
         "items": data,
+        "total": a,
         "dil_active": "active"
 
     }
 
     return render(request, "dashboard/order/list.html", ctx)
+@login_required_decorator
+def send_orders(request):
+    busket = Busket.objects.filter(status__in=[2, 4], is_ordered=True)
+    data = []
+    a = {"total": 0,}
+    sub_total = 0
+    for i in busket:
+        diller = i.diller
+
+        text = ""
+        ball = 0
+        for j in Busket_item.objects.filter(busket=i):
+            text += f"{j.product.name_uz} x <b>{j.count}</b> = {j.product.price * j.count}<br>"
+            a["total"]+= j.product.price * j.count
+            sub_total += j.product.price * j.count
+            ball += j.product.diller_ball*j.count
+
+        data.append(
+            {
+                "diller": diller,
+                "text": text,
+                "ball": ball,
+                "busket": i,
+                "sub_total":sub_total
+            })
+        sub_total = 0
+    ctx = {
+        "items": data,
+        "total": a,
+        "dil_active": "active"
+
+    }
+
+    return render(request, "dashboard/order/send_orders.html", ctx)
 
 
 @login_required_decorator
@@ -403,12 +465,64 @@ def update_order(request, pk, status):
 
 @login_required_decorator
 def solds(request):
+
     all = BaseProduct.objects.order_by("-id").all()
+    data = []
+    for i in all.exclude(diller=None):
+        if i.diller not in [j['diller'] for j in data if data != []]:
+            count = BaseProduct.objects.filter(diller=i.diller).count()
+            data.append({"diller": i.diller, "count": count})
     ctx = {
-        "baseproduct": all,
+        "baseproduct": data,
         "s_active": "menu-open"
     }
     return render(request, "dashboard/sold/list.html", ctx)
+
+
+def cout_product(diller:Diller, date:str):
+    data = []
+    products = []
+    if date in ["day","month","year"]:
+        products = BaseProduct.objects.filter(diller=diller, date__lte=datetime.datetime.today(), date__gt=datetime.datetime.today()-datetime.timedelta(days=(
+            1 if date == "day" else (30 if date == "month" else 365)
+        )))
+    else:
+        products = BaseProduct.objects.filter(diller=diller)
+    # print(products)
+    d = {}
+    for item in products.exclude(product=None):
+        if item.product.id not in d:
+            d[item.product.id] = {
+                "diller": item.diller,
+                "product": item.product,
+                "serial_numbers": [item.serial_number],
+                "count": 1
+            }
+        else:
+            d[item.product.id]["count"] += 1
+            d[item.product.id]['serial_numbers'].append(
+                item.serial_number
+                )
+    return d
+
+
+@login_required_decorator
+def diller_sold(request, pk):   
+    diller = Diller.objects.filter(id=pk)
+    if diller:
+        
+        total = 0
+        data = cout_product(diller.first(), request.GET.get("filter_product") )
+        for j in data.values():
+            print(j)
+            total += j["product"].price*j['count']
+        return render(request, "dashboard/sold/diller_sold.html", {"data": [d for d in data.values()],"total":total})
+
+@login_required_decorator
+def series(request, strs,pk):    
+    products = BaseProduct.objects.filter(product__name_uz=strs,diller_id=pk) 
+    return render(request, "dashboard/sold/series.html", {"data": products})
+    
 
 
 @login_required_decorator
@@ -416,9 +530,12 @@ def sold_create(request):
     model = BaseProduct()
     form = SoldForm(request.POST, instance=model)
     if form.is_valid():
-        form.save()
+        diller = request.POST["diller"]
+        product = request.POST["product"]
+        print(diller,product)
+        for i in [i for i in request.POST["serial_number"].split("\r\n")]:
+            BaseProduct.objects.create(diller_id=diller,product_id=product,serial_number=i)
         return redirect("solds")
-
     return render(request, "dashboard/sold/form.html", {"form": form})
 
 

@@ -84,9 +84,29 @@ class Bot(Updater, MainHandlers):
 
         server.route('/delete_seller',
                      methods=['POST', 'GET'])(self.delete_seller)
+        server.route('/reject_check',
+                     methods=['POST', 'GET'])(self.reject_ball)
+        
 
         server.run("127.0.0.1", port=6003)
     
+
+
+
+    def reject_ball(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            seller: Seller = Seller.objects.filter(id=data['id']).first()
+            if seller:
+                try:
+                    self.bot.send_message(seller.text("reject_check_text").format(serial=data['serial'], ball=data['ball']), seller.chat_id)
+                except:
+                    pass
+            return 'ok'
+        return 'error'
+
+
     def delete_seller(self):
         data = request.get_json()
         if data:
@@ -130,7 +150,9 @@ class Bot(Updater, MainHandlers):
                     requests.get("http://127.0.0.1:6002/sale", json={"data": {
                         "serial_number":update.message.text,
                         "username":user.username,
-                        "name":db_user.name
+                        "name":db_user.name,
+                        "name":db_user.phone,
+                        "name":db_user.region,
                     }})
                 except:
                     pass
@@ -290,3 +312,9 @@ class Bot(Updater, MainHandlers):
 
 
 x = Bot(TOKEN)
+
+from django.core.management.base import BaseCommand
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        pass

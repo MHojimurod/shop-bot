@@ -98,11 +98,11 @@ class Gifts(models.Model):
 class BaseProduct(models.Model):
     diller = models.ForeignKey("diller.Diller", on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    serial_number = models.CharField(max_length=255)
+    serial_number = models.TextField()
     is_active = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
 
-   
+    
     def sale(self):
         self.is_active = True
         self.save()
