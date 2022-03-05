@@ -53,7 +53,7 @@ class BusketHandlers:
         busket = Busket.objects.filter(id=int(data[1]))
         if busket.exists():
             busket:Busket = busket.first()
-            if busket.status == 1:
+            if busket.status == 2:
                 balls = busket.purchase()
                 text = {
                     0:"Sizning hisobingizga %d ball qo'shildi!",

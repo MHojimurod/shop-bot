@@ -144,7 +144,6 @@ class Bot(Updater, MainHandlers):
                 user.send_message(db_user.text("cvitation_success"))
                 product.sale()
                 db_user.balls += product.product.seller_ball
-                print(product.product.seller_ball)
                 db_user.save()
                 try:
                     requests.get("http://127.0.0.1:6002/sale", json={"data": {
