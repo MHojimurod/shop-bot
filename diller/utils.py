@@ -207,10 +207,11 @@ def diller_products_paginator(diller:Diller, page:int):
 def wait_accept_keyboard(user: Diller, user_busket: Busket):
     text = ""
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(i18n("diller_accept_order",user.language), callback_data=f"order_accepted:{user_busket.id}")]])
-
+    total = 0
     for item in user_busket.items:
+        total += item.product.price*item.count
         text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {money(item.count * item.product.price, True, user.language)}</b>\n"
-    text+= f"\n<b>Umumiy/Общий - {money(user_busket.total_price)}</b>"
+    text+= f"\n<b>Umumiy/Общий - {money(total)}</b>"
     return {
         "text": text,
         "reply_markup": keyboard

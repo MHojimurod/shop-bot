@@ -69,7 +69,7 @@ class Busket(models.Model):
     is_ordered = models.BooleanField(default=False)
     is_purchased = models.BooleanField(default=False)
 
-    def total_price(self):
+    def total_pricee(self):
         return sum([item.total_price for item in self.items])
 
     def add_product(self, product:Product, count:int) -> "Busket_item":
