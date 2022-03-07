@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load currency %}
 {% block content %}
 <section class="content-header">
   <div class="container-fluid">
@@ -46,7 +47,7 @@
                   <td>{{ forloop.counter }}</td>
                   <td>{{ i.user.name }}</td>
                   <td>{{ i.promotion.product.name_uz }} x {{i.count}} = {% widthratio i.count 1 i.promotion.price %}</td>
-                  <td>{{ i.promotion.ball }} балл</td>
+                  <td>{% money i.promotion.ball %} балл</td>
                   <td>{{ i.date|date:"d-m-Y H:i" }}</td>
                   {% if i.status == 0 %}
                   <td><a style="color:green" href="{% url  'update_prompt' pk=i.id status=1 %}"><i class="p-1 fas fa-check-circle"></i

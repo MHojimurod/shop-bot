@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load currency %}
 {% block content %}
 <section class="content-header">
   <div class="container-fluid">
@@ -62,7 +63,7 @@
                         {{i.img}}
                         <a href="/media/{{i.image}}">Фото</a>
                       </td>
-                      <td>{{ i.price }} сўм</td>
+                      <td>{% money i.price %}</td>
                       <td>{{ i.diller_ball }}</td>
                       <td>{{ i.diller_nasiya_ball }}</td>
                       <td>{{ i.seller_ball }}</td>

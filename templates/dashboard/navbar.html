@@ -19,7 +19,7 @@
 
   <a href="{% url 'home' %}" class="brand-link">
     <img src="{% static 'dashboard/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light">Admin</span>
+    <span style="color: #2d34b9; font-weight: bold;" class="brand-text">ELITE</span>
   </a>
 
   <div class="sidebar">
@@ -39,7 +39,7 @@
          
         <li class="nav-item {{s_active}}">
           <a href="{% url 'solds' %}" class="nav-link">
-            <i class="fas fa-hashtag"></i>
+            <i class="nav-icon fas fa-hashtag"></i>
             <p>Сериа номерлар</p>
           </a>
         </li>
@@ -127,11 +127,19 @@
             <p>Акция</p>
           </a>
         </li>
-        <li class="nav-item {{pr_active}}">
+        <li class="nav-item {{sol_active}}">
           <a href="{% url 'send_orders' %}" class="nav-link">
             <i class="nav-icon fas fa-list"></i>
             <!-- <i class="fa-sign-out"></i> -->
             <p>Сотилганлар</p>
+          </a>
+        </li>
+        <li class="nav-item {{sol_active}}">
+          <a href="{% url 'reports' %}" class="nav-link">
+            <!-- <i class="nav-icon fas fa-list"></i> -->
+            <i class="nav-icon fas fa-file-chart-column"></i>
+            <!-- <i class="fa-sign-out"></i> -->
+            <p>Xisobot</p>
           </a>
         </li>
         <li class="nav-item">

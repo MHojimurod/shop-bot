@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+{% load currency %}
 {% block content %}
 <section class="content-header">
   <div class="container-fluid">
@@ -55,8 +56,8 @@
                   <td>{{ forloop.counter }}</td>
                   <td>{{ i.product.name_uz }}</td>
                   <td>{{ i.count }}</td>
-                  <td>{{ i.price }}</td>
-                  <td>{{ i.ball }}</td>
+                  <td>{% money i.price %}</td>
+                  <td>{% money i.ball %}</td>
                   <td>{{ i.active }}</td>
                   <td>{{ i.description_uz }}</td>
                   <td>{{ i.description_ru }}</td>

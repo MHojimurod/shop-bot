@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block style %}
+{% extends 'dashboard/base.html' %} {% load static %} {% load currency %} {% block style %}
 <link
   rel="stylesheet"
   href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
@@ -71,7 +71,7 @@
                   <td>{{i.region.ru_data}}</td>
                   <td>{{i.district.ru_data}}</td>
                   <td>{{i.get_language_display}}</td>
-                  <td>{{i.balls}}</td>
+                  <td>{% money i.balls %}</td>
                   {% if i.status == 0 %}
                   <td><span class="badge badge-warning">{{i.get_status_display}}</span></td>
                   <td>

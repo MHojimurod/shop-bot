@@ -11,7 +11,7 @@ locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
 def money(number:int, grouping:bool=True, lang=1):
-    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]} {i18n('sum', lang)}"
+    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
 
 
 
@@ -172,14 +172,16 @@ def diller_products_paginator(diller:Diller, page:int):
     product_page = products[(
         page - 1) * cproducts_per_page:page * cproducts_per_page]
     products_page_inline = []
-
+    total = 0
     for i in range(len(product_page)):
         product = product_page[i]
+        total+= product['count']* product['price']
         text += f"<b>{product['product'].category.name(diller.language)}\n    \
 └{product['product'].name(diller.language)} \
 → {product['count']} \
 * {product['product'].price}\
 = {money(product['count'] * product['product'].price, True, diller.language)}</b>\n"
+    text+= f"\n<b>Umumiy/Общий - {money(total)}</b>"
     keyboard = distribute(products_page_inline, 5)
 
     controls = []
