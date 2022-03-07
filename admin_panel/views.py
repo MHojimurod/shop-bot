@@ -1,20 +1,22 @@
 import datetime
 import os
-import pstats
-from pyexpat import model
-import re
 from django.shortcuts import render, redirect
-from itsdangerous import Serializer
-from telegram import TelegramDecryptionError
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
-import diller
 from diller.models import Diller, Busket, Busket_item, OrderGiftDiller
 from seller.models import Cvitation, OrderGiftSeller, Seller
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 import requests
 
+
+
+import locale
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
+
+def money(number:int, grouping:bool=True):
+    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
 
 def login_required_decorator(f):
     return login_required(f, login_url="login")
@@ -99,6 +101,7 @@ def checks(request):
 def reject_check(requset,seria):
     product = BaseProduct.objects.filter(serial_number=seria)
     cv = Cvitation.objects.filter(serial=seria)
+    print(product)
     if product:
         product.update(is_active=False)
         seller =  Seller.objects.filter(id=cv.first().seller.id)
@@ -399,7 +402,7 @@ def orders(request):
         text = ""
         ball = 0
         for j in Busket_item.objects.filter(busket=i):
-            text += f"{j.product.name_uz} x <b>{j.count}</b> = {j.product.price * j.count}<br>"
+            text += f"{j.product.name_uz} x <b>{j.count}</b> = {money(j.product.price * j.count)}<br>"
             a["total"]+= j.product.price * j.count
             sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
@@ -410,12 +413,12 @@ def orders(request):
                 "text": text,
                 "ball": ball,
                 "busket": i,
-                "sub_total":sub_total
+                "sub_total":money(sub_total)
             })
         sub_total = 0
     ctx = {
         "items": data,
-        "total": a,
+        "total": money(a["total"]),
         "dil_active": "active"
 
     }
@@ -433,7 +436,7 @@ def send_orders(request):
         text = ""
         ball = 0
         for j in Busket_item.objects.filter(busket=i):
-            text += f"{j.product.name_uz} x <b>{j.count}</b> = {j.product.price * j.count}<br>"
+            text += f"{j.product.name_uz} x <b>{j.count}</b> = {money(j.product.price * j.count)}<br>"
             a["total"]+= j.product.price * j.count
             sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
@@ -444,13 +447,14 @@ def send_orders(request):
                 "text": text,
                 "ball": ball,
                 "busket": i,
-                "sub_total":sub_total
+                "sub_total":money(sub_total)
             })
         sub_total = 0
     ctx = {
         "items": data,
-        "total": a,
-        "dil_active": "active"
+        "total": money(a['total']),
+        "dil_active": "active",
+        "sol_active": "menu-open"
 
     }
 
@@ -523,7 +527,7 @@ def diller_sold(request, pk):
         for j in data.values():
             print(j)
             total += j["product"].price*j['count']
-        return render(request, "dashboard/sold/diller_sold.html", {"data": [d for d in data.values()],"total":total})
+        return render(request, "dashboard/sold/diller_sold.html", {"data": [d for d in data.values()],"total":money(total)})
 
 @login_required_decorator
 def series(request, strs,pk):    
@@ -612,7 +616,7 @@ def update_prompt(request, pk, status):
     })
     return redirect("promotion_order")
 
-
+@login_required_decorator
 def order_gift(request):
     diller: OrderGiftDiller = OrderGiftDiller.objects.all()
     seller: OrderGiftSeller = OrderGiftSeller.objects.all()
@@ -624,10 +628,59 @@ def order_gift(request):
     }
     return render(request, "dashboard/gifts/order.html", ctx)
 
-
+@login_required_decorator
 def update_gift(request, pk, status, type_order):
     if type_order == 0:
         OrderGiftDiller.objects.filter(pk=pk).update(status=status)
     elif type_order == 1:
         OrderGiftSeller.objects.filter(pk=pk).update(status=status)
     return redirect("order_gift")
+
+
+def product_data():
+    products = []
+    products = BaseProduct.objects.all()
+    d = {}
+    for item in products.exclude(product=None):
+        if item.product.id not in d:
+            d[item.product.id] = {
+                "diller": item.diller,
+                "product": item.product,
+                "serial_numbers": [item.serial_number],
+                "count": 1
+            }
+        else:
+            d[item.product.id]["count"] += 1
+            d[item.product.id]['serial_numbers'].append(
+                item.serial_number
+                )
+    return d
+
+@login_required_decorator
+
+def reports(request):
+    products = []
+    products = BaseProduct.objects.all()
+    d = {}
+    for item in products.exclude(product=None):
+        _seller:Cvitation = Cvitation.objects.filter(serial=item.serial_number).first()
+        if item.product.id not in d:
+            seller = _seller.seller if _seller else None
+            d[item.product.id] = {
+                "diller": item.diller,
+                "product": item.product,
+                "serial_numbers": [item.serial_number],
+                "count": 1,
+                "sellers": [seller] if seller else []
+            }
+        else:
+            d[item.product.id]["count"] += 1
+            d[item.product.id]['serial_numbers'].append(
+                item.serial_number
+                )
+            if seller:
+                d[item.product.id]['sellers'].append(seller)
+        print(seller)
+    
+    return render(request, "dashboard/report.html",{"data":[i for i in d.values()]})
+

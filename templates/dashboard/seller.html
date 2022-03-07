@@ -1,4 +1,7 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block style %}
+{% extends 'dashboard/base.html' %}
+ {% load static %} 
+ {% load currency %} 
+ {% block style %}
 <link
   rel="stylesheet"
   href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
@@ -74,7 +77,7 @@
                   <td><a href="/media/{{i.shop_passport_photo}}">ДГФ</a></td>
                   <td><a href="/media/{{i.passport_photo}}">ПФ</a></td>
                   <td>{{i.get_language_display}}</td>
-                  <td>{{i.balls}}</td>
+                  <td>{% money i.balls %}</td>
                   <td>
                     <a href="{% url 'seller_delete' i.pk %}" class="btn btn-xs btn-danger"
                       ><i class="p-1 far fa-trash-alt"></i></a>

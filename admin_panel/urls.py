@@ -73,4 +73,7 @@ urlpatterns = [
     path('prompt_create/', prompt_create,name="prompt_create"),
     path('send_req/<int:pk>', send_req,name="send_req"),
     path('del_prompt/<int:pk>', del_prompt,name="del_prompt"),
+
+
+    path('reports', reports,name="reports"),
     ]
