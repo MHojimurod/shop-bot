@@ -25,7 +25,7 @@ def category_pagination_inline(lang: int, page: int, context: CallbackContext):
     categorys_page = categorys[(
         page - 1) * categorys_per_page:page * categorys_per_page]
     categorys_page_inline = []
-    text = "Catalog\n\n"
+    text = "Katalog\n\n"
     for i in range(len(categorys_page)):
         category = categorys_page[i]
         # text += f"{i + 1}. {category.name(lang)}\n"
@@ -205,12 +205,12 @@ def diller_products_paginator(diller:Diller, page:int):
 
 
 def wait_accept_keyboard(user: Diller, user_busket: Busket):
-    text = f"<b>{user.text('wait_accept')}\n\n</b>\n\n"
+    text = ""
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(i18n("diller_accept_order",user.language), callback_data=f"order_accepted:{user_busket.id}")]])
 
     for item in user_busket.items:
         text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {money(item.count * item.product.price, True, user.language)}</b>\n"
-
+    text += "\n" + user_busket.total_price()
     return {
         "text": text,
         "reply_markup": keyboard
