@@ -65,7 +65,7 @@ def product_pagination_inline(lang: int, page: int, product: Category, context: 
     product_page = products[(
         page - 1) * cproducts_per_page:page * cproducts_per_page]
     products_page_inline = []
-    text = "Categorys\n\n"
+    text = "Махсулотлар\n\n"
     for i in range(len(product_page)):
         product = product_page[i]
         text += f"<b>{i + 1}.</b> {product.name(lang)} <b><i>{money(product.price,True, lang)}</i></b>\n"
@@ -130,7 +130,7 @@ def product_count_inline(lang: int, product: Product, context: CallbackContext):
 
 
 def busket_keyboard(user: Diller, context:CallbackContext):
-    text:str = f"<b>Cart</b>\n\n"
+    text = ""
     keyboard:list = []
     total = 0
     for item in user.busket.items:
@@ -153,7 +153,7 @@ def busket_keyboard(user: Diller, context:CallbackContext):
         i18n("add_again_btn",user.language), callback_data=f"continue")])
     keyboard.append([InlineKeyboardButton(
         i18n("back_btn",user.language), callback_data=f"back")])
-    text += f"<b>{user.text('total')}: {total}</b>\n"
+    text+= f"\n<b>Umumiy/Общий - {money(total)}</b>"
     return {
         "text": text,
         "reply_markup": InlineKeyboardMarkup(keyboard)
