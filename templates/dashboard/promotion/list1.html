@@ -35,8 +35,8 @@
                   <th>Маҳсулот</th>
                   <th>Балл</th>
                   <th>Сана</th>
-                  <th>Qabul qilish</th>
-                  <th>Rad etish</th>
+                  <th>Қабул қилиш</th>
+                  <th>Рад етиш</th>
                 </tr>
               </thead>
               <tbody>
@@ -51,14 +51,14 @@
                   <td>{{ i.date|date:"d-m-Y H:i" }}</td>
                   {% if i.status == 0 %}
                   <td><a style="color:green" href="{% url  'update_prompt' pk=i.id status=1 %}"><i class="p-1 fas fa-check-circle"></i
-                  > Qabul qilish</a></td>
+                  > Қабул қилиш</a></td>
                   <td><a style="color: tomato;" href="{% url  'update_prompt' pk=i.id status=3 %}"><i class="p-1 fas fa-times-circle"></i
                       ></i
-                  > Rad etish</a></td>
+                  > Рад етиш</a></td>
                   {% elif i.status == 1 %}
                   <td><a style="color: rgb(9, 168, 30);" href="{% url  'update_prompt' pk=i.id status=2 %}" class=""
                     ><i class="p-1 fas fa-check-circle"></i
-                  > Yuborish</a></td>
+                  > Юбориш</a></td>
                   
                   {% endif %}
                 </tr>

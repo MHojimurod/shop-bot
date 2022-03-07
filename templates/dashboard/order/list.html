@@ -28,8 +28,8 @@
                       <th>Тўлов тури</th>
                       <th>Буюртмалар</th>
                       <th>Умумий балл</th>
-                      <th>Holat</th>
-                      <th>Rad etish</th>
+                      <th>Ҳолати</th>
+                      <th>Рад етиш</th>
                     </tr>
                   </thead>  
                   <tbody>
@@ -45,13 +45,13 @@
                       {% if i.busket.status == 0 %}
                       <td><a style="color:green" href="{% url  'update_order' pk=i.busket.id status=1 %}" class=""
                         ><i class="p-1 fas fa-check-circle"></i
-                      > Qabul qilish</a></td>
+                      > Қабул қилиш</a></td>
                       <td><a style="color: tomato;" href="{% url  'update_order' pk=i.busket.id status=3 %}" class=""
-                        ><i class="p-1 fas fa-times-circle"></i> Rad etish</a></td>
+                        ><i class="p-1 fas fa-times-circle"></i> Рад етиш</a></td>
                       {% elif i.busket.status == 1 %}
                       <td><a style="color: rgb(9, 168, 30);" href="{% url  'update_order' pk=i.busket.id status=2 %}" class=""
                         ><i class="p-1 fas fa-check-circle"></i
-                      > Yuborish</a></td>
+                      > Юбориш</a></td>
                       {% endif %}
                     </tr>
                     {% endfor %}
@@ -61,7 +61,7 @@
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td><b>Umumiy summa</b></td>
+                      <td><b>Умумий сумма</b></td>
                       <td><b>{{total}}</b></td>
                     </tr>
                   </tfoot>

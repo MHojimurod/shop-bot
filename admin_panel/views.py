@@ -680,7 +680,6 @@ def reports(request):
                 )
             if seller:
                 d[item.product.id]['sellers'].append(seller)
-        print(seller)
     
     return render(request, "dashboard/report.html",{"data":[i for i in d.values()]})
 
