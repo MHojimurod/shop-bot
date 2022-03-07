@@ -1,8 +1,8 @@
 from http.client import PAYMENT_REQUIRED
 from telegram import *
 from telegram.ext import *
-from diller.management.commands.constant import PAYMENT_TYPE
-from diller.management.commands.decorators import get_user
+from diller.management.commands.constant import MENU, PAYMENT_TYPE
+from diller.management.commands.decorators import distribute, get_user
 from diller.models import Busket, Busket_item, Diller
 from admin_panel.models import Category, Product, i18n
 from diller.utils import busket_keyboard, wait_accept_keyboard
@@ -45,7 +45,10 @@ class BusketHandlers:
         user_busket = db_user.busket
         user_busket.order(int(data[1]))
         update.callback_query.message.edit_text(**wait_accept_keyboard(db_user, user_busket), parse_mode="HTML")
-        return self.start(update, context, False)
+        context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
+                    distribute([db_user.text("buy"), db_user.text("taken"), db_user.text('my_balls')], 2), resize_keyboard=True
+                ), parse_mode="HTML")
+        return MENU
     
     def order_accept(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)

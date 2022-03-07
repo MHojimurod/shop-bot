@@ -205,7 +205,7 @@ def diller_products_paginator(diller:Diller, page:int):
 
 
 def wait_accept_keyboard(user: Diller, user_busket: Busket):
-    text = ""
+    text = "cart\n\n"
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(i18n("diller_accept_order",user.language), callback_data=f"order_accepted:{user_busket.id}")]])
     total = 0
     for item in user_busket.items:

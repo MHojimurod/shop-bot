@@ -22,11 +22,12 @@ class Register:
 
     def start(self, update: Update, context: CallbackContext, delete: bool = True):
         user, db_user = get_user(update)
-        if 'tmp_message' in context.user_data:
-            try:
-                context.user_data['tmp_message'].delete()
-            except:
-                pass
+        if delete and db_user:
+            if 'tmp_message' in context.user_data:
+                try:
+                    context.user_data['tmp_message'].delete()
+                except:
+                    pass
 
         context.user_data['register'] = {
             "chat_id": user.id,
