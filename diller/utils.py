@@ -210,7 +210,7 @@ def wait_accept_keyboard(user: Diller, user_busket: Busket):
 
     for item in user_busket.items:
         text += f"<b>{item.product.category.name(user.language)}\n    └{item.product.name(user.language)}→ {item.count} * {item.product.price} = {money(item.count * item.product.price, True, user.language)}</b>\n"
-    text+= f"\n<b>Umumiy/Общий - {money(user_busket.total_price())}</b>"
+    text+= f"\n<b>Umumiy/Общий - {money(user_busket.total_price)}</b>"
     return {
         "text": text,
         "reply_markup": keyboard
