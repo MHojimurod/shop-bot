@@ -481,8 +481,9 @@ def update_order(request, pk, status):
 
 @login_required_decorator
 def solds(request):
-
+    print("aaaaaaaaaaaaaaaaaaaa")
     all = BaseProduct.objects.order_by("-id").all()
+    print(all)
     data = []
     for i in all.exclude(diller=None):
         if i.diller not in [j['diller'] for j in data if data != []]:
