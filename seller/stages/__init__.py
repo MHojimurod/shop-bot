@@ -129,7 +129,6 @@ class MainHandlers:
         user, db_user = get_user(update)
         lang = context.user_data['register']['language']
         context.user_data['register']['shop'] = update.message.text
-        print(context.user_data['register']['language'])
         context.user_data['tmp_message'] = user.send_message(
             i18n('shop_passport_photo', lang))
         return SHOP_PASSPORT_PHOTO

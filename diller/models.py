@@ -6,34 +6,34 @@ from admin_panel.models import *
 
 
 class Diller(models.Model):
-    chat_id = models.IntegerField()
-    name = models.CharField(max_length=100)
-    number = models.CharField(max_length=100)
-    region = models.ForeignKey(Regions, on_delete=models.SET_NULL, null=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
-    status = models.IntegerField(default=0, choices=(
+    chat_id:int = models.IntegerField()
+    name:str = models.CharField(max_length=100)
+    number:str = models.CharField(max_length=100)
+    region: Regions = models.ForeignKey(Regions, on_delete=models.SET_NULL, null=True)
+    district: District = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
+    status:int = models.IntegerField(default=0, choices=(
         (0, "Kutilmoqda"),
         (1, "Qabul qilingan"),
         (2, "Rad etilgan"),
     ))
-    balls = models.IntegerField(default=0)
+    balls:int = models.IntegerField(default=0)
 
-    def get_gift(self, gift):
+    def get_gift(self, gift) -> "OrderGiftDiller":
         return OrderGiftDiller.objects.create(user=self, gift=gift)
 
     
-    language = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
+    language:int = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
     @property
-    def busket(self):
+    def busket(self) -> "Busket":
         b = Busket.objects.filter(diller=self, is_ordered=False).first()
         return b if b is not None else Busket.objects.create(diller=self)
     
-    def text(self, name):
+    def text(self, name) -> str:
         text = Text.objects.filter(name=name)
         return (text.first().uz_data if self.language == 0 else text.first().ru_data) if text.exists() else ""
 
-    def products(self):
-        buskets = Busket.objects.filter(diller=self, is_ordered=True)
+    def products(self) -> "list[Busket_item]":
+        buskets: "list[Busket]" = Busket.objects.filter(diller=self, is_ordered=True)
         d = {}
         for busket in buskets:
             for item in busket.items:
@@ -60,16 +60,16 @@ class Diller(models.Model):
 
 
 class Busket(models.Model):
-    diller = models.ForeignKey(Diller, on_delete=models.CASCADE)
-    status = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan"),(4,"Yetkazib berildi")))
+    diller: Diller = models.ForeignKey(Diller, on_delete=models.CASCADE)
+    status:int = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan"),(4,"Yetkazib berildi")))
 
-    payment_type = models.IntegerField(choices=((0, "Variant 1"), (1, "Variant 2")), null=True, blank=True)
-    ordered_date = models.DateTimeField(null=True, blank=True)
+    payment_type:int = models.IntegerField(choices=((0, "Variant 1"), (1, "Variant 2")), null=True, blank=True)
+    ordered_date: datetime = models.DateTimeField(null=True, blank=True)
 
-    is_ordered = models.BooleanField(default=False)
-    is_purchased = models.BooleanField(default=False)
+    is_ordered:bool = models.BooleanField(default=False)
+    is_purchased:bool = models.BooleanField(default=False)
 
-    def total_pricee(self):
+    def total_pricee(self) -> int:
         return sum([item.total_price for item in self.items])
 
     def add_product(self, product:Product, count:int) -> "Busket_item":
@@ -96,7 +96,7 @@ class Busket(models.Model):
     
     def purchase(self) -> int:
         self.is_purchased = True
-        balls = 0
+        balls:int = 0
         for busket_item in self.items:
             balls += busket_item.product.diller_ball * busket_item.count
         self.save()
@@ -116,21 +116,21 @@ class Busket(models.Model):
     
     
 class Busket_item(models.Model):
-    busket = models.ForeignKey(Busket, on_delete=models.SET_NULL,null=True)
+    busket:Busket = models.ForeignKey(Busket, on_delete=models.SET_NULL,null=True)
     product:Product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    count = models.IntegerField()
-    active = models.BooleanField(default=True)
-    def total_price(self):
+    count:int = models.IntegerField()
+    active:bool = models.BooleanField(default=True)
+    def total_price(self) -> int:
         return self.product.price * self.count
     
     @property
-    def ball(self):
+    def ball(self) -> int:
         return self.product.diller_ball * self.count
 
 
 
 class OrderGiftDiller(models.Model):
-    user = models.ForeignKey(Diller, on_delete=models.SET_NULL,null=True)
-    gift = models.ForeignKey(Gifts, on_delete=models.SET_NULL,null=True)
-    date = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(3,"Rad etilgan")),default=0)
+    user:Diller = models.ForeignKey(Diller, on_delete=models.SET_NULL,null=True)
+    gift: Gifts = models.ForeignKey(Gifts, on_delete=models.SET_NULL,null=True)
+    date: datetime = models.DateTimeField(auto_now_add=True)
+    status:int = models.IntegerField(choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(3,"Rad etilgan")),default=0)

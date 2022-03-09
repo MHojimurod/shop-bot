@@ -87,8 +87,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             },
             fallbacks=[
                 CommandHandler('start', self.start),
-                CallbackQueryHandler(self.get_promotion,
-                                     pattern="^get_promotion")
+                CallbackQueryHandler(self.get_promotion,pattern="^get_promotion")
             ]
         )
         self.dispatcher.add_handler(self.conversation)
@@ -213,7 +212,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         user, db_user = get_user(update)
         data = update.callback_query.data.split(':')
         if data[0] == 'get_promotion':
-            product = Promotion.objects.filter(
+            product:Promotion = Promotion.objects.filter(
                 id=int(update.callback_query.data.split(':')[1]))
             if product.exists():
                 product = product.first()
@@ -221,7 +220,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                     context.user_data['promotion_count'] = 1
                     context.user_data['promotion_product'] = product
                     update.callback_query.message.edit_text(
-                        "xxxx", reply_markup=promotion_keyboard(db_user, context))
+                        product.description_uz if db_user.language == 1 else product.description_ru, reply_markup=promotion_keyboard(db_user, context))
                 else:
                     update.callback_query.message.edit_text(
                         db_user.text("prompt_end"))
@@ -242,7 +241,6 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
 
     def buy_promotion(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
-        print('x')
         if context.user_data['promotion_count'] > 0:
             count = context.user_data['promotion_count']
             product = context.user_data['promotion_product']

@@ -1,5 +1,7 @@
 import datetime
+from math import prod
 import os
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
@@ -54,7 +56,6 @@ def dillers_list(request):
 @login_required_decorator
 def sellers_list(request):
     sellers = Seller.objects.order_by('-id').all()
-    print(sellers)
     ctx = {
         "sellers": sellers,
         "sel_active": "menu-open"
@@ -101,7 +102,6 @@ def checks(request):
 def reject_check(requset,seria):
     product = BaseProduct.objects.filter(serial_number=seria)
     cv = Cvitation.objects.filter(serial=seria)
-    print(product)
     if product:
         product.update(is_active=False)
         seller =  Seller.objects.filter(id=cv.first().seller.id)
@@ -119,7 +119,10 @@ def reject_check(requset,seria):
             os.remove(f"{cv.first().img.name}")
             cv.delete()
             return redirect("checks")
-        except:return redirect("checks")
+        except Exception as e:
+            print(e)
+
+            return redirect("checks")
 
 
 
@@ -408,7 +411,8 @@ def orders(request):
             ball += j.product.diller_ball*j.count
 
         data.append(
-            {
+            {   
+                "id": i.id,
                 "diller": diller,
                 "text": text,
                 "ball": ball,
@@ -420,7 +424,6 @@ def orders(request):
         "items": data,
         "total": money(a["total"]),
         "dil_active": "active"
-
     }
 
     return render(request, "dashboard/order/list.html", ctx)
@@ -443,6 +446,7 @@ def send_orders(request):
 
         data.append(
             {
+                "id": i.id,
                 "diller": diller,
                 "text": text,
                 "ball": ball,
@@ -469,6 +473,7 @@ def update_order(request, pk, status):
             "diller": Busket.objects.filter(pk=pk).first().diller.id,
             "status": status,
             "busket": Busket.objects.filter(pk=pk).first().id
+            
         }
     })
     return redirect("orders")
@@ -499,7 +504,6 @@ def cout_product(diller:Diller, date:str):
         )))
     else:
         products = BaseProduct.objects.filter(diller=diller)
-    # print(products)
     d = {}
     for item in products.exclude(product=None):
         if item.product.id not in d:
@@ -525,7 +529,6 @@ def diller_sold(request, pk):
         total = 0
         data = cout_product(diller.first(), request.GET.get("filter_product") )
         for j in data.values():
-            print(j)
             total += j["product"].price*j['count']
         return render(request, "dashboard/sold/diller_sold.html", {"data": [d for d in data.values()],"total":money(total)})
 
@@ -533,6 +536,15 @@ def diller_sold(request, pk):
 def series(request, strs,pk):    
     products = BaseProduct.objects.filter(product__name_uz=strs,diller_id=pk) 
     return render(request, "dashboard/sold/series.html", {"data": products})
+
+@login_required_decorator
+def serial_delete(request,pk):      
+    product:BaseProduct = BaseProduct.objects.filter(pk=pk).first()
+    if product:
+        res = redirect("series", product.product.name_uz, product.diller.id)
+        product.delete()
+        return res
+    
     
 
 
@@ -543,8 +555,10 @@ def sold_create(request):
     if form.is_valid():
         diller = request.POST["diller"]
         product = request.POST["product"]
-        print(diller,product)
-        for i in [i for i in request.POST["serial_number"].split("\r\n")]:
+        req = request.POST["serial"].strip()
+        sers = [i for i in req.split("\r\n")]
+        
+        for i in sers:
             BaseProduct.objects.create(diller_id=diller,product_id=product,serial_number=i)
         return redirect("solds")
     return render(request, "dashboard/sold/form.html", {"form": form})
@@ -565,9 +579,7 @@ def promotion(request):
 def prompt_create(request):
     model = Promotion()
     form = PromotionForm(request.POST, instance=model)
-    # print(request.POST)
     if form.is_valid():
-        print("aa")
         form.save()
         return redirect("prompts")
     else:
@@ -641,7 +653,8 @@ def product_data():
     products = []
     products = BaseProduct.objects.all()
     d = {}
-    for item in products.exclude(product=None):
+    x: "list[BaseProduct]" = products.exclude(product=None)
+    for item in x:
         if item.product.id not in d:
             d[item.product.id] = {
                 "diller": item.diller,
@@ -662,16 +675,17 @@ def reports(request):
     products = []
     products = BaseProduct.objects.all()
     d = {}
-    for item in products.exclude(product=None):
+    x: "list[BaseProduct]" = products.exclude(product=None)
+    for item in x:
         _seller:Cvitation = Cvitation.objects.filter(serial=item.serial_number).first()
-        if item.product.id not in d:
-            seller = _seller.seller if _seller else None
+        seller: Seller = _seller.seller if _seller else None
+        if item.product.id not in d:    
             d[item.product.id] = {
                 "diller": item.diller,
                 "product": item.product,
                 "serial_numbers": [item.serial_number],
                 "count": 1,
-                "sellers": [seller] if seller else []
+                "sellers": { seller.id: {"j": 1} } if seller else {},
             }
         else:
             d[item.product.id]["count"] += 1
@@ -679,7 +693,20 @@ def reports(request):
                 item.serial_number
                 )
             if seller:
-                d[item.product.id]['sellers'].append(seller)
+                if seller.id not in d[item.product.id]['sellers']:
+                    d[item.product.id]['sellers'][seller.id] = {
+                        "j": 1
+                    }
+                else:
+                    d[item.product.id]['sellers'][seller.id]['j'] += 1
+
+    new_data = []
+    for k, v in d.items():
+        new_data = []
+        for k2, v2 in v['sellers'].items():
+            new_data.append({"i":Seller.objects.filter(id=k2).first(), "j": v2['j']})
+        v['sellers'] = new_data
+    
     
     return render(request, "dashboard/report.html",{"data":[i for i in d.values()]})
 

@@ -127,7 +127,6 @@ class Bot(Updater, MainHandlers):
     
     def cvi_photo(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        print(update.message.photo)
         img = update.message.photo[-1].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
         context.user_data['cvitation_img'] = img
         context.user_data['tmp_message'] = user.send_message(
@@ -150,11 +149,11 @@ class Bot(Updater, MainHandlers):
                         "serial_number":update.message.text,
                         "username":user.username,
                         "name":db_user.name,
-                        "number":db_user.phone,
-                        "region":db_user.region,
+                        "number":db_user.number,
+                        "region":db_user.region.uz_data,
                     }})
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
                 return self.start(update, context,False)
             else:
                 user.send_message(db_user.text("already_sold"))

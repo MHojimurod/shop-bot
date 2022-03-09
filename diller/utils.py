@@ -21,7 +21,6 @@ def category_pagination_inline(lang: int, page: int, context: CallbackContext):
     categorys_per_page = 10
     categorys_pages = categorys_count // categorys_per_page + \
         1 if categorys_count % categorys_per_page != 0 else categorys_count // categorys_per_page
-    print(categorys_pages)
     categorys_page = categorys[(
         page - 1) * categorys_per_page:page * categorys_per_page]
     categorys_page_inline = []
@@ -168,7 +167,6 @@ def diller_products_paginator(diller:Diller, page:int):
     text = f"<b>Natijalar {(page - 1) * cproducts_per_page} - {(page * cproducts_per_page) if (page * cproducts_per_page) < products_count else products_count } of {products_count}</b>\n\n"
     products_pages = products_count // cproducts_per_page + \
         1 if products_count % cproducts_per_page != 0 else products_count // cproducts_per_page
-    print(products_pages)
     product_page = products[(
         page - 1) * cproducts_per_page:page * cproducts_per_page]
     products_page_inline = []
@@ -244,7 +242,6 @@ def balls_keyboard_pagination(diller:Diller, page:int):
     keyboard = distribute(gifts_page_inline, 5)
 
     controls = []
-    print(page)
     if page > 1:
         controls.append(InlineKeyboardButton(
             "⬅️", callback_data=f"gift_pagination:{page - 1}"))

@@ -33,6 +33,7 @@
                       <th>Махсулот</th>
                       <th>Serai Nomer</th>
                       <th>Sana</th>
+                      <th>O'chirish</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -42,6 +43,8 @@
                         <td>{{i.product.name_uz}}</td>
                         <td><b>{{i.serial_number}}</b></td>
                         <td>{{i.date|date:"d/m/Y H:i"}}</td>
+                        <td><a style="color: #dc3545;" href="{% url 'serial_delete' pk=i.id %}">
+                          <div><i class="fas fa-trash-alt"></i></div></a></td>
                       </tr>
                     {% endfor %}
                   </tbody>

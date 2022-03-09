@@ -126,9 +126,10 @@ class TextForm(forms.ModelForm):
                 }),
         }
 class SoldForm(forms.ModelForm):
+    serial = forms.CharField(max_length=100)
     class Meta:
         model = BaseProduct
-        fields = ['diller','product',"serial_number"]
+        fields = ['diller','product']
         widgets = {
             'diller': forms.Select(attrs={
                 'class': "form-control select2 select2-hidden-accessible",
@@ -138,7 +139,7 @@ class SoldForm(forms.ModelForm):
                 'class': "form-control select2 select2-hidden-accessible",
                 
                 }),
-            'serial_number': forms.Textarea(attrs={
+            'serial': forms.Textarea(attrs={
                 'class': "form-control "
                 
                 })

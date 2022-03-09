@@ -17,7 +17,7 @@ urlpatterns = [
     path('seller_delete/<int:pk>/', seller_delete,name="seller_delete"),
 
     path('checks', checks,name="checks"),
-    path('reject_check/<int:seria>', reject_check,name="reject_check"),
+    path('reject_check/<str:seria>', reject_check,name="reject_check"),
 
 
 
@@ -64,6 +64,7 @@ urlpatterns = [
     path('solds/', solds,name="solds"),
     path('diller_sold/<int:pk>/', diller_sold,name="diller_sold"),
     path('series/<str:strs>/<int:pk>', series,name="series"),
+    path('serial_delete/<int:pk>', serial_delete,name="serial_delete"),
     path('sold_create/', sold_create,name="sold_create"),
 
 

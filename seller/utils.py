@@ -30,7 +30,6 @@ def balls_keyboard_pagination(seller:Seller, page:int):
     keyboard = distribute(gifts_page_inline, 5)
 
     controls = []
-    print(page)
     if page > 1:
         controls.append(InlineKeyboardButton(
             "⬅️", callback_data=f"gift_pagination:{page - 1}"))

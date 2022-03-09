@@ -54,9 +54,6 @@ class Buy:
             
             
             if int(data[1]) > 1000 or (context.user_data['product']['count'] * 10) + (int(data[1]) if data[-1] != "zero" else 0) > 1000:
-                print(data[1])
-                print((context.user_data['product']
-                      ['count'] * 10) + int(data[1]), data[1])
                 update.callback_query.answer(db_user.text(
                     "product_count_limit"), show_alert=True)
                 return SELECT_PRODUCT_COUNT
@@ -93,7 +90,6 @@ class Buy:
 
     @delete_tmp_message
     def add_to_cart(self, update: Update, context: CallbackContext):
-        print("im here")
         user, db_user = get_user(update)
         if update.callback_query:
             product = context.user_data['buy']['product']

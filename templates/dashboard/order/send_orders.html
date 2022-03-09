@@ -66,7 +66,9 @@
                       <td>{{i.diller.name}}</td>
                       <td>{{i.diller.number}}</td>
                       <td>{{i.busket.get_payment_type_display}}</td>
-                      <td>{{i.text|safe}}<b>{{i.sub_total}}</b></td>
+                      <td><button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-lg-{{i.id}}">
+                        #{{i.id}} заказ</button>
+                      </button></b></td>
                       <td>{{i.ball}}</td>
                       <td><i class="p-1 fas fa-check-circle"></i
                       > {{i.busket.get_status_display}}</td>
@@ -93,6 +95,37 @@
   </div>
 </section>
 
+{% for i in items %}
+<div class="modal fade" id="modal-lg-{{i.id}}">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Заказ #{{i.id}}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{i.text|safe}}</p>
+        <p><b>{{ i.sub_total}}</b></p>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ёпиш </button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        <div class="ml-auto">{% if i.busket.status == 0 %}
+          <a style="color:green" href="{% url  'update_order' pk=i.busket.id status=1 %}" class=""><i class="p-1 fas fa-check-circle"></i> Қабул қилиш</a>
+          <a style="color: tomato;" href="{% url  'update_order' pk=i.busket.id status=3 %}" class=""><i class="p-1 fas fa-times-circle"></i> Рад етиш</a>
+          {% elif i.busket.status == 1 %}
+          <a style="color: rgb(9, 168, 30);" href="{% url  'update_order' pk=i.busket.id status=2 %}" class=""><i class="p-1 fas fa-check-circle"></i> Юбориш</a>
+          {% endif %}</div>
+      </div>
+    </div>
+    <!-- /.modal-content -->  
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+{% endfor %}
+
 <!-- Control Sidebar -->
 <!-- <aside class="control-sidebar control-sidebar-dark"> -->
 <!-- Control sidebar content goes here -->
@@ -114,7 +147,9 @@
 <script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
 <script src="/static/dashboard/js/adminlte.min.js"></script>
 <script src="/static/dashboard/js/demo.js"></script>
+<script src="/static/dashboard/plugins/sweetalert2/sweetalert2.min.js"></script>
 <script>
+  
   $(function () {
     $("#example1")
       .DataTable({
@@ -140,4 +175,5 @@
   //   location.reload();
   // }, 30000);
 </script>
+
 {% endblock %}

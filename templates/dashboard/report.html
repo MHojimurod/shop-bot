@@ -62,9 +62,10 @@
                 <tr>
                   <td>{{forloop.counter}}</td>
                   <td>{{i.diller.name}} {{i.number}}</td>
+                  
                   <td>{{i.product.name_uz}}</td>
                   <td>{{i.count}}</td>
-                  <td>{% for seller in i.sellers %}{{seller.name}} <br>{% endfor%}</td>
+                  <td>{% for seller in i.sellers %}{{ seller.i.name }} | {{ seller.j}}<br>{% endfor%}</td>
                 </tr>
                 {% endfor %}  
               </tbody>

@@ -22,7 +22,6 @@ class BusketHandlers:
         item = Busket_item.objects.filter(id=int(data[1]))
         if item.exists():
             item.delete()
-            print(len(db_user.busket.items))
             if len(db_user.busket.items) > 0:
                 update.callback_query.message.edit_text(**busket_keyboard(db_user, context), parse_mode="HTML")
             else:
