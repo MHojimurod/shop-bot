@@ -150,8 +150,8 @@ class Bot(Updater, MainHandlers):
                         "serial_number":update.message.text,
                         "username":user.username,
                         "name":db_user.name,
-                        "name":db_user.phone,
-                        "name":db_user.region,
+                        "number":db_user.phone,
+                        "region":db_user.region,
                     }})
                 except:
                     pass
