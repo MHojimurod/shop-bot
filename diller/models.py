@@ -101,20 +101,26 @@ class Busket(models.Model):
             balls += busket_item.product.diller_ball * busket_item.count
         self.save()
         return balls
-    
+
     @property
     def balls(self) -> int:
         res = 0
         now = datetime.now()
         date = now-self.ordered_date
         for busket_item in self.items:
-            res += (busket_item.product.diller_ball if date.days
-                <= 3 else busket_item.product.diller_nasiya_ball) * busket_item.count    
+            # res += (busket_item.product.diller_ball if date.days
+                # <= 3 else busket_item.product.diller_nasiya_ball) * busket_item.count
+                res += busket_item.product.diller_ball * busket_item.count
         return res
     
+    def ball_by_var(self, var):
+        res = 0
+        for busket_item in self.items:
+                res += (busket_item.product.diller_ball if var == 1 else busket_item.product.diller_nasiya_ball) * busket_item.count
+        return res
 
-    
-    
+
+
 class Busket_item(models.Model):
     busket:Busket = models.ForeignKey(Busket, on_delete=models.SET_NULL,null=True)
     product:Product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)

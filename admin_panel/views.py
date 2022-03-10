@@ -438,18 +438,24 @@ def send_orders(request):
 
         text = ""
         ball = 0
+        nasiya_ball = 0
         for j in Busket_item.objects.filter(busket=i):
             text += f"{j.product.name_uz} x <b>{j.count}</b> = {money(j.product.price * j.count)}<br>"
             a["total"]+= j.product.price * j.count
             sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
+            nasiya_ball += j.product.diller_nasiya_ball*j.count
+
 
         data.append(
             {
                 "id": i.id,
+                "payment_type": i.payment_type,
+                "is_purchased": i.is_purchased,
                 "diller": diller,
                 "text": text,
                 "ball": ball,
+                "nasiya_ball": nasiya_ball,
                 "busket": i,
                 "sub_total":money(sub_total)
             })
@@ -545,7 +551,18 @@ def serial_delete(request,pk):
         res = redirect("series", product.product.name_uz, product.diller.id)
         product.delete()
         return res
-    
+
+
+def update_ball(request,pk,varranty):
+    busket = Busket.objects.filter(pk=pk)
+    if busket:
+        ball = busket.first().ball_by_var(varranty)
+        diller = busket.first().diller
+        diller.balls += ball
+        diller.save()
+        busket.update(is_purchased=True)
+        busket.update(payment_type=0 if varranty == 1 else 1)
+        return redirect("send_orders")
     
 
 

@@ -55,12 +55,12 @@ class BusketHandlers:
         busket = Busket.objects.filter(id=int(data[1]))
         if busket.exists():
             if busket.first().status == 2:
-                balls = busket.first().purchase()
                 text = {
-                    0:"Sizning hisobingizga %d ball qo'shildi!",
-                    1:"На ваш счет добавлено %d баллов!"
+                    # 0:"Sizning hisobingizga %d ball qo'shildi!",
+                    0:"Haridingiz uchun raxmat!",
+                    1:"Спасибо за покупку!"
                 }
                 busket.update(status=4)
-                update.callback_query.message.edit_text(text[db_user.language] % balls, parse_mode="HTML")
+                update.callback_query.message.edit_text(text[db_user.language], parse_mode="HTML")
             else:
                 update.callback_query.answer(db_user.text("order_not_accepted_yet"), show_alert=True)

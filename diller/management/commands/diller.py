@@ -126,7 +126,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                     if status == 1:
                         self.bot.send_message(
                             chat_id=diller.chat_id, text=diller.text('order_accepted'))
-                        diller.balls += busket.balls
+                        # diller.balls += busket.balls
                         diller.save()
                     elif status == 2:
                         self.bot.send_message(
@@ -149,7 +149,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                     if status == 1:
                         self.bot.send_message(
                             chat_id=diller.chat_id, text=diller.text('order_accepted'))
-                        diller.balls += ball
+                        # diller.balls += ball
                         diller.save()
                     elif status == 2:
                         self.bot.send_message(

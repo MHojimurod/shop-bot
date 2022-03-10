@@ -57,6 +57,9 @@
                   <th>Буюртмалар</th>
                   <th>Умумий балл</th>
                   <th>Ҳолати</th>
+                  <th>Вариант 1</th>
+                  <th>Вариант 2</th>
+                  
                 </tr>
               </thead>
               <tbody>
@@ -69,9 +72,27 @@
                       <td><button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-lg-{{i.id}}">
                         #{{i.id}} заказ</button>
                       </button></b></td>
+                      {% if i.payment_type == 0 %}
                       <td>{{i.ball}}</td>
+                      {% else %}
+                      <td>{{i.nasiya_ball}}</td>
+                    {% endif %}
                       <td><i class="p-1 fas fa-check-circle"></i
                       > {{i.busket.get_status_display}}</td>
+                      {% if not i.is_purchased %}
+                      <td><a style="color:#17a2b8" href="/update_ball/{{i.id}}/1" class=""><i class="p-1 fas fa-check-circle"></i> Вариант 1</a></td>
+                      <td><a style="color: #17a2b8;" href="/update_ball/{{i.id}}/2" class=""><i class="p-1 fas fa-times-circle"></i> Вариант 2</a></td>
+                      {% else %}
+                      {% if i.busket.payment_type == 0  %}
+                      <td>To'landi</td>
+                      <td></td>
+                      {% else %}
+                      <td></td>
+                      <td>To'landi</td>
+                      {% endif %}
+                      {% endif %}
+                      
+
                     </tr>
                     {% endfor %}
                     
@@ -83,6 +104,8 @@
                   <td></td>
                   <td><b>Умумий сумма</b></td>
                   <td><b>{{total}}</b></td>
+                  <td></td>
+                  <td></td>
                   <td></td>
                   <td></td>
                 </tr>

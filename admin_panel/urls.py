@@ -58,6 +58,7 @@ urlpatterns = [
 
     path('orders/', orders,name="orders"),
     path('send_orders/', send_orders,name="send_orders"),
+    path('update_ball/<int:pk>/<int:varranty>', update_ball,name="update_ball"),
     path('update_order/<int:pk>/<int:status>', update_order,name="update_order"),
 
 
