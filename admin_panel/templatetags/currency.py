@@ -9,4 +9,5 @@ locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 @register.simple_tag
 def money(number:int, grouping:bool=True):
-    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
+    print(locale.currency(number, grouping=grouping)[1:],"bbb")
+    return f"{locale.currency(number, grouping=grouping)[1:]}"

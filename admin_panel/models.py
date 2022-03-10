@@ -71,7 +71,7 @@ class Product(models.Model):
     diller_ball: int = models.IntegerField()
     diller_nasiya_ball:int = models.IntegerField()
     seller_ball:int = models.IntegerField()
-    price: int = models.IntegerField()
+    price: float = models.FloatField()
     image = models.ImageField(upload_to='products')
 
 
@@ -118,7 +118,7 @@ class BaseProduct(models.Model):
 class Promotion(models.Model):
     id:int
     product: Product = models.ForeignKey(Product, on_delete=models.SET_NULL,null=True)
-    price:int = models.IntegerField()
+    price:int = models.FloatField()
     ball:int = models.IntegerField()
     active:bool = models.BooleanField(default=False)
     description_uz:str = models.TextField()

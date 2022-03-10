@@ -40,6 +40,10 @@ class ProductForm(forms.ModelForm):
                 'class': "form-control ",
                 
                 }),
+            'diller_nasiya_ball': forms.NumberInput(attrs={
+                'class': "form-control ",
+                
+                }),
             'seller_ball': forms.NumberInput(attrs={
                 'class': "form-control ",
                 
