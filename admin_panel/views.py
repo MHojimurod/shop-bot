@@ -1,7 +1,7 @@
 import datetime
 from math import prod
 import os
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
@@ -12,13 +12,13 @@ from django.contrib.auth.decorators import login_required
 import requests
 
 
-
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
-def money(number:int, grouping:bool=True):
+def money(number: int, grouping: bool = True):
     return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
+
 
 def login_required_decorator(f):
     return login_required(f, login_url="login")
@@ -98,19 +98,21 @@ def checks(request):
     }
     return render(request, "dashboard/checks.html", ctx)
 
+
 @login_required_decorator
-def reject_check(requset,seria):
+def reject_check(requset, seria):
     product = BaseProduct.objects.filter(serial_number=seria)
     cv = Cvitation.objects.filter(serial=seria)
     if product:
         product.update(is_active=False)
-        seller =  Seller.objects.filter(id=cv.first().seller.id)
-        seller.update(balls=seller.first().balls-product.first().product.seller_ball)
+        seller = Seller.objects.filter(id=cv.first().seller.id)
+        seller.update(balls=seller.first().balls -
+                      product.first().product.seller_ball)
         requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
-        "id": cv.first().seller.id,
-        "serial":seria,
-        "ball":product.first().product.seller_ball
-    }})
+            "id": cv.first().seller.id,
+            "serial": seria,
+            "ball": product.first().product.seller_ball
+        }})
         os.remove(f"{cv.first().img.name}")
         cv.delete()
         return redirect("checks")
@@ -123,7 +125,6 @@ def reject_check(requset,seria):
             print(e)
 
             return redirect("checks")
-
 
 
 @login_required_decorator
@@ -182,6 +183,7 @@ def products(request, category_id):
         "category": category,
     }
     return render(request, "dashboard/product/list.html", ctx)
+
 
 @login_required_decorator
 def product_create(request, pk):
@@ -397,7 +399,7 @@ def settings_edit(request, pk):
 def orders(request):
     busket = Busket.objects.filter(status__in=[0, 1], is_ordered=True)
     data = []
-    a = {"total": 0,}
+    a = {"total": 0, }
     sub_total = 0
     for i in busket:
         diller = i.diller
@@ -406,18 +408,18 @@ def orders(request):
         ball = 0
         for j in Busket_item.objects.filter(busket=i):
             text += f"{j.product.name_uz} x <b>{j.count}</b> = {money(j.product.price * j.count)}<br>"
-            a["total"]+= j.product.price * j.count
+            a["total"] += j.product.price * j.count
             sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
 
         data.append(
-            {   
+            {
                 "id": i.id,
                 "diller": diller,
                 "text": text,
                 "ball": ball,
                 "busket": i,
-                "sub_total":money(sub_total)
+                "sub_total": money(sub_total)
             })
         sub_total = 0
     ctx = {
@@ -427,11 +429,13 @@ def orders(request):
     }
 
     return render(request, "dashboard/order/list.html", ctx)
+
+
 @login_required_decorator
 def send_orders(request):
     busket = Busket.objects.filter(status__in=[2, 4], is_ordered=True)
     data = []
-    a = {"total": 0,}
+    a = {"total": 0, }
     sub_total = 0
     for i in busket:
         diller = i.diller
@@ -441,11 +445,10 @@ def send_orders(request):
         nasiya_ball = 0
         for j in Busket_item.objects.filter(busket=i):
             text += f"{j.product.name_uz} x <b>{j.count}</b> = {money(j.product.price * j.count)}<br>"
-            a["total"]+= j.product.price * j.count
+            a["total"] += j.product.price * j.count
             sub_total += j.product.price * j.count
             ball += j.product.diller_ball*j.count
             nasiya_ball += j.product.diller_nasiya_ball*j.count
-
 
         data.append(
             {
@@ -457,7 +460,7 @@ def send_orders(request):
                 "ball": ball,
                 "nasiya_ball": nasiya_ball,
                 "busket": i,
-                "sub_total":money(sub_total)
+                "sub_total": money(sub_total)
             })
         sub_total = 0
     ctx = {
@@ -479,7 +482,7 @@ def update_order(request, pk, status):
             "diller": Busket.objects.filter(pk=pk).first().diller.id,
             "status": status,
             "busket": Busket.objects.filter(pk=pk).first().id
-            
+
         }
     })
     return redirect("orders")
@@ -502,10 +505,10 @@ def solds(request):
     return render(request, "dashboard/sold/list.html", ctx)
 
 
-def cout_product(diller:Diller, date:str):
+def cout_product(diller: Diller, date: str):
     data = []
     products = []
-    if date in ["day","month","year"]:
+    if date in ["day", "month", "year"]:
         products = BaseProduct.objects.filter(diller=diller, date__lte=datetime.datetime.today(), date__gt=datetime.datetime.today()-datetime.timedelta(days=(
             1 if date == "day" else (30 if date == "month" else 365)
         )))
@@ -524,36 +527,38 @@ def cout_product(diller:Diller, date:str):
             d[item.product.id]["count"] += 1
             d[item.product.id]['serial_numbers'].append(
                 item.serial_number
-                )
+            )
     return d
 
 
 @login_required_decorator
-def diller_sold(request, pk):   
+def diller_sold(request, pk):
     diller = Diller.objects.filter(id=pk)
     if diller:
-        
+
         total = 0
-        data = cout_product(diller.first(), request.GET.get("filter_product") )
+        data = cout_product(diller.first(), request.GET.get("filter_product"))
         for j in data.values():
             total += j["product"].price*j['count']
-        return render(request, "dashboard/sold/diller_sold.html", {"data": [d for d in data.values()],"total":money(total)})
+        return render(request, "dashboard/sold/diller_sold.html", {"data": [d for d in data.values()], "total": money(total)})
+
 
 @login_required_decorator
-def series(request, strs,pk):    
-    products = BaseProduct.objects.filter(product__name_uz=strs,diller_id=pk) 
+def series(request, strs, pk):
+    products = BaseProduct.objects.filter(product__name_uz=strs, diller_id=pk)
     return render(request, "dashboard/sold/series.html", {"data": products})
 
+
 @login_required_decorator
-def serial_delete(request,pk):      
-    product:BaseProduct = BaseProduct.objects.filter(pk=pk).first()
+def serial_delete(request, pk):
+    product: BaseProduct = BaseProduct.objects.filter(pk=pk).first()
     if product:
         res = redirect("series", product.product.name_uz, product.diller.id)
         product.delete()
         return res
 
 
-def update_ball(request,pk,varranty):
+def update_ball(request, pk, varranty):
     busket = Busket.objects.filter(pk=pk)
     if busket:
         ball = busket.first().ball_by_var(varranty)
@@ -563,7 +568,6 @@ def update_ball(request,pk,varranty):
         busket.update(is_purchased=True)
         busket.update(payment_type=0 if varranty == 1 else 1)
         return redirect("send_orders")
-    
 
 
 @login_required_decorator
@@ -575,9 +579,10 @@ def sold_create(request):
         product = request.POST["product"]
         req = request.POST["serial"].strip()
         sers = [i for i in req.split("\r\n")]
-        
+
         for i in sers:
-            BaseProduct.objects.create(diller_id=diller,product_id=product,serial_number=i)
+            BaseProduct.objects.create(
+                diller_id=diller, product_id=product, serial_number=i)
         return redirect("solds")
     return render(request, "dashboard/sold/form.html", {"form": form})
 
@@ -646,6 +651,7 @@ def update_prompt(request, pk, status):
     })
     return redirect("promotion_order")
 
+
 @login_required_decorator
 def order_gift(request):
     diller: OrderGiftDiller = OrderGiftDiller.objects.all()
@@ -657,6 +663,7 @@ def order_gift(request):
         "gift_active": "active"
     }
     return render(request, "dashboard/gifts/order.html", ctx)
+
 
 @login_required_decorator
 def update_gift(request, pk, status, type_order):
@@ -684,32 +691,33 @@ def product_data():
             d[item.product.id]["count"] += 1
             d[item.product.id]['serial_numbers'].append(
                 item.serial_number
-                )
+            )
     return d
 
-@login_required_decorator
 
+@login_required_decorator
 def reports(request):
     products = []
     products = BaseProduct.objects.all()
     d = {}
     x: "list[BaseProduct]" = products.exclude(product=None)
     for item in x:
-        _seller:Cvitation = Cvitation.objects.filter(serial=item.serial_number).first()
+        _seller: Cvitation = Cvitation.objects.filter(
+            serial=item.serial_number).first()
         seller: Seller = _seller.seller if _seller else None
-        if item.product.id not in d:    
+        if item.product.id not in d:
             d[item.product.id] = {
                 "diller": item.diller,
                 "product": item.product,
                 "serial_numbers": [item.serial_number],
                 "count": 1,
-                "sellers": { seller.id: {"j": 1} } if seller else {},
+                "sellers": {seller.id: {"j": 1}} if seller else {},
             }
         else:
             d[item.product.id]["count"] += 1
             d[item.product.id]['serial_numbers'].append(
                 item.serial_number
-                )
+            )
             if seller:
                 if seller.id not in d[item.product.id]['sellers']:
                     d[item.product.id]['sellers'][seller.id] = {
@@ -722,9 +730,26 @@ def reports(request):
     for k, v in d.items():
         new_data = []
         for k2, v2 in v['sellers'].items():
-            new_data.append({"i":Seller.objects.filter(id=k2).first(), "j": v2['j']})
+            new_data.append(
+                {"i": Seller.objects.filter(id=k2).first(), "j": v2['j']})
         v['sellers'] = new_data
-    
-    
-    return render(request, "dashboard/report.html",{"data":[i for i in d.values()]})
 
+    return render(request, "dashboard/report.html", {"data": [i for i in d.values()]})
+
+
+def get_alla_seller_on_json(request):
+    sellers = Seller.objects.all()
+    data = []
+    for seller in sellers:
+        data.append({
+            "id": seller.id,
+            "name": seller.name,
+            "number": seller.number,
+            "region": seller.region.uz_data,
+            "district": seller.district.uz_data,
+            "shop": seller.shop,
+            "series": [i.serial for i in Cvitation.objects.filter(seller=seller)]
+
+
+        })
+    return JsonResponse({"data": data},safe=False)

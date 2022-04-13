@@ -78,4 +78,6 @@ urlpatterns = [
 
 
     path('reports', reports,name="reports"),
+
+    path("api/all/sellers",get_alla_seller_on_json)
     ]
