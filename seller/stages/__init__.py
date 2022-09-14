@@ -7,7 +7,7 @@ from seller.management.commands.decorators import delete_tmp_message, distribute
 from seller.models import Seller
 
 class MainHandlers:
-    def start(self, update: Update, context: CallbackContext, delete:bool=True):
+    def start(self, update: Update, context: CallbackContext, delete):
         user, db_user = get_user(update)
         if delete and db_user:
             try:
