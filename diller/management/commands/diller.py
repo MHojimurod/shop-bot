@@ -110,6 +110,7 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                      )(self.saled_asdasdasdasdas)
 
         server.run("127.0.0.1", port=6002)
+        self.idle()
 
     def update_status_order(self):
         data = request.get_json()
