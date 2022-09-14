@@ -30,7 +30,7 @@ from .constant import (
 )
 
 
-# from seller.stages import MainHandlers
+from seller.stages import MainHandlers
 
 user: User = None
 db_user: Seller = None
@@ -38,7 +38,7 @@ db_user: Seller = None
 
 
 
-class Bot(Updater):
+class Bot(Updater,MainHandlers):
     def __init__(self, *args, **kwargs):
         super().__init__(TOKEN, *args, **kwargs)
 
