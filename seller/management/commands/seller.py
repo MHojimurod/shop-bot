@@ -88,7 +88,7 @@ class Bot(Updater,MainHandlers):
         
 
         server.run("127.0.0.1", port=6003)
-    
+        self.idle()
 
 
 
@@ -313,4 +313,4 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        Bot()
+        Bot(Updater,MainHandlers)
