@@ -39,8 +39,9 @@ db_user: Seller = None
 
 
 class Bot(Updater,MainHandlers):
-    def __init__(self, *args, **kwargs):
-        super().__init__(TOKEN, *args, **kwargs)
+    def __init__(self, token: str = None):
+        assert token, ValueError("Token is required")
+        super().__init__(token)
 
         not_start = ~Filters.regex("^(\/start)")
 
@@ -313,4 +314,4 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        Bot(Updater,MainHandlers)
+        Bot(TOKEN)
