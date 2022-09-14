@@ -30,7 +30,7 @@ from .constant import (
 )
 
 
-from seller.stages import MainHandlers
+# from seller.stages import MainHandlers
 
 user: User = None
 db_user: Seller = None
@@ -38,10 +38,9 @@ db_user: Seller = None
 
 
 
-class Bot(Updater, MainHandlers):
-    def __init__(self, token: str = None):
-        assert token, ValueError("Token is required")
-        super().__init__(token)
+class Bot(Updater):
+    def __init__(self, *args, **kwargs):
+        super().__init__(TOKEN, *args, **kwargs)
 
         not_start = ~Filters.regex("^(\/start)")
 
@@ -309,10 +308,9 @@ class Bot(Updater, MainHandlers):
         return SHOP_PASSPORT_PHOTO
 
 
-x = Bot(TOKEN)
 
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        pass
+    def handle(self, *args, **kwargs):
+        Bot()
