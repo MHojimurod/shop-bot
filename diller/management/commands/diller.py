@@ -321,9 +321,9 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
         return REGION
 
 
-work = Bot(TOKEN)
+
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        pass
+        work = Bot(TOKEN)
