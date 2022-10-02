@@ -1,0 +1,67 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Диллер қўшиш</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Диллер қўшиш</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="">
+
+              <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >Diller Ismi</label><br>
+                      {{form.name}}
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >Telefon Raqami</label><br>
+                      {{form.number}}
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >Viloyati</label><br>
+                      {{form.region}}
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label >Tumani</label><br>
+                      {{form.district}}
+                  </div>
+                </div>
+                
+                
+                
+
+                <div class="ml-3">
+                  <button type="submit" class="btn col-sm-1 btn-info">Қўшиш</button>
+                  <button onclick="history.back()" class="btn col-sm-1 btn-secondary">
+                    Ортга
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

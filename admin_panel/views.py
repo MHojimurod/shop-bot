@@ -1,17 +1,18 @@
 import datetime
-from math import prod
 import os
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse,HttpResponse
 from django.shortcuts import render, redirect
-from admin_panel.forms import CategoryForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
+from admin_panel.forms import CategoryForm, DillerForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
 from diller.models import Diller, Busket, Busket_item, OrderGiftDiller
 from seller.models import Cvitation, OrderGiftSeller, Seller
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import requests
-
-
+from django.db.models import Q
+import xlsxwriter
+from telegram.ext import Updater
+from seller.management.commands.constant import TOKEN
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
@@ -54,6 +55,16 @@ def dillers_list(request):
 
 
 @login_required_decorator
+def diller_create(request):
+    model = Diller()
+    form = DillerForm(request.POST,instance=model)
+    if form.is_valid():
+        form.instance.status = 1
+        form.save()
+        return redirect("/")
+    return render(request,"dashboard/diller_create.html",{"form":form})
+
+@login_required_decorator
 def sellers_list(request):
     sellers = Seller.objects.order_by('-id').all()
     ctx = {
@@ -66,11 +77,24 @@ def sellers_list(request):
 @login_required_decorator
 def diller_update(request, pk, status):
     Diller.objects.filter(pk=pk).update(status=status)
-    data = requests.get(f"http://127.0.0.1:6002/diller_status", json={"data": {
+    try:
+        data = requests.get(f"http://127.0.0.1:6002/diller_status", json={"data": {
+            "id": pk,
+            "status": status
+        }})
+    except:...
+    return redirect("home")
+
+@login_required_decorator
+def seller_update(request, pk, status):
+    Seller.objects.filter(pk=pk).update(status=status)
+    try:
+        data = requests.get(f"http://127.0.0.1:6003/seller_status", json={"data": {
         "id": pk,
         "status": status
-    }})
-    return redirect("home")
+        }})
+    except:...
+    return redirect("sellers_list")
 
 
 @login_required_decorator
@@ -83,15 +107,17 @@ def diller_delete(request, pk):
 @login_required_decorator
 def seller_delete(request, pk):
     model = Seller.objects.get(pk=pk)
-    requests.get(f"http://127.0.0.1:6003/delete_seller", json={"data": {
+    try:
+        requests.get(f"http://127.0.0.1:6003/delete_seller", json={"data": {
         "id": pk,
-    }})
+        }})
+    except:...
     return redirect("sellers_list")
 
 
 @login_required_decorator
 def checks(request):
-    cvitation = Cvitation.objects.order_by("-id").all()
+    cvitation = Cvitation.objects.order_by("-id").filter(~Q(seller=None),status=0)
     ctx = {
         "checks": cvitation,
         "ch_active": "menu-open"
@@ -99,32 +125,27 @@ def checks(request):
     return render(request, "dashboard/checks.html", ctx)
 
 
+
 @login_required_decorator
-def reject_check(requset, seria):
-    product = BaseProduct.objects.filter(serial_number=seria)
+def reject_check(requset, seria,user,status):
+    # product = BaseProduct.objects.filter(serial_number=seria,seller_id=user)
     cv = Cvitation.objects.filter(serial=seria)
-    if product:
-        product.update(is_active=False)
-        seller = Seller.objects.filter(id=cv.first().seller.id)
-        seller.update(balls=seller.first().balls -
-                      product.first().product.seller_ball)
+    if status == 2:
+        seller = Seller.objects.filter(pk=user)
+        seller.update(balls=seller.first().balls - cv.first().current_ball)
         requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
             "id": cv.first().seller.id,
-            "serial": seria,
-            "ball": product.first().product.seller_ball
-        }})
-        os.remove(f"{cv.first().img.name}")
-        cv.delete()
-        return redirect("checks")
-    else:
+            "serial": seria}})
+        cv.update(status=status)
         try:
             os.remove(f"{cv.first().img.name}")
             cv.delete()
-            return redirect("checks")
         except Exception as e:
             print(e)
-
-            return redirect("checks")
+        return redirect("checks")
+    else:
+        cv.update(status=status)
+        return redirect("checks")
 
 
 @login_required_decorator
@@ -497,7 +518,7 @@ def solds(request):
     for i in all.exclude(diller=None):
         if i.diller not in [j['diller'] for j in data if data != []]:
             count = BaseProduct.objects.filter(diller=i.diller).count()
-            data.append({"diller": i.diller, "count": count})
+            data.append({"diller": i.diller, "count": count,"seller":i.seller})
     ctx = {
         "baseproduct": data,
         "s_active": "menu-open"
@@ -576,13 +597,31 @@ def sold_create(request):
     form = SoldForm(request.POST, instance=model)
     if form.is_valid():
         diller = request.POST["diller"]
+        seller = request.POST["seller"]
         product = request.POST["product"]
         req = request.POST["serial"].strip()
         sers = [i for i in req.split("\r\n")]
-
+        sel = Seller.objects.get(pk=seller)
+        workbook:xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{sel.name}_{len(sers)}.xlsx")
+        worksheet = workbook.add_worksheet()
+        worksheet.write(f'A1', f"Sotuvchi")
+        worksheet.write(f'B1', sel.name)
+        worksheet.write(f'A3', f"№")
+        worksheet.write(f'B3', f"Serial Nomer")
+        count = 4
+        forloop = 1
         for i in sers:
             BaseProduct.objects.create(
-                diller_id=diller, product_id=product, serial_number=i)
+            diller_id=diller, product_id=product, serial_number=i,seller_id=seller)
+            worksheet.write(f'A{count}', f"#{forloop}")
+            worksheet.write(f'B{count}', f"{i}")
+            count+=1
+            forloop+=1
+        workbook.close()
+        try:
+            bot = Updater(TOKEN)
+            bot.bot.send_document(chat_id=sel.chat_id,document=open(f"media/{sel.name}_{len(sers)}.xlsx","rb"))
+        except:...   
         return redirect("solds")
     return render(request, "dashboard/sold/form.html", {"form": form})
 
@@ -753,3 +792,72 @@ def get_alla_seller_on_json(request):
 
         })
     return JsonResponse({"data": data},safe=False)
+
+
+def write_text(request):
+    data = ["reject_check_text",
+	"total",
+	"you_are_deleted",
+	"request_location",
+	"incorrect_shop_location",
+	"invalid_number",
+	"invalid_name",
+	"product_count_limit",
+	"price",
+	"sum",
+	"passport_photo",
+	"shop_passport_photo",
+	"shop_location",
+	"wait_accept",
+	"menu",
+	"cvitation",
+	"diller_accept_order",
+	"balls",
+	"back_btn",
+	"add_again_btn",
+	"order_btn",
+	"add_to_cart",
+	"shop_name",
+	"seria_not_found",
+	"already_sold",
+	"cvitation_success",
+	"send_cvi_serial_number",
+	"send_cvitation",
+	"my_balls",
+	"buy",
+	"taken",
+	"not_access",
+	"accept_your_prompt",
+	"not_enought_balls",
+	"no",
+	"yes",
+	"are_you_sure_get_gift",
+	"no_orders",
+	"loan",
+	"cash",
+	"pay_type",
+	"empty_busket",
+	"promotion_count_error",
+	"promotion_count_message",
+	"prompt_end",
+	"i_bought",
+	"reject_message",
+	"accept_message",
+	"order_denied",
+	"order_delivered",
+	"order_accepted",
+	"language_not_found",
+	"region_not_found",
+	"district_not_found",
+	"select_district",
+	"select_region",
+	"send_number",
+	"request_number",
+	"request_name",
+	"start",
+    "invalid_passport_photo",
+    "invalid_shop_passport_photo"]
+
+    for i in data:
+        Text.objects.get_or_create(name=i,uz_data=i,ru_data=i)
+    return redirect("/")

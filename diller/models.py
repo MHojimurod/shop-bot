@@ -1,12 +1,13 @@
 from ctypes import Union
 from datetime import datetime
+from email.policy import default
 from typing import List
 from django.db import models
 from admin_panel.models import *
 
 
 class Diller(models.Model):
-    chat_id:int = models.IntegerField()
+    chat_id:int = models.IntegerField(default=0)
     name:str = models.CharField(max_length=100)
     number:str = models.CharField(max_length=100)
     region: Regions = models.ForeignKey(Regions, on_delete=models.SET_NULL, null=True)
@@ -22,7 +23,7 @@ class Diller(models.Model):
         return OrderGiftDiller.objects.create(user=self, gift=gift)
 
     
-    language:int = models.IntegerField(choices=((0, 'uz'), (1, 'ru')))
+    language:int = models.IntegerField(default=0,choices=((0, 'uz'), (1, 'ru')))
     @property
     def busket(self) -> "Busket":
         b = Busket.objects.filter(diller=self, is_ordered=False).first()

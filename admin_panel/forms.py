@@ -1,5 +1,7 @@
+from dataclasses import fields
 from django import forms
 from admin_panel.models import Category, District, Gifts,Product, Promotion, Regions,Text,BaseProduct
+from diller.models import Diller
 
 
 
@@ -133,9 +135,13 @@ class SoldForm(forms.ModelForm):
     serial = forms.CharField(max_length=100)
     class Meta:
         model = BaseProduct
-        fields = ['diller','product']
+        fields = ['diller','product','seller']
         widgets = {
             'diller': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible",
+                
+                }),
+            'seller': forms.Select(attrs={
                 'class': "form-control select2 select2-hidden-accessible",
                 
                 }),
@@ -182,3 +188,27 @@ class PromotionForm(forms.ModelForm):
                 
                 })
         }
+
+
+class DillerForm(forms.ModelForm):
+    class Meta:
+        model = Diller
+        fields = ["name","number","region","district"]
+        widgets = {
+            'region': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible"
+                
+                }),
+            'district': forms.Select(attrs={
+                'class': "form-control select2 select2-hidden-accessible"
+                
+                }),
+            'name': forms.TextInput(attrs={
+                'class': "form-control "
+                
+                }),
+            'number': forms.NumberInput(attrs={
+                'class': "form-control "
+                
+                })
+                   }

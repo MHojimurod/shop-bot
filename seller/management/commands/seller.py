@@ -14,6 +14,7 @@ from seller.utils import balls_keyboard_pagination
 from .constant import (
     CVI_PHOTO,
     CVI_SERIAL_NUMBER,
+    DILLERS_CHOICE,
     LANGUAGE,
     SELECT_NEW_LANGUAGE,
     SHOP,
@@ -70,7 +71,8 @@ class Bot(Updater,MainHandlers):
                 BALL: [CallbackQueryHandler(self.my_balls, pattern="^gift_pagination"), CallbackQueryHandler(self.select_gift, pattern="^select_gift"), CallbackQueryHandler(self.selct_gift_sure, pattern="^sure_select_gift"), CallbackQueryHandler(self.start, pattern="^back")],
                 SELECT_NEW_LANGUAGE: [MessageHandler(
                     Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.new_language)
-                    ]
+                    ],
+                DILLERS_CHOICE : [MessageHandler(Filters.text & not_start,self.dillers_choice)]
 
             },
             fallbacks=[CommandHandler("start", self.start), MessageHandler(Filters.all, self.start)],
@@ -86,6 +88,8 @@ class Bot(Updater,MainHandlers):
                      methods=['POST', 'GET'])(self.delete_seller)
         server.route('/reject_check',
                      methods=['POST', 'GET'])(self.reject_ball)
+        server.route('/seller_status',
+                     methods=['POST', 'GET'])(self.user_state_update)
         
 
         server.run("127.0.0.1", port=6003)
@@ -100,7 +104,7 @@ class Bot(Updater,MainHandlers):
             seller: Seller = Seller.objects.filter(id=data['id']).first()
             if seller:
                 try:
-                    self.bot.send_message(chat_id=  seller.chat_id,text=seller.text("reject_check_text").format(serial=data['serial'], ball=data['ball']))
+                    self.bot.send_message(chat_id=seller.chat_id,text=seller.text("reject_check_text"))
                 except:
                     pass
             return 'ok'
@@ -308,7 +312,18 @@ class Bot(Updater,MainHandlers):
                                   context.user_data['register']['language']), reply_markup=ReplyKeyboardRemove())
         return SHOP_PASSPORT_PHOTO
 
-
+    def user_state_update(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            diller = Seller.objects.filter(id=data['id'])
+            if diller.exists():
+                diller = diller.first()
+                self.bot.send_message(chat_id=diller.chat_id, text=diller.text(
+                    "accept_message" if data['status'] == 1 else "reject_message",))
+            else:
+                pass
+        return "x"
 
 from django.core.management.base import BaseCommand
 

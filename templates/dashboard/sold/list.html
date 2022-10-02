@@ -35,7 +35,9 @@
                     <tr>
                       <th>№</th>
                       <th>Диллер</th>
-                      <th>Viloyat</th>
+                      <th>Диллер Вилояти</th>
+                      <th>Сотовчи</th>
+                      <th>Сотовчи Вилояти</th>
                       <th>Махсулотлар</th>
                       <th>Сони</th>
                     </tr>
@@ -46,6 +48,8 @@
                         <td>{{ forloop.counter }}</td>
                         <td><a href="/diller_sold/{{i.diller.id}}">{{ i.diller.name }}</a></td>
                         <td><a href="/diller_sold/{{i.diller.id}}">{{ i.diller.region.uz_data }}</a></td>
+                        <td>{{ i.seller.name }}</td>
+                        <td>{{ i.seller.region.uz_data }}</td>
                         <td><a href="/diller_sold/{{i.diller.id}}">Maxsulotlar</a></td>
                         <td>{{ i.count }} шт</td>
                       </tr>

@@ -31,7 +31,8 @@ class Regions(models.Model):
     def name(self, lang:int):
         return self.uz_data if lang == 0 else self.ru_data
 
-
+    def __str__(self):
+        return self.ru_data
 
 class District(models.Model):
     id:int
@@ -42,6 +43,8 @@ class District(models.Model):
     def name(self, lang:int):
         return self.uz_data if lang == 0 else self.ru_data
 
+    def __str__(self):
+        return self.ru_data
 
 class Category(models.Model):
     id:int
@@ -49,19 +52,6 @@ class Category(models.Model):
     name_ru: str = models.CharField(max_length=100)
     def name(self, lang:int):
         return self.name_uz if lang == 0 else self.name_ru
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class Product(models.Model):
     id:int
@@ -103,7 +93,8 @@ class Gifts(models.Model):
 
 class BaseProduct(models.Model):
     id:int
-    diller: "Diller" = models.ForeignKey("diller.Diller", on_delete=models.SET_NULL, null=True)
+    diller = models.ForeignKey("diller.Diller", on_delete=models.SET_NULL, null=True)
+    seller = models.ForeignKey("seller.Seller", on_delete=models.SET_NULL, null=True)
     product:Product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     serial_number:str = models.CharField(max_length=200)
     is_active:bool = models.BooleanField(default=False)
@@ -133,7 +124,7 @@ class Promotion(models.Model):
 
 class Promotion_Order(models.Model):
     id:int
-    user : "diller.Diller" = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
+    user  = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     promotion:Promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
     count:int = models.IntegerField(default=1)  
     date:datetime = models.DateTimeField(auto_now_add=True)

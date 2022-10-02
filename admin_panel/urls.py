@@ -13,11 +13,13 @@ urlpatterns = [
     path('logout/', dashboard_logout, name="logout"),
 
     path('diller_update/<int:pk>/<int:status>/', diller_update,name="diller_update"),
+    path('seller_update/<int:pk>/<int:status>/', seller_update,name="seller_update"),
     path('diller_delete/<int:pk>/', diller_delete,name="diller_delete"),
     path('seller_delete/<int:pk>/', seller_delete,name="seller_delete"),
+    path('diller_create', diller_create,name="diller_create"),
 
     path('checks', checks,name="checks"),
-    path('reject_check/<str:seria>', reject_check,name="reject_check"),
+    path('reject_check/<str:seria>/<int:user>/<int:status>', reject_check,name="update_check"),
 
 
 
@@ -79,5 +81,6 @@ urlpatterns = [
 
     path('reports', reports,name="reports"),
 
-    path("api/all/sellers",get_alla_seller_on_json)
+    path("api/all/sellers",get_alla_seller_on_json),
+    path("write_text",write_text)
     ]

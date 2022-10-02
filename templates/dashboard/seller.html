@@ -53,15 +53,18 @@
                 <tr>
                   <th>№</th>
                   <th>ФИО</th>
+                  <th>Диллерлар</th>
                   <th>Телефон</th>
                   <th>Вилоят</th>
-                  <th>Туман</th>
                   <th>Дўкон</th>
-                  <th>ДГФ</th>
-                  <th>ПФ</th>
-                  <th>Тил</th>
+                  <th>ДГФ/ПФ</th>
                   <th>Балл</th>
-                  <th>Ўчириш</th>
+                  <th>Ҳолати</th>
+                  <th><i class="p-1 fas fa-check-circle"></i
+                    ></th>
+                  <th><i class="p-1 fas fa-times-circle"></i
+                    ></th>
+                  <th><i class="p-1 far fa-trash-alt"></i></th>
                 </tr>
               </thead>
               <tbody>
@@ -69,19 +72,63 @@
                 <tr>
                   <td>{{forloop.counter}}</td>
                   <td>{{i.name}}</td>
+                  <td>{% for j in i.dillers.all %}{{j.name}}<br>{% endfor %}</td>
                   <td><a href="tel:{{i.number}}">{{i.number}}</a></td>
 
-                  <td>{{i.region.ru_data}}</td>
-                  <td>{{i.district.ru_data}}</td>
+                  <td>{{i.region.ru_data}}<br>{{i.district.ru_data}}</td>
                   <td>{{i.shop}}</td>
-                  <td><a href="/media/{{i.shop_passport_photo}}">ДГФ</a></td>
-                  <td><a href="/media/{{i.passport_photo}}">ПФ</a></td>
-                  <td>{{i.get_language_display}}</td>
+                  <td><a href="/media/{{i.shop_passport_photo}}">ДГФ</a><br>
+                  <a href="/media/{{i.passport_photo}}">ПФ</a></td>
                   <td>{% money i.balls %}</td>
+                  {% if i.status == 0 %}
+                  <td><span class="badge badge-warning">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a href="{% url 'seller_update' pk=i.pk status=1 %}" class="btn btn-xs btn-success"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'seller_update' pk=i.pk status=2 %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% elif i.status == 1 %}
+                  <td><span class="badge badge-success">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a  class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
                   <td>
                     <a href="{% url 'seller_delete' i.pk %}" class="btn btn-xs btn-danger"
                       ><i class="p-1 far fa-trash-alt"></i></a>
                   </td>
+                  {% else %}
+                  <td><span class="badge badge-danger">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'seller_delete' i.pk %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% endif %}
               
                   
                 </tr>

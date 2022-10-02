@@ -15,34 +15,67 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
-
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
-            <div>
-              <div class="filter-container p-0 row">
-                {% for i in checks %}
-                <div class="d-flex col-6">
-                  <div class="product-image-thumb"  data-category="3" data-sort="white sample">
-                    <a href="/{{i.img}}" data-toggle="lightbox" data-title="{{i.seller.name}}   {{i.seller.number}}   
-                                                                            {{i.seller.region.uz_data}}   {{i.seller.district.uz_data}}   {{i.serial}}">
-                      <img src="/{{i.img}}" style=" width: 10vw; height: 7vh;" alt="white sample"/>
-                    </a>
-                    
-                  </div>
-                  <div>
-                    Ismi: <i>{{i.seller.name}}</i>  Telefon: <i>{{i.seller.number}}</i><br>Viloyat: <i>{{i.seller.region.uz_data}}</i>  Tuman: <i>{{i.seller.district.uz_data}}</i>  Seria: <i>{{i.serial}}</i><br>
-                    <a href="/reject_check/{{i.serial}}" class="btn btn-xs btn-secondary">Рад етиш</a>
-
-                  </div>
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Квитансиялар</h3>
+    
+                <div class="card-tools">
+                  
                 </div>
-
-                <!-- <div class="product-image-thumb"><img src="/static/dashboard/img/prod-3.jpg" alt="Product Image"></div> -->
-                {% endfor %}
               </div>
+    
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Sotuvchi</th>
+                      <th>Telefon</th>
+                      <th>Viloyat</th>
+                      <th>Tuman</th>
+                      <th>Serial</th>
+                      <th>Rasmi</th>
+                      <th>Qabul qilish</th>
+                      <th>Rad etish</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in checks %}
+    
+                    <tr>
+    
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.seller.name }}</td>
+                      <td><a href="">{{ i.seller.number }}</a></td>
+                      <td>{{i.seller.region.uz_data}}</td>
+                      <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.serial}}</td>
+                      <td>
+                        <div class="product-image-thumb">
+                          <a href="/{{i.img}}">
+                            <img src="/{{i.img}}" style=" width: 7vw; height: 15vh;object-fit: cover;" alt="white sample"/>
+                          </a>
+                          
+                        </div>
+                      </td>
+                      <td><a style="color: #17a2b8;" href="/reject_check/{{i.serial}}/{{i.seller.id}}/1">
+                        <div ><i class="fa fa-check-square-o"></i></div></a></td>
+                      <td><a style="color: #dc3545;" href="/reject_check/{{i.serial}}/{{i.seller.id}}/2">
+                        <div><i class="fa fa-window-close-o"></i></div></a></td>
+                        </a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+                            
+              <!-- /.card-body -->
             </div>
+            <!-- /.card -->
           </div>
         </div>
       </div>
