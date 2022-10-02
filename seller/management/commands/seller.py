@@ -148,16 +148,16 @@ class Bot(Updater,MainHandlers):
                 product.sale()
                 db_user.balls += product.product.seller_ball
                 db_user.save()
-                try:
-                    requests.get("http://127.0.0.1:6002/sale", json={"data": {
-                        "serial_number":update.message.text,
-                        "username":user.username,
-                        "name":db_user.name,
-                        "number":db_user.number,
-                        "region":db_user.region.uz_data,
-                    }})
-                except Exception as e:
-                    print(e)
+                # try:
+                #     requests.get("http://127.0.0.1:6002/sale", json={"data": {
+                #         "serial_number":update.message.text,
+                #         "username":user.username,
+                #         "name":db_user.name,
+                #         "number":db_user.number,
+                #         "region":db_user.region.uz_data,
+                #     }})
+                # except Exception as e:
+                #     print(e)
                 return self.start(update, context,False)
             else:
                 user.send_message(db_user.text("already_sold"))
