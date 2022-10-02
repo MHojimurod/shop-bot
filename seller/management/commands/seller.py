@@ -143,7 +143,7 @@ class Bot(Updater,MainHandlers):
         if product.exists():
             product:BaseProduct = product.first()
             if not product.is_active:
-                Cvitation.objects.create(seller=db_user, serial=update.message.text, img=context.user_data['cvitation_img'])
+                Cvitation.objects.create(seller=db_user, serial=update.message.text, img=context.user_data['cvitation_img'],current_ball=product.product.seller_ball)
                 user.send_message(db_user.text("cvitation_success"))
                 product.sale()
                 db_user.balls += product.product.seller_ball
