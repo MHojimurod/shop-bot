@@ -1,3 +1,4 @@
+from uuid import uuid4
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
 from admin_panel.models import District, Regions, Text, i18n
@@ -166,7 +167,7 @@ class MainHandlers:
         lang = context.user_data['register']['language']
         
         context.user_data['register']['passport_photo'] = ImageFile(
-            open(update.message.photo[-1].get_file().download(), 'rb'))
+            open(update.message.photo[-1].get_file().download(f"./media/passport_photo/{str(uuid4())}.jpg"), 'rb'))
         context.user_data['tmp_message'] = user.send_message(i18n(
             "shop_name", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         return SHOP
@@ -176,7 +177,7 @@ class MainHandlers:
         user, db_user = get_user(update)
         lang = context.user_data['register']['language']
         context.user_data['register']['shop_passport_photo'] = ImageFile(
-            open(update.message.photo[-1].get_file().download(), 'rb'))
+            open(update.message.photo[-1].get_file(f"./media/shop_passport_photo/{str(uuid4())}.jpg").download(), 'rb'))
         dillers = Diller.objects.filter(status=1)
         keyboard = [KeyboardButton(i.name) for i in dillers]
         
