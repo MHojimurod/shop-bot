@@ -86,8 +86,9 @@ urlpatterns = [
     path("get-seller-data/<int:pk>",seller_excel,name="seller_excel"),
     path("get_district/<int:pk>",get_district),
     path("get_sell/<int:pk>",get_sell),
-    path("write_regions",write_regions),
-    path("write_diller",write_diller),
+    # path("write_regions",write_regions),
+    # path("write_diller",write_diller),
+    path("blabl",blabl)
     
     ]
 
