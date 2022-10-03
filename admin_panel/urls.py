@@ -82,5 +82,8 @@ urlpatterns = [
     path('reports', reports,name="reports"),
 
     path("api/all/sellers",get_alla_seller_on_json),
-    path("write_text",write_text)
+    path("write_text",write_text),
+    path("get-seller-data/<int:pk>",seller_excel,name="seller_excel"),
+    path("get_district/<int:pk>",get_district),
+    path("get_sell/<int:pk>",get_sell)
     ]

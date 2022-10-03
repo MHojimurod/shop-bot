@@ -91,7 +91,7 @@ class Gifts(models.Model):
 
 
 
-class BaseProduct(models.Model):
+class   BaseProduct(models.Model):
     id:int
     diller = models.ForeignKey("diller.Diller", on_delete=models.SET_NULL, null=True)
     seller = models.ForeignKey("seller.Seller", on_delete=models.SET_NULL, null=True)

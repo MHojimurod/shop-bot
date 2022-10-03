@@ -601,27 +601,9 @@ def sold_create(request):
         product = request.POST["product"]
         req = request.POST["serial"].strip()
         sers = [i for i in req.split("\r\n")]
-        sel = Seller.objects.get(pk=seller)
-        workbook:xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{sel.name}_{len(sers)}.xlsx")
-        worksheet = workbook.add_worksheet()
-        worksheet.write(f'A1', f"Sotuvchi")
-        worksheet.write(f'B1', sel.name)
-        worksheet.write(f'A3', f"№")
-        worksheet.write(f'B3', f"Serial Nomer")
-        count = 4
-        forloop = 1
         for i in sers:
             BaseProduct.objects.create(
             diller_id=diller, product_id=product, serial_number=i,seller_id=seller)
-            worksheet.write(f'A{count}', f"#{forloop}")
-            worksheet.write(f'B{count}', f"{i}")
-            count+=1
-            forloop+=1
-        workbook.close()
-        try:
-            bot = Updater(TOKEN)
-            bot.bot.send_document(chat_id=sel.chat_id,document=open(f"media/{sel.name}_{len(sers)}.xlsx","rb"))
-        except:...   
         return redirect("solds")
     return render(request, "dashboard/sold/form.html", {"form": form})
 
@@ -861,3 +843,52 @@ def write_text(request):
     for i in data:
         Text.objects.get_or_create(name=i,uz_data=i,ru_data=i)
     return redirect("/")
+
+@login_required_decorator
+def seller_excel(request,pk):
+    seller = Seller.objects.get(pk=pk)
+    cvitation:Cvitation = Cvitation.objects.filter(seller=seller,status=1)
+    workbook:xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{seller.name}.xlsx")
+    worksheet = workbook.add_worksheet()
+    worksheet.write(f'A1', f"Sotuvchi")
+    worksheet.write(f'B1', seller.name)
+    worksheet.write(f'A3', f"№")
+    worksheet.write(f'B3', f"Sana")
+    worksheet.write(f'C3', f"Seria Nomerlar")
+    worksheet.write(f'D3', f"Sotuvchi Hududi")
+    worksheet.write(f'E3', f"Mahsulot nomi")
+    worksheet.write(f'F3', f"Berilgan ball")
+    count = 4
+    forloop = 1
+    for i in cvitation:
+        product = BaseProduct.objects.filter(serial_number=i.serial)
+        print(product.values())
+        worksheet.write(f'A{count}', f"#{forloop}")
+        worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
+        worksheet.write(f'C{count}', f"{i.serial}")
+        worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
+        worksheet.write(f'E{count}', f"{product.first().product.name_uz if product else ''}")
+        worksheet.write(f'F{count}', f"{product.first().product.seller_ball if product else ''}")
+        count+=1
+        forloop+=1
+    workbook.close()
+    response =  HttpResponse(open(workbook.filename,"rb"), content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename={}'.format(f"{seller.name}_{datetime.datetime.now()}.xlsx")
+    return response
+
+def get_district(request,pk):
+    districts = District.objects.filter(region_id=pk)
+    # data =[{str(i.id):i.uz_data} for i in districts]
+    data ={}
+    for i in districts:
+        data.update({str(i.id):i.uz_data})
+    return JsonResponse(data,safe=False)
+    
+def get_sell(request,pk):
+    districts = Seller.objects.filter(dillers__in=[Diller.objects.get(id=pk)])
+    data ={}
+    for i in districts:
+        data.update({str(i.id):i.name})
+    return JsonResponse(data,safe=False)
+    
+        
