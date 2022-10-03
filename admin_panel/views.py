@@ -916,28 +916,12 @@ def write_regions(request):
 
 @login_required_decorator
 def write_diller(request):
-    data = """
-            Qoraqalpoq#Bahtiyor Nukus#94 143 00 00#Nukus	
-            Xorazm#Ilhom Xiva#90 077 74 77#Xiva	
-            Navoiy#Akbar Navoiy#90 647 15 60#Navoiy	
-            Buxoro#Jaloliddin Buxoro#91 924 40 04#Buxoro	
-            Samarqand#Bexruz Samarqand#91 522 22 24#Samarqand	
-            Samarqand#Sodiq Urgut#98 140 62 62#Urgut	
-            Samarqand#Otabek-Bunyod Urgut#97 914 00 07#Urgut	
-            Qashqadaryo#Sherdor Kitob#97 388 70 31#Kitob	
-            Qashqadaryo#Asilbek Qarshi#99 555 51 55#Qarshi	
-            Surxondaryo#Mansur Surxondaryo#97 898 00 40#Surxondaryo	
-            Jizzax#Dilshod Jizzax#91 942 91 98#Jizzax	
-            Toshkent#Umid Toshkent#98 300 71 27#Toshkent	
-            Namangan#Abdurahmon Namangan#99 976 12 30#Abdurahmon	
-            Farg'ona#Abduvoxid Texnogrand#97 663 11 10#Farg'ona	
-            Farg'ona#lhom Qo'qon#91 151 82 52#Qo'qon	
-            Andijon#Ulug'bek hoji Andijon#97 992 00 05#Andijon	
-        """
-    data.split("\n")
-    for i in data:
+    data = "Qoraqalpoq#Bahtiyor Nukus#94 143 00 00#Nukus tumani\nXorazm#Ilhom Xiva#90 077 74 77#Xiva tumani\nNavoiy#Akbar Navoiy#90 647 15 60#Navoiy tumani\nBuxoro#Jaloliddin Buxoro#91 924 40 04#Buxoro tumani\nSamarqand#Bexruz Samarqand#91 522 22 24#Samarqand tumani\nSamarqand#Sodiq Urgut#98 140 62 62#Urgut tumani\nSamarqand#Otabek-Bunyod Urgut#97 914 00 07#Urgut tumani\nQashqadaryo#Sherdor Kitob#97 388 70 31#Kitob tumani\nQashqadaryo#Asilbek Qarshi#99 555 51 55#Qarshi tumani\nSurxondaryo#Mansur Surxondaryo#97 898 00 40#Surxondaryo tumani\nJizzax#Dilshod Jizzax#91 942 91 98#Jizzax tumani\nToshkent#Umid Toshkent#98 300 71 27#Toshkent tumani\nNamangan#Abdurahmon Namangan#99 976 12 30#Abdurahmon tumani\nFarg'ona#Abduvoxid Texnogrand#97 663 11 10#Farg'ona tumani\nFarg'ona#lhom Qo'qon#91 151 82 52#Qo'qon tumani\nAndijon#Ulug'bek hoji Andijon#97 992 00 05#Andijon	"
+    print(data)
+    for i in data.split("\n"):
         a = i.split("#")
-        try:
-            Diller.objects.create(status=1,name=a[1],number=a[2],region=Regions.objects.get(uz_data=a[0]),district=District.objects.get(uz_data=a[3]))
-        except:...
+        print(a)
+        # try:
+        Diller.objects.create(status=1,name=a[1],number=a[2])
+        # except:...
     return HttpResponse("Done")
