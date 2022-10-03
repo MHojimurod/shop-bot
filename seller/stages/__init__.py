@@ -1,4 +1,3 @@
-from tkinter import NONE
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
 from admin_panel.models import District, Regions, Text, i18n
