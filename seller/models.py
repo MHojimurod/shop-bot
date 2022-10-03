@@ -1,8 +1,5 @@
 
 from datetime import datetime
-from hashlib import blake2b
-from pyexpat import model
-from tkinter import TRUE
 from django.db import models
 
 from admin_panel.models import District, Gifts, Regions, Text
