@@ -23,6 +23,7 @@ class Seller(models.Model):
         (0, "Kutilmoqda"),
         (1, "Qabul qilingan"),
         (2, "Rad etilgan"),
+        (3,"Muzlatilgan")
     ))
     
     def text(self, name) -> str:

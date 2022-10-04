@@ -41,10 +41,16 @@ class MainHandlers:
             elif db_user.status == 0:
                 user.send_message(i18n(
                 "wait_accept", db_user.language), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+                return MENU
+            elif db_user.status == 3:
+                user.send_message(i18n(
+                "block", db_user.language), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+                return MENU
                 
             else:
                 user.send_message(i18n(
                 "not_access", db_user.language), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+                return MENU
                 
 
         
@@ -177,7 +183,7 @@ class MainHandlers:
         user, db_user = get_user(update)
         lang = context.user_data['register']['language']
         context.user_data['register']['shop_passport_photo'] = ImageFile(
-            open(update.message.photo[-1].get_file(f"./media/shop_passport_photo/{str(uuid4())}.jpg").download(), 'rb'))
+            open(update.message.photo[-1].get_file().download(f"./media/passport_photo/{str(uuid4())}.jpg"), 'rb'))
         dillers = Diller.objects.filter(status=1)
         keyboard = [KeyboardButton(i.name) for i in dillers]
         
@@ -204,7 +210,6 @@ class MainHandlers:
             return DILLERS_CHOICE
         
         context.user_data["dillers"].append(diller.first())
-        print(context.user_data["dillers"])
         dillers = Diller.objects.filter(status=1)
         keyboard =[]
         for i in dillers:

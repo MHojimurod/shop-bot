@@ -64,7 +64,6 @@
                     ></th>
                   <th><i class="p-1 fas fa-times-circle"></i
                     ></th>
-                  <th><i class="p-1 far fa-trash-alt"></i></th>
                 </tr>
               </thead>
               <tbody>
@@ -92,20 +91,24 @@
                       ><i class="p-1 fas fa-times-circle"></i
                     ></a>
                   </td>
-                  <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 far fa-trash-alt"></i></a>
-                  </td>
+
                   {% elif i.status == 1 %}
                   <td><span class="badge badge-success">{{i.get_status_display}}</span></td>
+                 
                   <td>
-                    <a  class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-check-circle"></i
-                    ></a>
+                    <a href="{% url 'seller_update' pk=i.pk status=3 %}" class="btn btn-xs btn-warning"
+                      ><i class="p-1 fas fa-user-slash"></i></a>
                   </td>
                   <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-times-circle"></i
+                    <a href="{% url 'seller_delete' i.pk %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% elif i.status == 3 %}
+                  <td><span class="badge badge-info">{{i.get_status_display}}</span></td>
+                 
+                  <td>
+                    <a href="{% url 'seller_update' pk=i.pk status=1 %}" class="btn btn-xs btn-success"
+                      ><i class="p-1 fas fa-check-circle"></i
                     ></a>
                   </td>
                   <td>
@@ -115,13 +118,8 @@
                   {% else %}
                   <td><span class="badge badge-danger">{{i.get_status_display}}</span></td>
                   <td>
-                    <a class="btn btn-xs btn-secondary disabled"
+                    <a href="{% url 'seller_update' pk=i.pk status=1 %}" class="btn btn-xs btn-success"
                       ><i class="p-1 fas fa-check-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a class="btn btn-xs btn-secondary disabled"
-                      ><i class="p-1 fas fa-times-circle"></i
                     ></a>
                   </td>
                   <td>

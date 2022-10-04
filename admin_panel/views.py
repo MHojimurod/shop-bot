@@ -112,9 +112,11 @@ def diller_delete(request, pk):
 def seller_delete(request, pk):
     model = Seller.objects.get(pk=pk)
     try:
-        requests.get(f"http://127.0.0.1:6003/delete_seller", json={"data": {
+        a = requests.get(f"http://127.0.0.1:6003/delete_seller", json={"data": {
             "id": pk,
         }})
+        if a.status_code == 500:
+            model.delete()
     except:
         ...
     return redirect("sellers_list")
@@ -516,7 +518,6 @@ def update_order(request, pk, status):
 
 @login_required_decorator
 def solds(request):
-    print("aaaaaaaaaaaaaaaaaaaa")
     all = BaseProduct.objects.order_by("-id").all()
     print(all)
     data = []
@@ -870,7 +871,6 @@ def seller_excel(request, pk):
     forloop = 1
     for i in cvitation:
         product = BaseProduct.objects.filter(serial_number=i.serial)
-        print(product.values())
         worksheet.write(f'A{count}', f"#{forloop}")
         worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
         worksheet.write(f'C{count}', f"{i.serial}")
@@ -917,10 +917,8 @@ def write_regions(request):
 @login_required_decorator
 def write_diller(request):
     data = "Qoraqalpoq#Bahtiyor Nukus#94 143 00 00#Nukus tumani\nXorazm#Ilhom Xiva#90 077 74 77#Xiva tumani\nNavoiy#Akbar Navoiy#90 647 15 60#Navoiy tumani\nBuxoro#Jaloliddin Buxoro#91 924 40 04#Buxoro tumani\nSamarqand#Bexruz Samarqand#91 522 22 24#Samarqand tumani\nSamarqand#Sodiq Urgut#98 140 62 62#Urgut tumani\nSamarqand#Otabek-Bunyod Urgut#97 914 00 07#Urgut tumani\nQashqadaryo#Sherdor Kitob#97 388 70 31#Kitob tumani\nQashqadaryo#Asilbek Qarshi#99 555 51 55#Qarshi tumani\nSurxondaryo#Mansur Surxondaryo#97 898 00 40#Surxondaryo tumani\nJizzax#Dilshod Jizzax#91 942 91 98#Jizzax tumani\nToshkent#Umid Toshkent#98 300 71 27#Toshkent tumani\nNamangan#Abdurahmon Namangan#99 976 12 30#Abdurahmon tumani\nFarg'ona#Abduvoxid Texnogrand#97 663 11 10#Farg'ona tumani\nFarg'ona#lhom Qo'qon#91 151 82 52#Qo'qon tumani\nAndijon#Ulug'bek hoji Andijon#97 992 00 05#Andijon	"
-    print(data)
     for i in data.split("\n"):
         a = i.split("#")
-        print(a)
         # try:
         Diller.objects.create(status=1,name=a[1],number=a[2])
         # except:...

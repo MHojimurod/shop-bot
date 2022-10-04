@@ -125,6 +125,10 @@ class Bot(Updater,MainHandlers):
     @delete_tmp_message
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
+        if db_user.status == 2:
+            user.send_message(i18n("block",db_user.language))
+            return MENU
+            
         context.user_data['tmp_message'] = user.send_message(
             i18n("send_cvitation",db_user.language))
         return CVI_PHOTO
@@ -319,8 +323,12 @@ class Bot(Updater,MainHandlers):
             diller = Seller.objects.filter(id=data['id'])
             if diller.exists():
                 diller = diller.first()
-                self.bot.send_message(chat_id=diller.chat_id, text=diller.text(
-                    "accept_message" if data['status'] == 1 else "reject_message",))
+                if data['status'] == 1:
+                    self.bot.send_message(chat_id=diller.chat_id, text=diller.text("accept_message"))
+                elif data["status"] == 2:
+                    self.bot.send_message(chat_id=diller.chat_id, text=diller.text("reject_message"))
+                else:
+                    self.bot.send_message(chat_id=diller.chat_id, text=diller.text("block"))
             else:
                 pass
         return "x"
