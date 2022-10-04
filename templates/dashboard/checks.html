@@ -20,14 +20,17 @@
         <div class="row">
           <div class="col-12">
             <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Квитансиялар</h3>
-    
-                <div class="card-tools">
-                  
-                </div>
-              </div>
-    
+            <div class="card-header p-2">
+            <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Yangilar</a></li>
+            <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Qabul qilinganlar</a></li>
+            <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Rad etilganlar</a></li>
+            </ul>
+            </div>
+            <div class="card-body">
+            <div class="tab-content">
+            <div class="active tab-pane" id="activity">
+            
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
@@ -44,12 +47,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for i in checks %}
+                    {% for i in wait %}
     
                     <tr>
     
                       <td>{{ forloop.counter }}</td>
-                      <td>{{ i.seller.name }}</td>
+                      <td>{{ i.seller.name }}  | {{i.seller.id}}</td>
                       <td><a href="">{{ i.seller.number }}</a></td>
                       <td>{{i.seller.region.uz_data}}</td>
                       <td>{{i.seller.district.uz_data}}</td>
@@ -57,7 +60,7 @@
                       <td>
                         <div class="product-image-thumb">
                           <a href="/{{i.img}}">
-                            <img src="/{{i.img}}" style=" width: 7vw; height: 15vh;object-fit: cover;" alt="white sample"/>
+                            <img src="/{{i.img}}" style=" width: 7vw; height: 10vh;object-fit: cover;" alt="white sample"/>
                           </a>
                           
                         </div>
@@ -72,11 +75,100 @@
                   </tbody>
                 </table>
               </div>
-                            
-              <!-- /.card-body -->
+            
             </div>
-            <!-- /.card -->
-          </div>
+            
+            <div class="tab-pane" id="timeline">
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Sotuvchi</th>
+                      <th>Telefon</th>
+                      <th>Viloyat</th>
+                      <th>Tuman</th>
+                      <th>Serial</th>
+                      <th>Rasmi</th>
+                      <!-- <th>Qabul qilish</th>
+                      <th>Rad etish</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in accept %}
+    
+                    <tr>
+    
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.seller.name }}  | {{i.seller.id}}</td>
+                      <td><a href="">{{ i.seller.number }}</a></td>
+                      <td>{{i.seller.region.uz_data}}</td>
+                      <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.serial}}</td>
+                      <td>
+                        <div class="product-image-thumb">
+                          <a href="/{{i.img}}">
+                            <img src="/{{i.img}}" style=" width: 7vw; height: 10vh;object-fit: cover;" alt="white sample"/>
+                          </a>
+                          
+                        </div>
+                      </td>
+                      
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="tab-pane" id="settings">
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Sotuvchi</th>
+                      <th>Telefon</th>
+                      <th>Viloyat</th>
+                      <th>Tuman</th>
+                      <th>Serial</th>
+                      <th>Rasmi</th>
+                      <!-- <th>Qabul qilish</th>
+                      <th>Rad etish</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in reject %}
+    
+                    <tr>
+    
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.seller.name }}  | {{i.seller.id}}</td>
+                      <td><a href="">{{ i.seller.number }}</a></td>
+                      <td>{{i.seller.region.uz_data}}</td>
+                      <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.serial}}</td>
+                      <td>
+                        <div class="product-image-thumb">
+                          <a href="/{{i.img}}">
+                            <img src="/{{i.img}}" style=" width: 7vw; height: 10vh;object-fit: cover;" alt="white sample"/>
+                          </a>
+                          
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            </div>
+            
+            </div>
+            </div>
+            
+            </div>
         </div>
       </div>
     </section>

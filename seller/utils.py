@@ -3,10 +3,10 @@ from admin_panel.models import Gifts, i18n
 from diller.models import Diller
 from seller.management.commands.decorators import distribute
 from seller.models import Seller
-
+from django.db.models import Q
 
 def balls_keyboard_pagination(seller:Seller, page:int):
-    gifts = list(Gifts.objects.filter(gift_type=1))
+    gifts = list(Gifts.objects.filter(~Q(amount=0),gift_type=1))
     gifts_count = len(gifts)
     gifts_per_page = 10
     gifts_pages = gifts_count // gifts_per_page + \
@@ -18,7 +18,7 @@ def balls_keyboard_pagination(seller:Seller, page:int):
     
     gifts_page_inline = []
 
-    text = f"<b>Natijalar {(page - 1) * gifts_per_page} - {(page * gifts_per_page) if (page * gifts_per_page) < gifts_count else gifts_count } of {gifts_count}</b>\n\n"
+    text = f"<b>Sizning ID raqamingiz: {seller.id}</b>\n<b>Natijalar {(page - 1) * gifts_per_page} - {(page * gifts_per_page) if (page * gifts_per_page) < gifts_count else gifts_count } of {gifts_count}</b>\n\n"
 
     for i in range(len(gifts_page)):
         gift = gifts_page[i]

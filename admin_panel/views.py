@@ -124,10 +124,16 @@ def seller_delete(request, pk):
 
 @login_required_decorator
 def checks(request):
-    cvitation = Cvitation.objects.order_by(
+    wait = Cvitation.objects.order_by(
         "-id").filter(~Q(seller=None), status=0)
+    accept = Cvitation.objects.order_by(
+        "-id").filter(~Q(seller=None), status=1)
+    reject = Cvitation.objects.order_by(
+        "-id").filter(~Q(seller=None), status=2)
     ctx = {
-        "checks": cvitation,
+        "wait": wait,
+        "accept": accept,
+        "reject": reject,
         "ch_active": "menu-open"
     }
     return render(request, "dashboard/checks.html", ctx)
@@ -135,20 +141,17 @@ def checks(request):
 
 @login_required_decorator
 def reject_check(requset, seria, user, status):
-    # product = BaseProduct.objects.filter(serial_number=seria,seller_id=user)
+    print("aaaaaaa")
     cv = Cvitation.objects.filter(serial=seria)
     if status == 2:
         seller = Seller.objects.filter(pk=user)
         seller.update(balls=seller.first().balls - cv.first().current_ball)
-        requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
-            "id": cv.first().seller.id,
-            "serial": seria}})
-        cv.update(status=status)
         try:
-            os.remove(f"{cv.first().img.name}")
-            cv.delete()
-        except Exception as e:
-            print(e)
+            requests.get(f"http://127.0.0.1:6003/reject_check", json={"data": {
+                "id": cv.first().seller.id,
+                "serial": seria}})
+        except:...
+        cv.update(status=status)
         return redirect("checks")
     else:
         cv.update(status=status)
@@ -519,7 +522,6 @@ def update_order(request, pk, status):
 @login_required_decorator
 def solds(request):
     all = BaseProduct.objects.order_by("-id").all()
-    print(all)
     data = []
     for i in all.exclude(diller=None):
         if i.diller not in [j['diller'] for j in data if data != []]:
@@ -606,12 +608,14 @@ def sold_create(request):
         diller = request.POST["diller"]
         seller = request.POST["seller"]
         product = request.POST["product"]
-        req = request.POST["serial"].strip()
-        sers = [i for i in req.split("\r\n")]
+        req = request.POST["serial"].strip().replace("\t","").replace("\r","")
+        print(req)
+        sers = [i for i in req.split("\n")]
         for i in sers:
             BaseProduct.objects.create(
                 diller_id=diller, product_id=product, serial_number=i, seller_id=seller)
         return redirect("solds")
+    print(form.errors)
     return render(request, "dashboard/sold/form.html", {"form": form})
 
 
@@ -696,9 +700,22 @@ def order_gift(request):
 @login_required_decorator
 def update_gift(request, pk, status, type_order):
     if type_order == 0:
-        OrderGiftDiller.objects.filter(pk=pk).update(status=status)
+        gift_D = OrderGiftDiller.objects.filter(pk=pk)
+        if status == 3:
+            user = gift_D.first().user
+            user.balls =user.balls + gift_D.first().gift.ball
+            user.save()
+            user.refresh_from_db()
+        gift_D.update(status=status)
     elif type_order == 1:
-        OrderGiftSeller.objects.filter(pk=pk).update(status=status)
+        gift_S = OrderGiftSeller.objects.filter(pk=pk)
+        if status == 3:
+            user = gift_S.first().user
+            user.balls =user.balls + gift_S.first().gift.ball
+            user.save()
+            user.refresh_from_db()
+        gift_S.update(status=status)
+
     return redirect("order_gift")
 
 

@@ -132,7 +132,7 @@ class TextForm(forms.ModelForm):
                 }),
         }
 class SoldForm(forms.ModelForm):
-    serial = forms.CharField(max_length=100)
+    serial = forms.Textarea()
     class Meta:
         model = BaseProduct
         fields = ['diller','product','seller']

@@ -5,6 +5,7 @@ from admin_panel.models import Category, Gifts, Product, Promotion, i18n
 from diller.management.commands.decorators import distribute, get_user
 from diller.models import Busket, Diller
 import locale
+from django.db.models import Q
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
@@ -218,7 +219,7 @@ def wait_accept_keyboard(user: Diller, user_busket: Busket):
 
 
 def balls_keyboard_pagination(diller:Diller, page:int):
-    gifts = list(Gifts.objects.filter(gift_type=0))
+    gifts = list(Gifts.objects.filter(~Q(amount=0),gift_type=0))
     gifts_count = len(gifts)
     gifts_per_page = 10
     gifts_pages = gifts_count // gifts_per_page + \

@@ -102,9 +102,10 @@ class Bot(Updater,MainHandlers):
         if data:
             data = data['data']
             seller: Seller = Seller.objects.filter(id=data['id']).first()
+            dat = BaseProduct.objects.get(serial_number=data["serial"]).product.seller_ball
             if seller:
                 try:
-                    self.bot.send_message(chat_id=seller.chat_id,text=seller.text("reject_check_text"))
+                    self.bot.send_message(chat_id=seller.chat_id,text=seller.text("reject_check_text").format(serial=data["serial"],ball=dat))
                 except:
                     pass
             return 'ok'
