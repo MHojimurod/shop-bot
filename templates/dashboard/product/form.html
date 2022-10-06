@@ -22,10 +22,10 @@
             <div class="col-md-12">
             <div class="">
 
-              <form method="post"  enctype="multipart/form-data">
+              <form method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                   <input type="hidden" name="category" value="{{pk}}">
-                <div class="d-flex col-12 flex-column">
+                <div class="row">
                   <div class="col-4">
                     <div class="form-group">
                       <label >Номи УЗ</label><br>
@@ -38,7 +38,7 @@
                         {{form.name_ru}}
                     </div>
                   </div>
-                  <div class=" btn-group w-100">
+                  <div class="col-4">
                     <div class="form-group">
                       <label >Фото</label><br>
                         {{form.image}}
@@ -68,6 +68,16 @@
                         {{form.seller_ball}}
                     </div>
                   </div>
+                  <div class="col-4">
+                    <label >Махсулот коди</label><br>
+                      {{form.code}}
+                      </div>
+                  <div class="col-4">
+                    <label >Охирги сериа номер</label><br>
+                      {{form.last_code}}
+                      </div>
+                  </div>
+                  
                 </div>
 
                 <div class="ml-3">

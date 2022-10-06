@@ -42,14 +42,14 @@
                     <tr>
                       <th>№</th>
                       <th>Номи УЗ</th>
-                      <th>Номи РУ</th>
                       <th>Фото</th>
                       <th>Нархи</th>
                       <th>вариант 1</th>
                       <th>вариант 2</th>
                       <th>Сотувчи Балл</th>
-                      <th>Тахрирлаш</th>
-                      <th>Ўчириш</th>
+                      <th>Махсулот коди</th>
+                      <th><i class="far fa-edit"></i></th>
+                      <th><i class="fas fa-trash-alt"></i></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -58,7 +58,6 @@
                     <tr>
                       <td>{{ forloop.counter }}</td>
                       <td>{{ i.name_uz }}</td>
-                      <td>{{ i.name_ru }}</td>
                       <td>
                         {{i.img}}
                         <a href="/media/{{i.image}}">Фото</a>
@@ -67,6 +66,7 @@
                       <td>{{ i.diller_ball }}</td>
                       <td>{{ i.diller_nasiya_ball }}</td>
                       <td>{{ i.seller_ball }}</td>
+                      <td>{{ i.code }}</td>
                       <td ><a style="color: #17a2b8;" href="{% url 'product_edit' i.id i.category.id %}"><div ><i class="far fa-edit"></i></div></a></td>
                       <td><a style="color: #dc3545;" href="{% url 'product_delete' i.id %}"><div><i class="fas fa-trash-alt"></i></div></a></td>
                     </tr>

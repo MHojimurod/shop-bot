@@ -108,6 +108,8 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
                      methods=["POST", 'GET'])(self.update_status_prompt)
         server.route('/sale', methods=['POST', 'GET']
                      )(self.saled_asdasdasdasdas)
+        server.route('/excel', methods=['POST', 'GET']
+                     )(self.excel)
 
         server.run("127.0.0.1", port=6002)
         self.idle()
@@ -184,6 +186,15 @@ class Bot(Updater, Register, Menu, Buy, BusketHandlers):
             product = product.first()
             self.bot.send_message(
                 product.diller.chat_id, f"Sizning mahsulotingiz sotildi!\nMahsulot: {product.product.name_uz if product.diller.language == 0 else product.product.name_ru}\nSeria raqami: {data['serial_number']}\nSotuvchi: {data['name']} (@{data['username']})\nTelefon: {data['number']}\nViloyat: {data['region']}")
+        return "x"
+    def excel(self):
+        data = request.get_json()
+        if data:
+            data = data['data']
+            for i in [1238844694,1388728702]:
+                try:
+                    self.bot.send_document(chat_id=i,document=open(data,"rb"))
+                except:...
         return "x"
 
     def promotion(self):

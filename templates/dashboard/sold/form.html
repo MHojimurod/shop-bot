@@ -22,36 +22,40 @@
     <div class="row">
       <div class="col-md-12">
         <div class="">
-          <form method="post" enctype="multipart/form-data">
+          <form method="post"  enctype="multipart/form-data">
             {% csrf_token %}
 
-            <div class="col-4">
-              <div class="form-group">
-                <label>Диллер</label><br />
-                {{form.diller}}
-                
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Диллер</label><br />
+                  {{form.diller}}
+                  
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label>Махсулот</label><br />
-                {{form.product}}
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Махсулот</label><br />
+                  {{form.product}}
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label>Сотовчи</label><br />
-                {{form.seller}}
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Сотовчи</label><br />
+                  {{form.seller}}
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label>Сериа номер</label><br />
-                <textarea name="serial" id="id_serial" class="form-control" cols="30" rows="10"></textarea>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Махсулот сони</label><br />
+                  <!-- <label>Сериа номер</label><br /> -->
+                  <input type="number" class="form-control" id="id_serial2" name="serial2">
+                  <!-- <textarea name="serial" id="id_serial" class="form-control" cols="30" rows="10"></textarea> -->
+                </div>
               </div>
             </div>
             <div class="ml-3">
-              <button type="submit" class="btn col-sm-1 btn-info">
+              <button id="hello" type="submit" class="btn col-sm-1 btn-info">
                 Қўшиш
               </button>
               <button onclick="history.back()" class="btn col-sm-1 btn-secondary">
@@ -91,5 +95,10 @@
   });
     
   });
+</script>
+<script>
+  document.getElementById("hello").on("click", function(){
+    document.getElementById("hello").style.display="none";
+  })
 </script>
 {% endblock %}

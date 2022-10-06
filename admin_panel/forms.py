@@ -53,6 +53,14 @@ class ProductForm(forms.ModelForm):
             'price': forms.NumberInput(attrs={
                 'class': "form-control "
                 
+                }),
+            'code': forms.TextInput(attrs={
+                'class': "form-control "
+                
+                }),
+            'last_code': forms.NumberInput(attrs={
+                'class': "form-control "
+                
                 })
         }
 
@@ -132,8 +140,9 @@ class TextForm(forms.ModelForm):
                 }),
         }
 class SoldForm(forms.ModelForm):
-    serial = forms.Textarea()
+    serial2 = forms.IntegerField()
     class Meta:
+        print("Heloodfdsoo")
         model = BaseProduct
         fields = ['diller','product','seller']
         widgets = {
@@ -149,10 +158,7 @@ class SoldForm(forms.ModelForm):
                 'class': "form-control select2 select2-hidden-accessible",
                 
                 }),
-            'serial': forms.Textarea(attrs={
-                'class': "form-control "
-                
-                })
+            'serial2': forms.TextInput(attrs={'class': "form-control "})
         }
 class PromotionForm(forms.ModelForm):
     class Meta:

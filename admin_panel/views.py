@@ -608,12 +608,33 @@ def sold_create(request):
         diller = request.POST["diller"]
         seller = request.POST["seller"]
         product = request.POST["product"]
-        req = request.POST["serial"].strip().replace("\t","").replace("\r","")
-        print(req)
-        sers = [i for i in req.split("\n")]
-        for i in sers:
+        req = request.POST["serial2"]
+        pr:Product = Product.objects.get(pk=product)
+        sl:Seller = Seller.objects.get(pk=seller)
+        count = pr.last_code
+        # req = request.POST["serial"].strip().replace("\t","").replace("\r","")
+        # sers = [i for i in req.split("\n")]
+        workbook: xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{sl.name}.xlsx")
+        worksheet = workbook.add_worksheet()
+        worksheet.write(f'A1', f"Sotuvchi {seller}")
+        worksheet.write(f'B1', sl.name)
+        worksheet.write(f'A3', f"№")
+        worksheet.write(f'B3', f"{pr.name_uz}")
+        count_1 = 4
+        for i in range(int(req)):
+            count+=1
+            worksheet.write(f'A{count_1}', f"{i+1}")
+            worksheet.write(f'B{count_1}', f"{pr.code}{count}")
             BaseProduct.objects.create(
-                diller_id=diller, product_id=product, serial_number=i, seller_id=seller)
+                diller_id=diller, product=pr, serial_number=f"{pr.code}{count}", seller_id=seller)
+            count_1 +=1
+        pr.last_code=count
+        pr.save()
+        workbook.close()
+        open(workbook.filename, "rb")
+        data = requests.get(f"http://127.0.0.1:6002/excel", json={"data":workbook.filename })
+                          
+
         return redirect("solds")
     print(form.errors)
     return render(request, "dashboard/sold/form.html", {"form": form})

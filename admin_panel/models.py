@@ -53,6 +53,7 @@ class Category(models.Model):
     def name(self, lang:int):
         return self.name_uz if lang == 0 else self.name_ru
 
+
 class Product(models.Model):
     id:int
     category:Category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -63,6 +64,8 @@ class Product(models.Model):
     seller_ball:int = models.IntegerField()
     price: float = models.FloatField()
     image = models.ImageField(upload_to='products')
+    code = models.CharField(max_length=10,null=True,blank=True)
+    last_code = models.IntegerField(default=0)
 
 
     def name(self, lang:int):
