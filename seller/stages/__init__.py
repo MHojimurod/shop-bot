@@ -211,12 +211,10 @@ class MainHandlers:
         
         context.user_data["dillers"].append(diller.first())
         dillers = Diller.objects.filter(status=1)
-        keyboard =[]
+        keyboard =[KeyboardButton(i18n("next", lang))]
         for i in dillers:
             if i not in  context.user_data["dillers"]:
                 keyboard.append(KeyboardButton(i.name))
-        keyboard.append(i18n(
-            "next", lang))
         user.send_message(i18n(
             "dillers_choice_again", lang), reply_markup=ReplyKeyboardMarkup(distribute(keyboard,3),resize_keyboard=True), parse_mode="HTML")
 

@@ -626,7 +626,7 @@ def sold_create(request):
             worksheet.write(f'A{count_1}', f"{i+1}")
             worksheet.write(f'B{count_1}', f"{pr.code}{count}")
             BaseProduct.objects.create(
-                diller_id=diller, product=pr, serial_number=f"{pr.code}{count}", seller_id=seller)
+                diller_id=diller, product=pr, serial_number=f"{pr.code}{seller}{count}", seller_id=seller)
             count_1 +=1
         pr.last_code=count
         pr.save()
