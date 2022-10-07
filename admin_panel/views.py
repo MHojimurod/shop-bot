@@ -14,6 +14,7 @@ import xlsxwriter
 from telegram.ext import Updater
 from seller.management.commands.constant import TOKEN
 import locale
+import re
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
@@ -623,10 +624,11 @@ def sold_create(request):
         count_1 = 4
         for i in range(int(req)):
             count+=1
+            data = re.split('(\d+)',pr.code)
             worksheet.write(f'A{count_1}', f"{i+1}")
-            worksheet.write(f'B{count_1}', f"{pr.code}{seller}{count}")
+            worksheet.write(f'B{count_1}', f"{data[0]}{seller}{data[1]}{count}")
             BaseProduct.objects.create(
-                diller_id=diller, product=pr, serial_number=f"{pr.code}{seller}{count}", seller_id=seller)
+                diller_id=diller, product=pr, serial_number=f"{data[0]}{seller}{data[1]}{count}", seller_id=seller)
             count_1 +=1
         pr.last_code=count
         pr.save()
