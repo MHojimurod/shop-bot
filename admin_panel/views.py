@@ -522,15 +522,22 @@ def update_order(request, pk, status):
 
 @login_required_decorator
 def solds(request):
-    all = BaseProduct.objects.order_by("-id").all()
-    data = []
-    for i in all.exclude(diller=None):
-        if i.diller not in [j['diller'] for j in data if data != []]:
-            count = BaseProduct.objects.filter(diller=i.diller).count()
-            data.append(
-                {"diller": i.diller, "count": count, "seller": i.seller})
+    diller = Diller.objects.filter(status=1)
+    data1 = []
+    for i in diller:
+        data = BaseProduct.objects.filter(diller=i)
+        if data:
+            data1.append(
+                {"diller": i, "count": data.count(), "seller": data.last().seller})
+
+    # all = BaseProduct.objects.order_by("-id").all()
+    # for i in all.exclude(diller=None):
+    #     if i.diller not in [j['diller'] for j in data1 if data1 != []]:
+    #         count = BaseProduct.objects.filter(diller=i.diller).count()
+    #         data1.append(
+    #             {"diller": i.diller, "count": count, "seller": i.seller})
     ctx = {
-        "baseproduct": data,
+        "baseproduct": data1,
         "s_active": "menu-open"
     }
     return render(request, "dashboard/sold/list.html", ctx)
