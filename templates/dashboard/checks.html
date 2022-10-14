@@ -30,7 +30,12 @@
             <div class="card-body">
             <div class="tab-content">
             <div class="active tab-pane" id="activity">
-            
+              <form method="post" class="col-2 d-flex">
+                {% csrf_token %}
+                <input type="date" name="date" class="form-control">
+                <input type="hidden" name="type" value="0">
+            <button class="btn btn-sm btn-success ml-2">Excel</button>
+              </form>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
@@ -79,6 +84,12 @@
             </div>
             
             <div class="tab-pane" id="timeline">
+              <form method="post" class="col-2 d-flex">
+                {% csrf_token %}
+                <input type="date" name="date" class="form-control">
+                <input type="hidden" name="type" value="1">
+            <button class="btn btn-sm btn-success ml-2">Excel</button>
+              </form>
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>

@@ -131,6 +131,46 @@ def checks(request):
         "-id").filter(~Q(seller=None), status=1)
     reject = Cvitation.objects.order_by(
         "-id").filter(~Q(seller=None), status=2)
+    if request.POST:
+        date = request.POST.get("date",False)
+        typee = request.POST.get("type")
+        data = Cvitation.objects.filter(~Q(seller=None), status=int(typee))
+        if date:
+            data = Cvitation.objects.filter(~Q(seller=None), status=int(typee),created_at__date__day=date)
+        workbook: xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{datetime.datetime.now()}.xlsx")
+        worksheet = workbook.add_worksheet()
+        worksheet.write(f'A1', f"№")
+        worksheet.write(f'B1', "Sana")
+        worksheet.write(f'C1', f"Seria nomerlar")
+        worksheet.write(f'D1', f"Sotuvchi hududi")
+        worksheet.write(f'E1', f"Maxsulot nomi")
+        worksheet.write(f'F1', f"Sotuvchi")
+        worksheet.write(f'G1', f"Berilgan ball")
+        worksheet.write(f'H1', f"Summa")
+        count = 2
+        forloop = 1
+        for i in data:
+            product = BaseProduct.objects.filter(serial_number=i.serial)
+            worksheet.write(f'A{count}', f"{forloop}")
+            worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
+            worksheet.write(f'C{count}', f"{i.serial}")
+            worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
+            worksheet.write(
+                f'E{count}', f"{product.first().product.name_uz if product else '' }")
+            worksheet.write(f'F{count}', f"{i.seller.name}")
+            worksheet.write(
+                f'G{count}', f"{product.first().product.seller_ball if product else ''}")
+            worksheet.write(
+                f'H{count}', f"{product.first().product.price if product else ''}")
+            count += 1
+            forloop += 1
+        workbook.close()
+        response = HttpResponse(open(workbook.filename, "rb"),
+                                content_type="application/ms-excel")
+        response['Content-Disposition'] = 'attachment; filename={}'.format(f"{datetime.datetime.now()}.xlsx")
+        return response
+
+
     ctx = {
         "wait": wait,
         "accept": accept,
