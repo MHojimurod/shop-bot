@@ -690,7 +690,7 @@ def sold_create(request):
         data = requests.get(f"http://127.0.0.1:6002/excel", json={"data":workbook.filename })
                           
 
-        return redirect("solds")
+        # return redirect("solds")
     print(form.errors)
     return render(request, "dashboard/sold/form.html", {"form": form})
 
