@@ -62,7 +62,7 @@ class Product(models.Model):
     diller_ball: int = models.IntegerField()
     diller_nasiya_ball:int = models.IntegerField()
     seller_ball:int = models.IntegerField()
-    price: float = models.FloatField()
+    price: float = models.IntegerField()
     image = models.ImageField(upload_to='products')
     code = models.CharField(max_length=10,null=True,blank=True)
     last_code = models.IntegerField(default=0)
