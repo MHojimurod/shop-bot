@@ -30,7 +30,7 @@
             <div class="card-body">
             <div class="tab-content">
             <div class="active tab-pane" id="activity">
-              <form method="post" class="col-2 d-flex">
+              <form method="post" class="col-3 d-flex">
                 {% csrf_token %}
                 <input type="date" name="date" class="form-control">
                 <input type="hidden" name="type" value="0">
@@ -45,10 +45,11 @@
                       <th>Telefon</th>
                       <th>Viloyat</th>
                       <th>Tuman</th>
+                      <th>Sana</th>
                       <th>Serial</th>
                       <th>Rasmi</th>
-                      <th>Qabul qilish</th>
-                      <th>Rad etish</th>
+                      <th><i class="fa fa-check-square-o"></i></th>
+                      <th><i class="fa fa-window-close-o"></i></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -61,6 +62,7 @@
                       <td><a href="">{{ i.seller.number }}</a></td>
                       <td>{{i.seller.region.uz_data}}</td>
                       <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.created_at|date:"d-m-Y"}}</td>
                       <td>{{i.serial}}</td>
                       <td>
                         <div class="product-image-thumb">
@@ -74,7 +76,6 @@
                         <div ><i class="fa fa-check-square-o"></i></div></a></td>
                       <td><a style="color: #dc3545;" href="/reject_check/{{i.serial}}/{{i.seller.id}}/2">
                         <div><i class="fa fa-window-close-o"></i></div></a></td>
-                        </a></td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -84,7 +85,7 @@
             </div>
             
             <div class="tab-pane" id="timeline">
-              <form method="post" class="col-2 d-flex">
+              <form method="post" class="col-3 d-flex">
                 {% csrf_token %}
                 <input type="date" name="date" class="form-control">
                 <input type="hidden" name="type" value="1">
@@ -99,6 +100,7 @@
                       <th>Telefon</th>
                       <th>Viloyat</th>
                       <th>Tuman</th>
+                      <th>Sana</th>
                       <th>Serial</th>
                       <th>Rasmi</th>
                       <!-- <th>Qabul qilish</th>
@@ -115,6 +117,7 @@
                       <td><a href="">{{ i.seller.number }}</a></td>
                       <td>{{i.seller.region.uz_data}}</td>
                       <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.created_at|date:"d-m-Y"}}</td>  
                       <td>{{i.serial}}</td>
                       <td>
                         <div class="product-image-thumb">
@@ -142,6 +145,7 @@
                       <th>Telefon</th>
                       <th>Viloyat</th>
                       <th>Tuman</th>
+                      <th>Sana</th>
                       <th>Serial</th>
                       <th>Rasmi</th>
                       <!-- <th>Qabul qilish</th>
@@ -158,6 +162,7 @@
                       <td><a href="">{{ i.seller.number }}</a></td>
                       <td>{{i.seller.region.uz_data}}</td>
                       <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.created_at|date:"d-m-Y"}}</td>
                       <td>{{i.serial}}</td>
                       <td>
                         <div class="product-image-thumb">

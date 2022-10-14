@@ -136,7 +136,7 @@ def checks(request):
         typee = request.POST.get("type")
         data = Cvitation.objects.filter(~Q(seller=None), status=int(typee))
         if date:
-            data = Cvitation.objects.filter(~Q(seller=None), status=int(typee),created_at__date__day=date)
+            data = Cvitation.objects.filter(~Q(seller=None), status=int(typee),created_at__date=date)
         workbook: xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{datetime.datetime.now()}.xlsx")
         worksheet = workbook.add_worksheet()
         worksheet.write(f'A1', f"№")
