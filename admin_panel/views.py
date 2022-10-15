@@ -819,10 +819,9 @@ def product_data():
 @login_required_decorator
 def reports(request):
     products = []
-    products = BaseProduct.objects.all()
+    products:BaseProduct = BaseProduct.objects.filter(~Q(product=None))
     d = {}
-    x: "list[BaseProduct]" = products.exclude(product=None)
-    for item in x:
+    for item in products:
         _seller: Cvitation = Cvitation.objects.filter(
             serial=item.serial_number).first()
         seller: Seller = _seller.seller if _seller else None
@@ -960,8 +959,10 @@ def seller_excel(request, pk):
     worksheet.write(f'D3', f"Sotuvchi Hududi")
     worksheet.write(f'E3', f"Mahsulot nomi")
     worksheet.write(f'F3', f"Berilgan ball")
+    worksheet.write(f'G3', f"Maxsulot narxi")
     count = 4
     forloop = 1
+    total = 0
     for i in cvitation:
         product = BaseProduct.objects.filter(serial_number=i.serial)
         worksheet.write(f'A{count}', f"#{forloop}")
@@ -972,8 +973,13 @@ def seller_excel(request, pk):
             f'E{count}', f"{product.first().product.name_uz if product else '' }")
         worksheet.write(
             f'F{count}', f"{product.first().product.seller_ball if product else ''}")
+        worksheet.write(
+            f'G{count}', f"{product.first().product.price if product else '' }")
         count += 1
         forloop += 1
+        total += product.first().product.price if product else 0
+    worksheet.write(
+            f'G{count}', f"{total}")
     workbook.close()
     response = HttpResponse(open(workbook.filename, "rb"),
                             content_type="application/ms-excel")
