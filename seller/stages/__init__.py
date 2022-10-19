@@ -35,7 +35,7 @@ class MainHandlers:
         else:
             if db_user.status == 1:
                 context.user_data['tmp_message'] = user.send_message("menu", reply_markup=ReplyKeyboardMarkup(
-                    distribute([db_user.text("cvitation"), db_user.text('my_balls')], 2), resize_keyboard=True
+                    distribute([db_user.text("cvitation"), db_user.text('my_balls'),db_user.text("score")], 2), resize_keyboard=True
                 ), parse_mode="HTML")
                 return MENU
             elif db_user.status == 0:

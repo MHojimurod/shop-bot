@@ -7,7 +7,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
 from admin_panel.models import BaseProduct, District, Gifts, Regions, Text,  i18n
 from diller.management.commands.decorators import delete_tmp_message, distribute
 from seller.management.commands.decorators import get_user
-
+import xlsxwriter
 import requests
 from seller.models import Cvitation, Seller
 from seller.utils import balls_keyboard_pagination
@@ -64,7 +64,10 @@ class Bot(Updater,MainHandlers):
                 MENU: [
                     MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
+                    MessageHandler(Filters.regex("^(Reyting|Рейтинг)"), self.score),
                     CommandHandler('language', self.change_language),
+                    CallbackQueryHandler(self.top_40, pattern="top_40")
+                    
                 ],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), ],
                 CVI_SERIAL_NUMBER: [MessageHandler(Filters.text & not_start, self.cvi_serial_number), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), ],
@@ -234,7 +237,7 @@ class Bot(Updater,MainHandlers):
     @delete_tmp_message
     def change_language(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
-        update.message.reply_text()
+        # update.message.reply_text()
         context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message(text=Text.objects.filter(name='start').first().uz_data, reply_markup=ReplyKeyboardMarkup(
             [
                 ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
@@ -247,8 +250,12 @@ class Bot(Updater,MainHandlers):
     def new_language(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         context.user_data['register']['language'] = lang = 0 if update.message.text.startswith(
-            "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else None)
+            "🇺🇿") else (1 if update.message.text.startswith("🇷🇺") else 0)
         if lang is not None:
+            db_user.language = context.user_data['register']['language']
+            db_user.save()
+            db_user.refresh_from_db()
+
             return self.start(update, context, False)
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("language_not_found", reply_markup=ReplyKeyboardMarkup(
@@ -295,6 +302,43 @@ class Bot(Updater,MainHandlers):
             ], 2), resize_keyboard=True
         ))
         return REGION
+
+    def score(self, update: Update, context: CallbackContext):
+        user, db_user = get_user(update)
+        seller = Seller.objects.order_by("-balls").all()[:10]
+        text = ""
+        count = 1
+        for i in seller:
+            if len(i.name)>15:
+                 text+= f"{count}. {i.name[:15]}...  -  <b>{i.balls}</b> ball\n"
+            else:
+                text+= f"{count}. {i.name}  -  <b>{i.balls}</b> ball\n"
+            count+=1
+        button = [[InlineKeyboardButton(db_user.text("40"),callback_data="top_40")]]
+        update.message.reply_html(text=text,reply_markup=InlineKeyboardMarkup(button))
+
+    def top_40(self, update:Update, context:CallbackContext):
+        update.callback_query.delete_message()
+        user, db_user = get_user(update)
+        seller = Seller.objects.order_by("-balls").all()[:40]
+        workbook: xlsxwriter.Workbook = xlsxwriter.Workbook(
+        f"media/top-40.xlsx")
+        worksheet = workbook.add_worksheet()
+        worksheet.write(f'A1', f"№")
+        worksheet.write(f'B1', f"Sotuvchi")
+        worksheet.write(f'C1', "Ball")
+        count = 2
+        forloop = 1
+        for i in seller:
+            worksheet.write(f'A{count}', f"{forloop}")
+            worksheet.write(f'B{count}', f"{i.name if len(i.name)<15 else i.name[:15]}")
+            worksheet.write(f'C{count}', f"{i.balls}")
+            count += 1
+            forloop += 1
+        workbook.close()
+        context.bot.send_document(chat_id=user.id,document=open("media/top-40.xlsx","rb"))
+
+            
 
 
     @delete_tmp_message
