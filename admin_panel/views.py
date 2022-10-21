@@ -673,7 +673,10 @@ def sold_create(request):
         data = re.split('(\d+)',pr.code)
         a = 0
         if bas:
-            a =  int(bas.serial_number.split(f"{data[1]}")[1]) 
+            try:
+                a =  int(bas.serial_number.split(f"{data[1]}")[1]) 
+            except:
+                a = 19
         count = a
 
         for i in range(int(req)): 
