@@ -1141,7 +1141,7 @@ def update_cv(request):
     for i in data:
         if not i.product:
             res = BaseProduct.objects.filter(serial_number=i.serial)
-            if res and res.product:
-                i.product = res.product
+            if res and res.first().product:
+                i.product = res.first().product
                 i.save()
     return HttpResponse("SUCCESS")
