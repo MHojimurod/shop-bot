@@ -4,6 +4,7 @@ from email.policy import default
 from typing import List
 from django.db import models
 from admin_panel.models import *
+from seller.models import Seller
 
 
 class Diller(models.Model):
@@ -65,7 +66,7 @@ class Diller(models.Model):
         for i in data:
             balls+=i.balls
 
-        active = "Seller".objects.filter(diller__in=self,balls__gt=0,status=1,created_at__date___lte=from_date,created_at__date__gte=to_date).count()
+        active = Seller.objects.filter(diller__in=self,balls__gt=0,status=1,created_at__date___lte=from_date,created_at__date__gte=to_date).count()
         return data.count(), balls, active
 
 
