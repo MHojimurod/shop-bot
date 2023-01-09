@@ -1049,8 +1049,9 @@ def seller_excel(request, pk):
     forloop = 1
     total = 0
     for i in cvitation:
-        product = BaseProduct.objects.get(serial_number=i.serial)
+        product = BaseProduct.objects.filter(serial_number=i.serial)
         if product:
+            product = product.first()
             worksheet.write(f'A{count}', f"#{forloop}")
             worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
             worksheet.write(f'C{count}', f"{i.serial}")
