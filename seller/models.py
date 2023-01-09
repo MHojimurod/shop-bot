@@ -2,7 +2,7 @@
 from datetime import datetime
 from django.db import models
 
-from admin_panel.models import District, Gifts, Regions, Text
+from admin_panel.models import District, Gifts, Regions, Text,Product
 
 # Create your models here.
 class Seller(models.Model):
@@ -53,3 +53,4 @@ class Cvitation(models.Model):
     status = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(3,"Rad etilgan")))
     current_ball = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL,null=True,blank=True)

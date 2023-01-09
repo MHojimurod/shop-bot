@@ -1135,3 +1135,12 @@ def blabl(request):
 def region_statistika(request):
     region = Regions.objects.all()
     for i in region:...
+
+def update_cv(request):
+    data  = Cvitation.objects.all()
+    for i in data:
+        if not i.product:
+            i.product = BaseProduct.objects.filter(serial_number=i.serial)
+            i.save()
+        else:...
+    return HttpResponse("SUCCESS")

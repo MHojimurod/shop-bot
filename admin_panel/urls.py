@@ -88,7 +88,8 @@ urlpatterns = [
     path("get_sell/<int:pk>",get_sell),
     # path("write_regions",write_regions),
     # path("write_diller",write_diller),
-    path("blabl",blabl)
+    path("blabl",blabl),
+    path("update_cv",update_cv),
     
     ]
 
