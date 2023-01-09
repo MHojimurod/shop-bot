@@ -40,38 +40,32 @@
 <section class="content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12">
-        <!-- /.card -->
+      <div class="col-md-6 col-12">
+        <h6>Ҳудудлар бўйича ҳисобот</h6>
+        <form method="post" class="col-md-8 col-12">
+          {% csrf_token %}
+          <input  type="hidden" name="region" value="true" id="">
+          <label for="">..дан</label>
+          <input class="form-control mb-1" type="date" name="from_date" id="">
+          <label for="">..гача</label>
+        <input class="form-control mb-1" type="date" name="to_date" id="">
+        <button class="btn btn-primary">Yuklab olish</button>
+        </form>
+      </div>
+      <div class="col-md-6 col-12">
+        <h6>Диллерлар бўйича ҳисобот</h6>
+        <form method="post" class="col-md-8 col-12">
+          {% csrf_token %}
+          <input  type="hidden" name="diller" value="true" id="">
+          <label for="">..дан</label>
+          <input class="form-control mb-1" type="date" name="from_date" id="">
+          <label for="">..гача</label>
+          <input class="form-control mb-1" type="date" name="to_date" id="">
+        <button class="btn btn-primary">Yuklab olish</button>
+        </form>
+      </div>
+      
 
-        <div class="card p-2">
-          <div class="card-body table-responsive p-0">
-            <table id="example1" class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>№</th>
-                  <th>Диллер</th>
-                  <th>Махсулот</th>
-                  <th>Сони</th>
-                  <th>Сотувчилар</th>
-                  
-                  
-                </tr>
-              </thead>
-              <tbody>
-                {% for i in data %}
-                <tr>
-                  <td>{{forloop.counter}}</td>
-                  <td>{{i.diller.name}} {{i.number}}</td>
-                  
-                  <td>{{i.product.name_uz}}</td>
-                  <td>{{i.count}}</td>
-                  <td>{% for seller in i.sellers %}{{ seller.i.name }} | {{ seller.j}}<br>{% endfor%}</td>
-                </tr>
-                {% endfor %}  
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   </div>

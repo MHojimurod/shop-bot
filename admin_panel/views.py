@@ -821,43 +821,97 @@ def product_data():
 
 @login_required_decorator
 def reports(request):
-    products = []
-    products:BaseProduct = BaseProduct.objects.filter(~Q(product=None))
-    d = {}
-    for item in products:
-        _seller: Cvitation = Cvitation.objects.filter(
-            serial=item.serial_number).first()
-        seller: Seller = _seller.seller if _seller else None
-        if item.product.id not in d:
-            d[item.product.id] = {
-                "diller": item.diller,
-                "product": item.product,
-                "serial_numbers": [item.serial_number],
-                "count": 1,
-                "sellers": {seller.id: {"j": 1}} if seller else {},
-            }
-        else:
-            d[item.product.id]["count"] += 1
-            d[item.product.id]['serial_numbers'].append(
-                item.serial_number
-            )
-            if seller:
-                if seller.id not in d[item.product.id]['sellers']:
-                    d[item.product.id]['sellers'][seller.id] = {
-                        "j": 1
-                    }
-                else:
-                    d[item.product.id]['sellers'][seller.id]['j'] += 1
+    # products = []
+    # products:BaseProduct = BaseProduct.objects.filter(~Q(product=None))
+    # d = {}
+    # for item in products:
+    #     _seller: Cvitation = Cvitation.objects.filter(
+    #         serial=item.serial_number).first()
+    #     seller: Seller = _seller.seller if _seller else None
+    #     if item.product.id not in d:
+    #         d[item.product.id] = {
+    #             "diller": item.diller,
+    #             "product": item.product,
+    #             "serial_numbers": [item.serial_number],
+    #             "count": 1,
+    #             "sellers": {seller.id: {"j": 1}} if seller else {},
+    #         }
+    #     else:
+    #         d[item.product.id]["count"] += 1
+    #         d[item.product.id]['serial_numbers'].append(
+    #             item.serial_number
+    #         )
+    #         if seller:
+    #             if seller.id not in d[item.product.id]['sellers']:
+    #                 d[item.product.id]['sellers'][seller.id] = {
+    #                     "j": 1
+    #                 }
+    #             else:
+    #                 d[item.product.id]['sellers'][seller.id]['j'] += 1
 
-    new_data = []
-    for k, v in d.items():
-        new_data = []
-        for k2, v2 in v['sellers'].items():
-            new_data.append(
-                {"i": Seller.objects.filter(id=k2).first(), "j": v2['j']})
-        v['sellers'] = new_data
+    # new_data = []
+    # for k, v in d.items():
+    #     new_data = []
+    #     for k2, v2 in v['sellers'].items():
+    #         new_data.append(
+    #             {"i": Seller.objects.filter(id=k2).first(), "j": v2['j']})
+    #     v['sellers'] = new_data
 
-    return render(request, "dashboard/report.html", {"data": [i for i in d.values()]})
+    # return render(request, "dashboard/report.html", {"data": [i for i in d.values()]})
+
+    if request.POST:
+        if request.POST.get('region',False):
+            from_date = request.POST.get('from_date')
+            to_date = request.POST.get('to_date')
+            region = Regions.objects.all()
+            workbook:xlsxwriter.Workbook = xlsxwriter.Workbook("media/data.xlsx")
+            worksheet = workbook.add_worksheet()
+            worksheet.write(f'A1', f"№")
+            worksheet.write(f'B1', f"Hudud")
+            worksheet.write(f'C1', f"Ro'yhatdan o'tgan sotuvchilar")
+            worksheet.write(f'D1', f"Faol sotuvchilar")
+            worksheet.write(f'E1', f"To'plagan ballar")
+            count = 1
+            for i in region:
+                sellers,balls,active = i.seller_count(from_date,to_date)
+                worksheet.write(f'A{count+1}', f"{count}")
+                worksheet.write(f'B{count+1}', f"{i.uz_data}")
+                worksheet.write(f'C{count+1}', f"{sellers}")
+                worksheet.write(f'D{count+1}', f"{active}")
+                worksheet.write(f'E{count+1}', f"{balls}")
+                count+=1
+            workbook.close()
+            response =  HttpResponse(open(workbook.filename,"rb"), content_type="application/ms-excel")
+            response['Content-Disposition'] = 'attachment; filename={}'.format(f"Hududlar-{datetime.datetime.now()}.xlsx")
+            return response
+                
+        elif request.POST.get('diller',False):
+            from_date = request.POST.get('from_date')
+            to_date = request.POST.get('to_date')
+            region = Diller.objects.filter(status=1)
+            workbook:xlsxwriter.Workbook = xlsxwriter.Workbook("media/data.xlsx")
+            worksheet = workbook.add_worksheet()
+            worksheet.write(f'A1', f"№")
+            worksheet.write(f'B1', f"Diller")
+            worksheet.write(f'C1', f"Ro'yhatdan o'tgan sotuvchilar")
+            worksheet.write(f'D1', f"Faol sotuvchilar")
+            worksheet.write(f'E1', f"To'plagan ballar")
+            count = 1
+            for i in region:
+                sellers,balls,active = i.sellers_count(from_date,to_date)
+                worksheet.write(f'A{count+1}', f"{count}")
+                worksheet.write(f'B{count+1}', f"{i.name}")
+                worksheet.write(f'C{count+1}', f"{sellers}")
+                worksheet.write(f'D{count+1}', f"{active}")
+                worksheet.write(f'E{count+1}', f"{balls}")
+                count+=1
+            workbook.close()
+            response =  HttpResponse(open(workbook.filename,"rb"), content_type="application/ms-excel")
+            response['Content-Disposition'] = 'attachment; filename={}'.format(f"Dillerlar-{datetime.datetime.now()}.xlsx")
+            return response
+
+
+    return render(request, "dashboard/report.html")
 
 
 def get_alla_seller_on_json(request):
@@ -1032,3 +1086,9 @@ def blabl(request):
     for i in data:
         Text.objects.create(**i)
     return HttpResponse("Done")
+
+
+
+def region_statistika(request):
+    region = Regions.objects.all()
+    for i in region:...

@@ -58,6 +58,17 @@ class Diller(models.Model):
     def __str__(self):
         return self.name
 
+    
+    def sellers_count(self,from_date,to_date):
+        data = "Seller".objects.filter(diller__in=self,status=1,created_at__date___lte=from_date,created_at__date__gte=to_date)
+        balls = 0
+        for i in data:
+            balls+=i.balls
+
+        active = "Seller".objects.filter(diller__in=self,balls__gt=0,status=1,created_at__date___lte=from_date,created_at__date__gte=to_date).count()
+        return data.count(), balls, active
+
+
 
 
 class Busket(models.Model):
