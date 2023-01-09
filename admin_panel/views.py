@@ -1049,23 +1049,34 @@ def seller_excel(request, pk):
     forloop = 1
     total = 0
     for i in cvitation:
-        try:
-            product = BaseProduct.objects.get(serial_number=i.serial)
-        except:
-            product = ""
-        worksheet.write(f'A{count}', f"#{forloop}")
-        worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
-        worksheet.write(f'C{count}', f"{i.serial}")
-        worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
-        worksheet.write(
-            f'E{count}', f"{product.product.name_uz }")
-        worksheet.write(
-            f'F{count}', f"{product.product.seller_ball }")
-        worksheet.write(
-            f'G{count}', f"{product.product.price}")
-        count += 1
-        forloop += 1
-        total += product.product.price
+        product = BaseProduct.objects.get(serial_number=i.serial)
+        if product:
+            worksheet.write(f'A{count}', f"#{forloop}")
+            worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
+            worksheet.write(f'C{count}', f"{i.serial}")
+            worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
+            worksheet.write(
+                f'E{count}', f"{product.product.name_uz }")
+            worksheet.write(
+                f'F{count}', f"{product.product.seller_ball }")
+            worksheet.write(
+                f'G{count}', f"{product.product.price}")
+            count += 1
+            forloop += 1
+            total += product.product.price
+        else:
+            worksheet.write(f'A{count}', f"#{forloop}")
+            worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
+            worksheet.write(f'C{count}', f"{i.serial}")
+            worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
+            worksheet.write(
+                f'E{count}', f"")
+            worksheet.write(
+                f'F{count}', f"")
+            worksheet.write(
+                f'G{count}', f"")
+            count += 1
+            forloop += 1
     worksheet.write(
             f'G{count}', f"{total}")
     workbook.close()
