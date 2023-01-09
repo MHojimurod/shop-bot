@@ -923,7 +923,7 @@ def reports(request):
     hudud = []
     for i in region:
         sellers = Seller.objects.filter(status=1,region=i)
-        active = Seller.objects.filter(status=1,balls__gt=0).count()
+        active = Seller.objects.filter(status=1,balls__gt=0,region=i).count()
         balls = 0
         for j in sellers:
             balls+= j.balls
