@@ -1,8 +1,6 @@
 from datetime import datetime
 from django.db import models
 
-from seller.models import Seller
-
 # from seller.models import Seller
 
 
@@ -36,15 +34,7 @@ class Regions(models.Model):
         return self.uz_data if lang == 0 else self.ru_data
 
     def __str__(self):
-        return self.ru_data
-    @property
-    def seller_count(self):
-        data = Seller.objects.filter(status=1,region=self)
-        active = Seller.objects.filter(status=1,balls__gt=0).count()
-        balls = 0
-        for i in data:
-            balls+= i.balls
-        return data.count(), balls, active   
+        return self.ru_data        
 class District(models.Model):
     id:int
     region: Regions = models.ForeignKey(Regions, on_delete=models.CASCADE)

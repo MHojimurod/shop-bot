@@ -873,7 +873,12 @@ def reports(request):
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
             for i in region:
-                sellers,balls,active = i.seller_count
+                sellers = Seller.objects.filter(status=1,region=i)
+                active = Seller.objects.filter(status=1,balls__gt=0).count()
+                balls = 0
+                for i in sellers:
+                    balls+= i.balls
+                # sellers,balls,active = i.seller_count
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.uz_data}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
@@ -906,12 +911,22 @@ def reports(request):
             response =  HttpResponse(open(workbook.filename,"rb"), content_type="application/ms-excel")
             response['Content-Disposition'] = 'attachment; filename={}'.format(f"Dillerlar-{datetime.datetime.now()}.xlsx")
             return response
+
+    
         
     ctx = {
 
-        "diller":diller,
-        "hudud":region
+        "diller":diller
     }
+    hudud = []
+    for i in region:
+        sellers = Seller.objects.filter(status=1,region=i)
+        active = Seller.objects.filter(status=1,balls__gt=0).count()
+        balls = 0
+        for i in sellers:
+            balls+= i.balls
+        hudud.append({"uz_data":i.uz_data,"sellers":sellers,"active":active,"balls":balls})
+        ctx.update({"hudud":hudud})
 
     return render(request, "dashboard/report.html",ctx)
 
