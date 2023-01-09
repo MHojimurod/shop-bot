@@ -1055,11 +1055,11 @@ def seller_excel(request, pk):
         worksheet.write(f'C{count}', f"{i.serial}")
         worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
         worksheet.write(
-            f'E{count}', f"{product.first().product.name_uz if product else '' }")
+            f'E{count}', f"{product.first().product.name_uz }")
         worksheet.write(
-            f'F{count}', f"{product.first().product.seller_ball if product else ''}")
+            f'F{count}', f"{product.first().product.seller_ball }")
         worksheet.write(
-            f'G{count}', f"{product.first().product.price if product else '' }")
+            f'G{count}', f"{product.first().product.price}")
         count += 1
         forloop += 1
         total += product.first().product.price if product else 0
