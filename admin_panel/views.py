@@ -931,8 +931,8 @@ def reports(request):
         ctx.update({"hudud":hudud})
     dillers = []
     for i in diller:
-        sellers = Seller.objects.filter(dillers__in=i,status=1)
-        active = Seller.objects.filter(dillers__in=i,balls__gt=0,status=1).count()
+        sellers = Seller.objects.filter(dillers__in=[i],status=1)
+        active = Seller.objects.filter(dillers__in=[i],balls__gt=0,status=1).count()
         balls = 0
         for j in sellers:
             balls+= j.balls
