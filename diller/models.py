@@ -61,7 +61,7 @@ class Diller(models.Model):
 
     
     def sellers_count(self,from_date,to_date):
-        data = "Seller".objects.filter(diller__in=self,status=1,created_at__date___lte=from_date,created_at__date__gte=to_date)
+        data = Seller.objects.filter(diller__in=self,status=1,created_at__date___lte=from_date,created_at__date__gte=to_date)
         balls = 0
         for i in data:
             balls+=i.balls
