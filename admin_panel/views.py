@@ -876,9 +876,8 @@ def reports(request):
                 sellers = Seller.objects.filter(status=1,region=i)
                 active = Seller.objects.filter(status=1,balls__gt=0).count()
                 balls = 0
-                for i in sellers:
-                    balls+= i.balls
-                # sellers,balls,active = i.seller_count
+                for j in sellers:
+                    balls+= j.balls
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.uz_data}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
@@ -900,7 +899,11 @@ def reports(request):
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
             for i in diller:
-                sellers,balls,active = i.sellers_count
+                sellers = Seller.objects.filter(diller__in=i,status=1)
+                balls = 0
+                for j in sellers:
+                    balls+=j.balls
+                active = Seller.objects.filter(diller__in=i,balls__gt=0,status=1).count()
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.name}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
@@ -916,7 +919,6 @@ def reports(request):
         
     ctx = {
 
-        "diller":diller
     }
     hudud = []
     for i in region:
@@ -927,6 +929,15 @@ def reports(request):
             balls+= j.balls
         hudud.append({"uz_data":i.uz_data,"sellers":sellers,"active":active,"balls":balls})
         ctx.update({"hudud":hudud})
+    dillers = []
+    for i in diller:
+        sellers = Seller.objects.filter(diller__in=i,status=1)
+        active = Seller.objects.filter(diller__in=i,balls__gt=0,status=1).count()
+        balls = 0
+        for j in sellers:
+            balls+= j.balls
+        dillers.append({"name":i.name,"sellers":sellers,"active":active,"balls":balls})
+        ctx.update({"diller":dillers})
 
     return render(request, "dashboard/report.html",ctx)
 

@@ -59,15 +59,7 @@ class Diller(models.Model):
     def __str__(self):
         return self.name
 
-    @property
-    def sellers_count(self):
-        data = Seller.objects.filter(diller__in=self,status=1)
-        balls = 0
-        for i in data:
-            balls+=i.balls
-
-        active = Seller.objects.filter(diller__in=self,balls__gt=0,status=1).count()
-        return data.count(), balls, active
+        
 
 
 
