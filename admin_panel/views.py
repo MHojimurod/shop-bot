@@ -874,13 +874,13 @@ def reports(request):
             count = 1
             for i in region:
                 sellers = Seller.objects.filter(status=1,region=i)
-                active = Seller.objects.filter(status=1,balls__gt=0).count()
+                active = Seller.objects.filter(status=1,balls__gt=0,region=i).count()
                 balls = 0
                 for j in sellers:
                     balls+= j.balls
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.uz_data}")
-                worksheet.write(f'C{count+1}', f"{sellers}")
+                worksheet.write(f'C{count+1}', f"{sellers.count()}")
                 worksheet.write(f'D{count+1}', f"{active}")
                 worksheet.write(f'E{count+1}', f"{balls}")
                 count+=1
@@ -899,14 +899,14 @@ def reports(request):
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
             for i in diller:
-                sellers = Seller.objects.filter(diller__in=i,status=1)
+                sellers = Seller.objects.filter(diller__in=[i],status=1)
                 balls = 0
                 for j in sellers:
                     balls+=j.balls
-                active = Seller.objects.filter(diller__in=i,balls__gt=0,status=1).count()
+                active = Seller.objects.filter(diller__in=[i],balls__gt=0,status=1).count()
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.name}")
-                worksheet.write(f'C{count+1}', f"{sellers}")
+                worksheet.write(f'C{count+1}', f"{sellers.count()}")
                 worksheet.write(f'D{count+1}', f"{active}")
                 worksheet.write(f'E{count+1}', f"{balls}")
                 count+=1
