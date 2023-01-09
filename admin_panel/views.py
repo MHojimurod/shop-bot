@@ -150,18 +150,18 @@ def checks(request):
         count = 2
         forloop = 1
         for i in data:
-            product = BaseProduct.objects.filter(serial_number=i.serial)
+            # product = BaseProduct.objects.filter(serial_number=i.serial)
             worksheet.write(f'A{count}', f"{forloop}")
             worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
             worksheet.write(f'C{count}', f"{i.serial}")
             worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
             worksheet.write(
-                f'E{count}', f"{product.first().product.name_uz if product else '' }")
+                f'E{count}', f"{i.product.name_uz}")
             worksheet.write(f'F{count}', f"{i.seller.name}")
             worksheet.write(
-                f'G{count}', f"{product.first().product.seller_ball if product else ''}")
+                f'G{count}', f"{i.product.seller_ball}")
             worksheet.write(
-                f'H{count}', f"{product.first().product.price if product else ''}")
+                f'H{count}', f"{i.product.price}")
             count += 1
             forloop += 1
         workbook.close()
@@ -1032,7 +1032,7 @@ def write_text(request):
 @login_required_decorator
 def seller_excel(request, pk):
     seller = Seller.objects.get(pk=pk)
-    cvitation: Cvitation = Cvitation.objects.filter(seller=seller, status=1)
+    cvitation = Cvitation.objects.filter(seller=seller, status=1)
     workbook: xlsxwriter.Workbook = xlsxwriter.Workbook(
         f"media/{seller.name}.xlsx")
     worksheet = workbook.add_worksheet()
@@ -1049,35 +1049,22 @@ def seller_excel(request, pk):
     forloop = 1
     total = 0
     for i in cvitation:
-        product = BaseProduct.objects.filter(serial_number=i.serial)
-        if product:
-            product = product.first()
-            worksheet.write(f'A{count}', f"#{forloop}")
-            worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
-            worksheet.write(f'C{count}', f"{i.serial}")
-            worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
-            worksheet.write(
-                f'E{count}', f"{product.product.name_uz }")
-            worksheet.write(
-                f'F{count}', f"{product.product.seller_ball }")
-            worksheet.write(
-                f'G{count}', f"{product.product.price}")
-            count += 1
-            forloop += 1
-            total += product.product.price
-        else:
-            worksheet.write(f'A{count}', f"#{forloop}")
-            worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
-            worksheet.write(f'C{count}', f"{i.serial}")
-            worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
-            worksheet.write(
-                f'E{count}', f"")
-            worksheet.write(
-                f'F{count}', f"")
-            worksheet.write(
-                f'G{count}', f"")
-            count += 1
-            forloop += 1
+        # product = BaseProduct.objects.filter(serial_number=i.serial)
+        # if product:
+            # product = product.first()
+        worksheet.write(f'A{count}', f"#{forloop}")
+        worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
+        worksheet.write(f'C{count}', f"{i.serial}")
+        worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
+        worksheet.write(
+            f'E{count}', f"{i.product.name_uz }")
+        worksheet.write(
+            f'F{count}', f"{i.product.seller_ball }")
+        worksheet.write(
+            f'G{count}', f"{i.product.price}")
+        count += 1
+        forloop += 1
+        total += i.product.price
     worksheet.write(
             f'G{count}', f"{total}")
     workbook.close()
@@ -1135,13 +1122,3 @@ def blabl(request):
 def region_statistika(request):
     region = Regions.objects.all()
     for i in region:...
-
-def update_cv(request):
-    data  = Cvitation.objects.all()
-    for i in data:
-        if not i.product:
-            res = BaseProduct.objects.filter(serial_number=i.serial)
-            if res and res.first().product:
-                i.product = res.first().product
-                i.save()
-    return HttpResponse("SUCCESS")
