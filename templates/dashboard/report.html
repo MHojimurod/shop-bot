@@ -41,28 +41,85 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6 col-12">
-        <h6>Ҳудудлар бўйича ҳисобот</h6>
+       
         <form method="post" class="col-md-8 col-12">
           {% csrf_token %}
           <input  type="hidden" name="region" value="true" id="">
-          <label for="">..дан</label>
-          <input class="form-control mb-1" type="date" name="from_date" id="">
-          <label for="">..гача</label>
-        <input class="form-control mb-1" type="date" name="to_date" id="">
         <button class="btn btn-primary">Yuklab olish</button>
         </form>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Ҳудудлар бўйича ҳисобот</h3>
+          </div>
+
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Hudud</th>
+                  <th>R.O'.sotuvchilar</th>
+                  <th>Faol sotuvchilar</th>
+                  <th>T.ballari</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in hudud %}
+
+                <tr>
+
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{i.uz_data}}</td>
+                  <td>{{i.seller}}</td>
+                  <td>{{i.active}}</td>
+                  <td>{{i.balls}}</td>
+                  <td></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       <div class="col-md-6 col-12">
-        <h6>Диллерлар бўйича ҳисобот</h6>
         <form method="post" class="col-md-8 col-12">
           {% csrf_token %}
           <input  type="hidden" name="diller" value="true" id="">
-          <label for="">..дан</label>
-          <input class="form-control mb-1" type="date" name="from_date" id="">
-          <label for="">..гача</label>
-          <input class="form-control mb-1" type="date" name="to_date" id="">
         <button class="btn btn-primary">Yuklab olish</button>
         </form>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Диллерлар бўйича ҳисобот</h3>
+          </div>
+
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Diller</th>
+                  <th>R.O'.sotuvchilar</th>
+                  <th>Faol sotuvchilar</th>
+                  <th>T.ballari</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in diller %}
+
+                <tr>
+
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{i.uz_data}}</td>
+                  <td>{{i.seller}}</td>
+                  <td>{{i.active}}</td>
+                  <td>{{i.balls}}</td>
+                  <td></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       
 

@@ -858,12 +858,12 @@ def reports(request):
     #     v['sellers'] = new_data
 
     # return render(request, "dashboard/report.html", {"data": [i for i in d.values()]})
-
+    diller = Diller.objects.filter(status=1)
+    region = Regions.objects.all()
     if request.POST:
+        
+
         if request.POST.get('region',False):
-            from_date = request.POST.get('from_date')
-            to_date = request.POST.get('to_date')
-            region = Regions.objects.all()
             workbook:xlsxwriter.Workbook = xlsxwriter.Workbook("media/data.xlsx")
             worksheet = workbook.add_worksheet()
             worksheet.write(f'A1', f"№")
@@ -873,7 +873,7 @@ def reports(request):
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
             for i in region:
-                sellers,balls,active = i.seller_count(from_date,to_date)
+                sellers,balls,active = i.seller_count()
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.uz_data}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
@@ -886,9 +886,6 @@ def reports(request):
             return response
                 
         elif request.POST.get('diller',False):
-            from_date = request.POST.get('from_date')
-            to_date = request.POST.get('to_date')
-            region = Diller.objects.filter(status=1)
             workbook:xlsxwriter.Workbook = xlsxwriter.Workbook("media/data.xlsx")
             worksheet = workbook.add_worksheet()
             worksheet.write(f'A1', f"№")
@@ -897,8 +894,8 @@ def reports(request):
             worksheet.write(f'D1', f"Faol sotuvchilar")
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
-            for i in region:
-                sellers,balls,active = i.sellers_count(from_date,to_date)
+            for i in diller:
+                sellers,balls,active = i.sellers_count()
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.name}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
@@ -909,9 +906,14 @@ def reports(request):
             response =  HttpResponse(open(workbook.filename,"rb"), content_type="application/ms-excel")
             response['Content-Disposition'] = 'attachment; filename={}'.format(f"Dillerlar-{datetime.datetime.now()}.xlsx")
             return response
+        
+    ctx = {
 
+        "diller":diller,
+        "hudud":region
+    }
 
-    return render(request, "dashboard/report.html")
+    return render(request, "dashboard/report.html",ctx)
 
 
 def get_alla_seller_on_json(request):

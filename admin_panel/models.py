@@ -35,9 +35,9 @@ class Regions(models.Model):
 
     def __str__(self):
         return self.ru_data
-    def seller_count(self,from_date,to_date):
-        data = "Seller".objects.filter(status=1,region=self,created_at__date___lte=from_date,created_at__date__gte=to_date)
-        active = "Seller".objects.filter(status=1,balls__gt=0,region=self,created_at__date___lte=from_date,created_at__date__gte=to_date).count()
+    def seller_count(self):
+        data = "Seller".objects.filter(status=1,region=self)
+        active = "Seller".objects.filter(status=1,balls__gt=0).count()
         balls = 0
         for i in data:
             balls+= i.balls
