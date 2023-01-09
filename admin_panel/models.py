@@ -35,6 +35,7 @@ class Regions(models.Model):
 
     def __str__(self):
         return self.ru_data
+    @property
     def seller_count(self):
         data = "Seller".objects.filter(status=1,region=self)
         active = "Seller".objects.filter(status=1,balls__gt=0).count()

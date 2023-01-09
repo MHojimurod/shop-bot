@@ -873,7 +873,7 @@ def reports(request):
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
             for i in region:
-                sellers,balls,active = i.seller_count()
+                sellers,balls,active = i.seller_count
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.uz_data}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
@@ -895,7 +895,7 @@ def reports(request):
             worksheet.write(f'E1', f"To'plagan ballar")
             count = 1
             for i in diller:
-                sellers,balls,active = i.sellers_count()
+                sellers,balls,active = i.sellers_count
                 worksheet.write(f'A{count+1}', f"{count}")
                 worksheet.write(f'B{count+1}', f"{i.name}")
                 worksheet.write(f'C{count+1}', f"{sellers}")
