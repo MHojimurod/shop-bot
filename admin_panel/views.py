@@ -927,7 +927,7 @@ def reports(request):
         balls = 0
         for j in sellers:
             balls+= j.balls
-        hudud.append({"uz_data":i.uz_data,"sellers":sellers,"active":active,"balls":balls})
+        hudud.append({"uz_data":i.uz_data,"sellers":sellers.count(),"active":active,"balls":balls})
         ctx.update({"hudud":hudud})
     dillers = []
     for i in diller:
@@ -936,7 +936,7 @@ def reports(request):
         balls = 0
         for j in sellers:
             balls+= j.balls
-        dillers.append({"name":i.name,"sellers":sellers,"active":active,"balls":balls})
+        dillers.append({"name":i.name,"sellers":sellers.count(),"active":active,"balls":balls})
         ctx.update({"diller":dillers})
 
     return render(request, "dashboard/report.html",ctx)
