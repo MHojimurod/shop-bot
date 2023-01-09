@@ -923,8 +923,8 @@ def reports(request):
         sellers = Seller.objects.filter(status=1,region=i)
         active = Seller.objects.filter(status=1,balls__gt=0).count()
         balls = 0
-        for i in sellers:
-            balls+= i.balls
+        for j in sellers:
+            balls+= j.balls
         hudud.append({"uz_data":i.uz_data,"sellers":sellers,"active":active,"balls":balls})
         ctx.update({"hudud":hudud})
 
