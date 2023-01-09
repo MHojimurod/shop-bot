@@ -1140,7 +1140,8 @@ def update_cv(request):
     data  = Cvitation.objects.all()
     for i in data:
         if not i.product:
-            i.product = BaseProduct.objects.filter(serial_number=i.serial)
-            i.save()
-        else:...
+            res = BaseProduct.objects.filter(serial_number=i.serial)
+            if res:
+                i.product = res.product
+                i.save()
     return HttpResponse("SUCCESS")
