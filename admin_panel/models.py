@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db import models
 
+from seller.models import Seller
+
 # from seller.models import Seller
 
 
@@ -37,8 +39,8 @@ class Regions(models.Model):
         return self.ru_data
     @property
     def seller_count(self):
-        data = "Seller".objects.filter(status=1,region=self)
-        active = "Seller".objects.filter(status=1,balls__gt=0).count()
+        data = Seller.objects.filter(status=1,region=self)
+        active = Seller.objects.filter(status=1,balls__gt=0).count()
         balls = 0
         for i in data:
             balls+= i.balls
