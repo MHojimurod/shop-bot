@@ -1056,15 +1056,24 @@ def seller_excel(request, pk):
         worksheet.write(f'B{count}', f"{i.created_at.strftime('%d-%m-%Y')}")
         worksheet.write(f'C{count}', f"{i.serial}")
         worksheet.write(f'D{count}', f"{i.seller.region.uz_data}")
-        worksheet.write(
-            f'E{count}', f"{i.product.name_uz }")
-        worksheet.write(
-            f'F{count}', f"{i.product.seller_ball }")
-        worksheet.write(
-            f'G{count}', f"{i.product.price}")
+        if i.product:
+            worksheet.write(
+                f'E{count}', f"{i.product.name_uz }")
+            worksheet.write(
+                f'F{count}', f"{i.product.seller_ball }")
+            worksheet.write(
+                f'G{count}', f"{i.product.price}")
+            total += i.product.price
+        else:
+            worksheet.write(
+                f'E{count}', f"")
+            worksheet.write(
+                f'F{count}', f"")
+            worksheet.write(
+                f'G{count}', f"")
+
         count += 1
         forloop += 1
-        total += i.product.price
     worksheet.write(
             f'G{count}', f"{total}")
     workbook.close()
