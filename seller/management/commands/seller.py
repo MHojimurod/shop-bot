@@ -147,7 +147,7 @@ class Bot(Updater,MainHandlers):
     
     def cvi_serial_number(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
-        product = BaseProduct.objects.filter(serial_number=update.message.text)
+        product = BaseProduct.objects.filter(serial_number=update.message.text,seller=db_user)
         if product.exists():
             product:BaseProduct = product.first()
             if not product.is_active:

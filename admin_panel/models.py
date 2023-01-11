@@ -113,6 +113,8 @@ class   BaseProduct(models.Model):
         self.is_active = True
         self.save()
 
+    def __str__(self):
+        return f"{self.seller.name} | {self.serial_number}"
 
 class Promotion(models.Model):
     id:int

@@ -1141,3 +1141,4 @@ def blabl(request):
 def region_statistika(request):
     region = Regions.objects.all()
     for i in region:...
+
