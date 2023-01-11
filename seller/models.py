@@ -54,3 +54,6 @@ class Cvitation(models.Model):
     current_ball = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL,null=True,blank=True)
+
+    def __str__(self):
+        return f"{self.seller.name} | {self.serial}"
