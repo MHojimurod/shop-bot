@@ -1,0 +1,12 @@
+done = "✅"
+prev = "⏮"
+next = "⏭"
+comment = "💬"
+cross = "❌"
+trash = "🗑"
+reload = "🔄"
+
+LANGUAGE, NAME, NUMBER, REGION, DISTRICT, SHOP, MENU, CVI, CVI_PHOTO, CVI_SERIAL_NUMBER, BALL,  SELECT_NEW_LANGUAGE, SHOP_LOCATION, PASSPORT_PHOTO,SHOP_PASSPORT_PHOTO,DILLERS_CHOICE  = range(
+    16)
+
+TOKEN = "6525921476:AAHn9ocU5-ik7TMuFScvpAw6BAlJwrpywkI"

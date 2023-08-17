@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'diller',
     'admin_panel',
     'seller',
-    'runbots'
+    'runbots',
+    'sale'
 ]
 
 MIDDLEWARE = [
