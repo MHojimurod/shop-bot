@@ -31,10 +31,11 @@ class Regions(models.Model):
     uz_data: str = models.TextField()
     ru_data: str = models.TextField()
     def name(self, lang:int):
-        return self.uz_data if lang == 0 else self.ru_data
+        return self.uz_data if lang == 'uz' else self.ru_data
 
     def __str__(self):
-        return self.ru_data        
+        return self.ru_data    
+            
 class District(models.Model):
     id:int
     region: Regions = models.ForeignKey(Regions, on_delete=models.CASCADE)

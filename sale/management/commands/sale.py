@@ -12,6 +12,7 @@ import requests
 from seller.models import Cvitation, Seller
 from seller.utils import balls_keyboard_pagination
 from .constant import (
+    ACCOUNT,
     CVI_PHOTO,
     CVI_SERIAL_NUMBER,
     DILLERS_CHOICE,
@@ -22,7 +23,6 @@ from .constant import (
     NUMBER,
     NAME,
     REGION,
-    DISTRICT,
     MENU,
     BALL,
     SHOP_LOCATION,
@@ -44,7 +44,7 @@ class Bot(Updater,MainHandlers):
         assert token, ValueError("Token is required")
         super().__init__(token)
 
-        not_start = ~Filters.regex("^(\/start)")
+        not_start = ~Filters.regex("^(/start)")
 
         self.conversation = ConversationHandler(
             entry_points=[
@@ -53,17 +53,23 @@ class Bot(Updater,MainHandlers):
             states={
                 LANGUAGE: [MessageHandler(Filters.regex("^(🇺🇿|🇷🇺)") & not_start, self.language)],
                 NAME: [MessageHandler(Filters.text & not_start, self.name)],
-                NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all & not_start, self.invalid_number)],
-                REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all & not_start, self.incorrect_region)],
-                DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all & not_start, self.incorrect_district)],
+                NUMBER: [
+                    MessageHandler(Filters.contact & not_start, self.number),
+                    MessageHandler(Filters.regex("^(\+998\d{9})$"), self.number),
+                    MessageHandler(Filters.all & not_start, self.invalid_number)],
+                REGION: [
+                    MessageHandler(Filters.text & not_start, self.region),
+                    ],
+                ACCOUNT: [MessageHandler(Filters.regex('^(Mening hisobim)'), self.my_account)],
                 SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
                 PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all & not_start, self.invalid_passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
                 SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all & not_start, self.invalid_shop_passport_photo)],
                 
                 MENU: [
-                    MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
-                    MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
+                    MessageHandler(Filters.regex("^(Yordam)"), self.help),
+                    MessageHandler(Filters.regex("^(CashBack olish)"), self.cashback),
+                    MessageHandler(Filters.regex("^(Mening hisobim)"), self.my_account),
                     MessageHandler(Filters.regex("^(Reyting|Рейтинг)"), self.score),
                     CommandHandler('language', self.change_language),
                     CallbackQueryHandler(self.top_40, pattern="top_40")
@@ -268,7 +274,7 @@ class Bot(Updater,MainHandlers):
 
 
 
-    @delete_tmp_message
+    # @delete_tmp_message
     def invalid_number(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
@@ -280,6 +286,31 @@ class Bot(Updater,MainHandlers):
             ], resize_keyboard=True
         ))
         return NUMBER
+    
+
+    def help(self, update: Update, context: CallbackContext):
+        text = "Hurmatli sotuvchi sizda ushbu aksiya bo’yicha murojaatlaringiz bo’lsa quydagi manzilarga etishingiz mumkin:\n\n☎️ +998557020020\nIsh vaqti: Dush-Shanba 8:00-18:00"
+        inline_button = [[InlineKeyboardButton("Telegram orqali", url='https://t.me/Farrukhuz')]]
+
+        update.message.reply_html(text=text, reply_markup=InlineKeyboardMarkup(inline_button))
+        return MENU
+    
+    def cashback(self, update: Update, context: CallbackContext):
+        pass
+
+    def my_account(self, update:Update, coxtext: CallbackContext):
+        user, db_user = get_user(update)
+        text = f"Sizning ID raqamingiz: {db_user.pk}\n"
+        text+= f"Cashback: {db_user.account}"
+        button = [
+            [KeyboardButton("Kartaga chiqarish")],
+            [KeyboardButton("Ortga")]
+                  ]
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True))
+        return ACCOUNT
+
+
+
 
 
     @delete_tmp_message
