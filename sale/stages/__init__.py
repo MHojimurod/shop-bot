@@ -12,7 +12,7 @@ from seller.management.commands.constant import (
     PASSPORT_PHOTO,
     REGION,
     SHOP,
-    SHOP_LOCATION,
+    CARD,
     SHOP_PASSPORT_PHOTO,
 )
 from django.core.files.images import ImageFile

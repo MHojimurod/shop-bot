@@ -25,7 +25,7 @@ from .constant import (
     DISTRICT,
     MENU,
     BALL,
-    SHOP_LOCATION,
+    CARD,
     PASSPORT_PHOTO,
     SHOP_PASSPORT_PHOTO
 )
@@ -56,7 +56,7 @@ class Bot(Updater,MainHandlers):
                 NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all & not_start, self.invalid_number)],
                 REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all & not_start, self.incorrect_region)],
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all & not_start, self.incorrect_district)],
-                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
+                CARD: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
                 PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all & not_start, self.invalid_passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
                 SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all & not_start, self.invalid_shop_passport_photo)],
@@ -345,7 +345,7 @@ class Bot(Updater,MainHandlers):
     def incorrect_shop_location(self, update: Update, context: CallbackContext):
         context.user_data['tmp_message'] = update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
             [[KeyboardButton(i18n('request_location', context.user_data['register']['language']),request_location=True)]], resize_keyboard=True))
-        return SHOP_LOCATION
+        return CARD
 
 
     @delete_tmp_message

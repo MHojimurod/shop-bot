@@ -2,7 +2,7 @@ from uuid import uuid4
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
 from admin_panel.models import District, Regions, Text, i18n
-from seller.management.commands.constant import DILLERS_CHOICE, DISTRICT, LANGUAGE, MENU, NAME, NUMBER, PASSPORT_PHOTO, REGION, SHOP, SHOP_LOCATION, SHOP_PASSPORT_PHOTO
+from seller.management.commands.constant import DILLERS_CHOICE, DISTRICT, LANGUAGE, MENU, NAME, NUMBER, PASSPORT_PHOTO, REGION, SHOP, CARD, SHOP_PASSPORT_PHOTO
 from django.core.files.images import ImageFile
 from seller.management.commands.decorators import delete_tmp_message, distribute, get_user
 from seller.models import Seller
@@ -136,7 +136,7 @@ class MainHandlers:
         if district:
             context.user_data['register']['district'] = district
             context.user_data['tmp_message'] = user.send_message(i18n("shop_location",lang), reply_markup=ReplyKeyboardMarkup([[KeyboardButton(i18n('request_location', lang),request_location=True)]], resize_keyboard=True), parse_mode="HTML")
-            return SHOP_LOCATION
+            return CARD
         else:
             context.user_data['keyboard_button'] = context.user_data['tmp_message'] = user.send_message("district_not_found", reply_markup=ReplyKeyboardMarkup(
                 distribute([

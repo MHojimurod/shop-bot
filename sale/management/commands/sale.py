@@ -18,14 +18,14 @@ from .constant import (
     DILLERS_CHOICE,
     LANGUAGE,
     SELECT_NEW_LANGUAGE,
-    SHOP,
+    HOLDER,
     TOKEN,
     NUMBER,
     NAME,
     REGION,
     MENU,
     BALL,
-    SHOP_LOCATION,
+    CARD,
     PASSPORT_PHOTO,
     SHOP_PASSPORT_PHOTO
 )
@@ -60,10 +60,16 @@ class Bot(Updater,MainHandlers):
                 REGION: [
                     MessageHandler(Filters.text & not_start, self.region),
                     ],
-                ACCOUNT: [MessageHandler(Filters.regex('^(Mening hisobim)'), self.my_account)],
-                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
-                PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all & not_start, self.invalid_passport_photo)],
-                SHOP: [MessageHandler(Filters.text, self.shop)],
+                ACCOUNT: [
+                    MessageHandler(Filters.regex('^(Kartaga chiqarish)'), self.transfer),
+                    MessageHandler(Filters.regex('^(Ortga)'), self.start)
+                          ],
+                CARD: [
+                    MessageHandler(Filters.regex('^(\d{16})$'), self.card),
+                    MessageHandler(Filters.regex('^(Ortga)'), self.my_account)
+                ],
+                
+                # HOLDER: [MessageHandler(Filters.text, self.shop)],
                 SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all & not_start, self.invalid_shop_passport_photo)],
                 
                 MENU: [
@@ -277,14 +283,7 @@ class Bot(Updater,MainHandlers):
     # @delete_tmp_message
     def invalid_number(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
-        context.user_data['tmp_message'] = update.message.reply_text(i18n("invalid_number", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
-            [
-                [
-                    KeyboardButton(i18n("send_number", context.user_data['register']['language']),
-                                   request_contact=True),
-                ]
-            ], resize_keyboard=True
-        ))
+        update.message.reply_text("Nomer Xato")
         return NUMBER
     
 
@@ -310,8 +309,16 @@ class Bot(Updater,MainHandlers):
         return ACCOUNT
 
 
+    def transfer(self, update:Update, context:CallbackContext):
+        text = "Bonus mablag'ini o'z hisobingizga  o'tkazish uchun HUMO yoki UZCARD kartangizning   16 talik hisob raqamini  yozing"
+        button = [[KeyboardButton("Ortga")]]
+        update.message.reply_html(text=text, reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True))
+        return CARD
 
-
+    def card(self, update:Update, context:CallbackContext):
+        text = update.message.text
+        button = [[KeyboardButton('Ortga')]]
+        update.message.reply_html(text="Karta egasi ism familyasini kiriting", reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True))
 
     @delete_tmp_message
     def incorrect_region(self, update: Update, context: CallbackContext):
@@ -376,7 +383,7 @@ class Bot(Updater,MainHandlers):
     def incorrect_shop_location(self, update: Update, context: CallbackContext):
         context.user_data['tmp_message'] = update.message.reply_text(i18n("incorrect_shop_location", context.user_data['register']['language']), reply_markup=ReplyKeyboardMarkup(
             [[KeyboardButton(i18n('request_location', context.user_data['register']['language']),request_location=True)]], resize_keyboard=True))
-        return SHOP_LOCATION
+        return CARD
 
 
     @delete_tmp_message
