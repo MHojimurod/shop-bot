@@ -1,0 +1,182 @@
+{% extends 'dashboard/base.html' %}
+ {% load static %} 
+ {% load currency %} 
+ {% block style %}
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
+/>
+<!-- DataTables -->
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"
+/>
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"
+/>
+<link
+  rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}"
+/>
+<!-- Theme style -->
+<link rel="stylesheet" href="{% static 'dashboard/css/adminlte.min.css' %}" />
+{% endblock %} {% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Сотувчилар</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Сотувчилар</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <!-- /.card -->
+
+        <div class="card p-2">
+          <div class="card-body table-responsive p-0">
+            <table id="example1" class="table table-bordered table-striped" data-page-length="10" data-ordering="false" data-info="false" data-source="false">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>ФИО</th>
+                  <th>Телефон</th>
+                  <th>Viloyat</th>
+                  <th>Hisob</th>
+                  <th>Ҳолати</th>
+                  <th><i class="p-1 fas fa-check-circle"></i
+                    ></th>
+                  <th><i class="p-1 fas fa-times-circle"></i
+                    ></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in seller %}
+                <tr>
+                  <td>{{i.id}}</td>
+                  <td><a href="">{{i.name}}</a></td>
+                  <td><a href="tel:{{i.number}}">{{i.phone}}</a></td>
+                  <td>{{i.region.ru_data}}</td>
+                  <td>$ {{i.account}}</td>
+                  {% if i.state == 1 %}
+                  <td><span class="badge badge-warning">Kutilmoqda</span></td>
+                  <td>
+                    <a href="{% url 'update_sale_seller' pk=i.pk state=2 %}" class="btn btn-xs btn-success"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'update_sale_seller' pk=i.pk state=3 %}" class="btn btn-xs btn-danger"
+                      ><i class="p-1 fas fa-times-circle"></i
+                    ></a>
+                  </td>
+
+                  {% elif i.state == 2 %}
+                  <td><span class="badge badge-success">Qabul qilingan</span></td>
+                 
+                  <td>
+                    <a class="btn btn-xs btn-success disabled"
+                      ><i class="p-1 fas fa-check-circle"></i></a>
+                  </td>
+                  <td>
+                    <a class="btn btn-xs btn-danger disabled"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  {% elif i.state == 3 %}
+                  <td><span class="badge badge-danger">Bekor qilindi</span></td>
+                 
+                  <td>
+                    <a  class="btn btn-xs btn-success disabled"
+                      ><i class="p-1 fas fa-check-circle"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a  class="btn btn-xs btn-danger disabled"
+                      ><i class="p-1 far fa-trash-alt"></i></a>
+                  </td>
+                  
+                  {% endif %}
+              
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Control Sidebar -->
+<!-- <aside class="control-sidebar control-sidebar-dark"> -->
+<!-- Control sidebar content goes here -->
+<!-- </aside> -->
+<!-- /.control-sidebar -->
+<!-- ./wrapper -->
+{% endblock %} {% block javascript %}
+<script src="{% static 'dashboard/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="/static/dashboard/js/adminlte.min.js"></script>
+<script src="/static/dashboard/js/demo.js"></script>
+<script>
+  $(function () {
+    $("#example1")
+      .DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        buttons: ["copy", "csv", "excel", "pdf", "print"],
+      })
+      .buttons()
+      .container()
+      .appendTo("#example1_wrapper .col-md-6:eq(0)");
+    $("#example2").DataTable({
+      paging: true,
+      lengthChange: false,
+      searching: false,
+      ordering: true,
+      info: true,
+      autoWidth: false,
+      responsive: true,
+    }); 
+  });
+//   setInterval(() => {
+//     location.reload();
+//   }, 30000);
+
+    function Copy(value, pk){
+        navigator.clipboard.writeText(value);
+        var button = document.getElementById(pk+"_copy")
+
+        button.textContent = 'Скопировано!';
+    setTimeout(() => {
+      button.textContent = value;
+    }, 1000);
+    }
+</script>
+{% endblock %}

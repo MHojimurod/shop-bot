@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'admin_panel',
     'seller',
     'runbots',
-    'sale'
+    'sale',
 ]
 
 MIDDLEWARE = [

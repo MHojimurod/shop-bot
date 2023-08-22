@@ -3,6 +3,7 @@ from seller.models import Regions
 
 
 class SaleSeller(models.Model):
+
     WAITING = 1
     CANCELED = -1
     ACCEPT = 2
@@ -11,7 +12,7 @@ class SaleSeller(models.Model):
     name = models.CharField(max_length=200, null=True)
     phone = models.CharField(max_length=20, null=True)
     region = models.ForeignKey(Regions, on_delete=models.SET_NULL, null=True)
-    state = models.SmallIntegerField(default=WAITING)
+    state = models.SmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     account = models.BigIntegerField(default=0)
 
@@ -29,10 +30,42 @@ class SaleSeller(models.Model):
 
     def set_region(self, region):
         self.region = region
+        self.state = self.WAITING
         self.save()
 
 
 class Card(models.Model):
+    seller = models.ForeignKey(SaleSeller, on_delete=models.CASCADE, null=True)
     holder_name = models.CharField(max_length=200)
     card_number = models.CharField(max_length=16)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class SerialNumbers(models.Model):
+    code = models.CharField(max_length=200)
+    cashback = models.IntegerField()
+    is_used = models.BooleanField(default=False)
+    seller = models.ForeignKey(SaleSeller, on_delete=models.SET_NULL, null=True, blank=True)
+    def __str__(self):
+        return f"{self.code} | {self.cashback}"
+    
+class CashOrder(models.Model):
+    WAITING = 1
+    ACCEPTED = 2
+    CANCELLED = -1
+
+    seller = models.ForeignKey(SaleSeller, on_delete=models.CASCADE)
+    price = models.IntegerField()
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    state = models.SmallIntegerField(default=WAITING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Cashback(models.Model):
+    WAITING = 1
+    ACCEPTED = 2
+    REJECTED = 3
+    photo = models.ImageField(upload_to="cashback/")
+    seria = models.ForeignKey(SerialNumbers, on_delete=models.CASCADE, related_name="serialnumber")
+    state = models.SmallIntegerField(default=WAITING)
     created_at = models.DateTimeField(auto_now_add=True)

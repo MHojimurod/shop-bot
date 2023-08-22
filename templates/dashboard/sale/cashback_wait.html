@@ -1,0 +1,211 @@
+{% extends 'dashboard/base.html' %} {% load static %}
+{% block content %}
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Cashback</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+              <li class="breadcrumb-item active">Cashback</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+            <div class="card-header p-2">
+            <ul class="nav nav-pills">
+              <li class="nav-item"><a class="nav-link active" href="{% url  'wait_cashback' %}" >Yangilar</a></li>
+              <li class="nav-item"><a class="nav-link " href="{% url 'accept_cashback' %}" >Qabul qilinganlar</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'reject_cashback' %}" >Rad etilganlar</a></li>
+            </ul>
+            </div>
+            <div class="card-body">
+            <div class="tab-content">
+            <div class="active tab-pane" id="activity">
+              <!-- <form method="post" class="col-3 d-flex">
+                {% csrf_token %}
+                <input type="date" name="date" class="form-control">
+                <input type="hidden" name="type" value="0">
+            <button class="btn btn-sm btn-success ml-2">Excel</button>
+              </form> -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Sotuvchi</th>
+                      <th>Telefon</th>
+                      <th>Viloyat</th>
+                      <th>Sana</th>
+                      <th>Serial</th>
+                      <th>Rasmi</th>
+                      <th><i class="fa fa-check-square-o"></i></th>
+                      <th><i class="fa fa-window-close-o"></i></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in wait %}
+    
+                    <tr>
+    
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.seria.seller.name }}  | {{i.seria.seller.id}}</td>
+                      <td><a href="">{{ i.seria.seller.phone }}</a></td>
+                      <td>{{i.seria.seller.region.uz_data}}</td>
+                      <td>{{i.created_at|date:"d-m-Y"}}</td>
+                      <td>{{i.seria.code}}</td>
+                      <td>
+                        <div class="product-image-thumb">
+                          <a href="{{i.photo.url}}">
+                            <img src="{{i.photo.url}}" style=" width: 7vw; height: 10vh;object-fit: cover;" alt="white sample"/>
+                          </a>
+                          
+                        </div>
+                      </td>
+                      <td><a style="color: #17a2b8;" href="/cashback/update/{{i.id}}/2">
+                        <div ><i class="fa fa-check-square-o"></i></div></a></td>
+                      <td><a style="color: #dc3545;" href="/cashback/update/{{i.id}}/3">
+                        <div><i class="fa fa-window-close-o"></i></div></a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            
+            </div>
+            
+            <div class="tab-pane" id="timeline">
+              <form method="post" class="col-3 d-flex">
+                {% csrf_token %}
+                <input type="date" name="date" class="form-control">
+                <input type="hidden" name="type" value="1">
+            <button class="btn btn-sm btn-success ml-2">Excel</button>
+              </form>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Sotuvchi</th>
+                      <th>Telefon</th>
+                      <th>Viloyat</th>
+                      <th>Tuman</th>
+                      <th>Sana</th>
+                      <th>Serial</th>
+                      <th>Rasmi</th>
+                      <!-- <th>Qabul qilish</th>
+                      <th>Rad etish</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in accept %}
+    
+                    <tr>
+    
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.seller.name }}  | {{i.seller.id}}</td>
+                      <td><a href="">{{ i.seller.number }}</a></td>
+                      <td>{{i.seller.region.uz_data}}</td>
+                      <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.created_at|date:"d-m-Y"}}</td>  
+                      <td>{{i.serial}}</td>
+                      <td>
+                        <div class="product-image-thumb">
+                          <a href="{{i.photo.url}}">
+                            <img src="{{i.photo.url}}" style=" width: 7vw; height: 10vh;object-fit: cover;" alt=""/>
+                          </a>
+                          
+                        </div>
+                      </td>
+                      
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <div class="tab-pane" id="settings">
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>№</th>
+                      <th>Sotuvchi</th>
+                      <th>Telefon</th>
+                      <th>Viloyat</th>
+                      <th>Tuman</th>
+                      <th>Sana</th>
+                      <th>Serial</th>
+                      <th>Rasmi</th>
+                      <!-- <th>Qabul qilish</th>
+                      <th>Rad etish</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in reject %}
+    
+                    <tr>
+    
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ i.seller.name }}  | {{i.seller.id}}</td>
+                      <td><a href="">{{ i.seller.number }}</a></td>
+                      <td>{{i.seller.region.uz_data}}</td>
+                      <td>{{i.seller.district.uz_data}}</td>
+                      <td>{{i.created_at|date:"d-m-Y"}}</td>
+                      <td>{{i.serial}}</td>
+                      <td>
+                        <div class="product-image-thumb">
+                          <a href="/{{i.photo.url}}">
+                            <img src="/{{i.photo.url}}" style=" width: 7vw; height: 10vh;object-fit: cover;" alt="white sample"/>
+                          </a>
+                          
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            </div>
+            
+            </div>
+            </div>
+            
+            </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}
+{% block javascript %}
+<script src="/static/dashboard/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+<script src="/static/dashboard/plugins/filterizr/jquery.filterizr.min.js"></script>
+<script>
+  $(function () {
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
+
+    $('.filter-container').filterizr({gutterPixels: 3});
+    $('.btn[data-filter]').on('click', function() {
+      $('.btn[data-filter]').removeClass('active');
+      $(this).addClass('active');
+    });
+  })
+</script>
+{% endblock %}
+
