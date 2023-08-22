@@ -593,7 +593,6 @@ class Bot(Updater, MainHandlers):
             ),
             reply_markup=ReplyKeyboardRemove(),
         )
-        return SHOP_PASSPORT_PHOTO
 
     def user_state_update(self):
         data = request.get_json()
