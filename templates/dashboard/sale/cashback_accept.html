@@ -13,7 +13,7 @@
             </ol>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
     <section class="content">
       <div class="container-fluid">
@@ -41,9 +41,8 @@
                       <th>Viloyat</th>
                       <th>Sana</th>
                       <th>Serial</th>
+                      <th>Cashback</th>
                       <th>Rasmi</th>
-                      <!-- <th>Qabul qilish</th>
-                      <th>Rad etish</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -57,6 +56,7 @@
                       <td>{{i.seria.seller.region.uz_data}}</td>
                       <td>{{i.created_at|date:"d-m-Y"}}</td>
                       <td>{{i.seria.code}}</td>
+                      <td>$ {{i.seria.cashback}}</td>
                       <td>
                         <div class="product-image-thumb">
                           <a href="{{i.photo.url}}">

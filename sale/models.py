@@ -33,6 +33,30 @@ class SaleSeller(models.Model):
         self.state = self.WAITING
         self.save()
 
+    @property
+    def total_sum(self):
+        order = Cashback.objects.exclude(state=3).filter(seria__seller=self)
+        price = 0
+        for i in order:
+            price+= i.seria.cashback
+        return price
+    
+    @property
+    def payed_sum(self):
+        order = CashOrder.objects.exclude(state=3).filter(seller=self)
+        price = 0
+        for i in order:
+            price+= i.price
+        return price
+    @property
+    def waiting_sum(self):
+        cashback = Cashback.objects.filter(seria__seller=self, state=1)
+        cashback_price = 0
+        for i in cashback:
+            cashback_price+= i.seria.cashback
+        return cashback_price
+
+
 
 class Card(models.Model):
     seller = models.ForeignKey(SaleSeller, on_delete=models.CASCADE, null=True)

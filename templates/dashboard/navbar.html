@@ -34,8 +34,36 @@
     </div>
 
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-         </li>
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">  
+         <li class="nav-item {{b_active}}">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-list"></i>
+            <p>
+              ELITE Aksiya 🎉
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item ">
+              <a href="{% url 'sale_seller' %}" class="nav-link {{e_s}}">
+                <!-- <i class="nav-icon fas fa-hotdog"></i> -->
+                <p>Sotuvchilar</p>
+              </a>
+            </li>
+            <li class="nav-item  ">
+              <a href="{% url 'cash_orders' %}" class="nav-link {{e_o}}">
+                <!-- <i class="nav-icon fas fa-seedling"></i> -->
+                <p>Pul o'tkazmalar</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a href="{% url 'wait_cashback' %}" class="nav-link  {{e_c}}">
+                <!-- <i class="nav-icon fas fa-seedling"></i> -->
+                <p>Cashback</p>
+              </a>
+            </li>
+          </ul>
+        </li>
          
         <li class="nav-item {{s_active}}">
           <a href="{% url 'solds' %}" class="nav-link">
@@ -143,35 +171,7 @@
           </a>
         </li>
 
-        <li class="nav-item {{b_active}}">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-list"></i>
-            <p>
-              ELITE Aksiya 🎉
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item ">
-              <a href="{% url 'sale_seller' %}" class="nav-link {{dil_active}}">
-                <!-- <i class="nav-icon fas fa-hotdog"></i> -->
-                <p>Sotuvchilar</p>
-              </a>
-            </li>
-            <li class="nav-item  ">
-              <a href="{% url 'cash_orders' %}" class="nav-link {{p_active}}">
-                <!-- <i class="nav-icon fas fa-seedling"></i> -->
-                <p>Pul o'tkazmalar</p>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a href="{% url 'wait_cashback' %}" class="nav-link  {{gift_active}}">
-                <!-- <i class="nav-icon fas fa-seedling"></i> -->
-                <p>Cashback</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+        
 
 
         <li class="nav-item">

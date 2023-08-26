@@ -30,12 +30,6 @@
             <div class="card-body">
             <div class="tab-content">
             <div class="active tab-pane" id="activity">
-              <!-- <form method="post" class="col-3 d-flex">
-                {% csrf_token %}
-                <input type="date" name="date" class="form-control">
-                <input type="hidden" name="type" value="0">
-            <button class="btn btn-sm btn-success ml-2">Excel</button>
-              </form> -->
               <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                   <thead>
@@ -46,6 +40,7 @@
                       <th>Viloyat</th>
                       <th>Sana</th>
                       <th>Serial</th>
+                      <th>Cashback</th>
                       <th>Rasmi</th>
                       <th><i class="fa fa-check-square-o"></i></th>
                       <th><i class="fa fa-window-close-o"></i></th>
@@ -62,6 +57,7 @@
                       <td>{{i.seria.seller.region.uz_data}}</td>
                       <td>{{i.created_at|date:"d-m-Y"}}</td>
                       <td>{{i.seria.code}}</td>
+                      <td>$ {{i.seria.cashback}}</td>
                       <td>
                         <div class="product-image-thumb">
                           <a href="{{i.photo.url}}">

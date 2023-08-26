@@ -1,35 +1,27 @@
 from uuid import uuid4
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
-from admin_panel.models import District, Regions, Text, i18n
+from admin_panel.models import Regions
 from seller.management.commands.constant import (
-    DILLERS_CHOICE,
-    DISTRICT,
     LANGUAGE,
     MENU,
     NAME,
     NUMBER,
-    PASSPORT_PHOTO,
     REGION,
-    SHOP,
-    CARD,
-    SHOP_PASSPORT_PHOTO,
+
 )
 from django.core.files.images import ImageFile
 from sale.management.commands.decorators import delete_tmp_message, distribute, get_user
-from seller.models import Seller
-from diller.models import Diller
-from sale.models import Cashback, SaleSeller, Card
+
+from sale.models import Cashback, SaleSeller
 
 
 class MainHandlers:
-    def start(self, update: Update, context: CallbackContext, delete=None):
+    def start(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         if not db_user.language:
-            context.user_data["keyboard_button"] = context.user_data[
-                "tmp_message"
-            ] = user.send_message(
-                "Hello",
+            user.send_message(
+                f"Salom {user.first_name}",
                 reply_markup=ReplyKeyboardMarkup(
                     [
                         ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
@@ -40,19 +32,30 @@ class MainHandlers:
             )
             return LANGUAGE
         elif not db_user.name:
+            text = {
+                "uz": "Ismingizni kiriting",
+                "ru": "Введите ваше имя"
+            }
             user.send_message(
-                "Ismingizni kiriting",
+                text=text[db_user.language],
                 reply_markup=ReplyKeyboardRemove(),
                 parse_mode="HTML",
             )
             return NAME
         elif not db_user.phone:
-            user.send_message(
-                "Tel raqamizni kiriting",
+            text = {
+                "uz": "Telefon raqamizni kiriting",
+                "ru": "Введите свой номер телефона"
+            }
+            send_btn = {
+                "uz": "Yuborish",
+                "ru": "Отправить"
+            }
+            user.send_message(text=text[db_user.language],
                 reply_markup=ReplyKeyboardMarkup(
                     [
                         [
-                            KeyboardButton("Yuborish", request_contact=True),
+                            KeyboardButton(send_btn[db_user.language], request_contact=True),
                         ]
                     ],
                     resize_keyboard=True,
@@ -61,8 +64,11 @@ class MainHandlers:
             )
             return NUMBER
         elif not db_user.region:
-            user.send_message(
-                "Viloyatingizni tanlang",
+            text = {
+                "uz": "Viloyatingizni tanlang",
+                "ru": "Выберите свой регион"
+            }
+            user.send_message(text=text[db_user.language],
                 reply_markup=ReplyKeyboardMarkup(
                     distribute(
                         [
@@ -77,18 +83,34 @@ class MainHandlers:
             )
             return REGION
         if db_user.state == SaleSeller.ACCEPT:
+            seria = {
+                "uz": "Seriya № yuborish",
+                "ru": "Отправить серийный номер"
+            }
+            my_account = {
+                "uz": "Mening hisobim",
+                "ru": "Мой счет"
+            }
+            help_btn = {
+                "uz": "Yordam",
+                "ru": "Помощь"
+            }
             button = [
-                [KeyboardButton("CashBack olish")],
-                [KeyboardButton("Mening hisobim"), KeyboardButton("Yordam")],
+                [KeyboardButton(seria[db_user.language])],
+                [KeyboardButton(my_account[db_user.language]), KeyboardButton(help_btn[db_user.language])],
             ]
             user.send_message(
-                "menu",
+                "Menu",
                 reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
                 parse_mode="HTML",
             )
             return MENU
         elif db_user.state == SaleSeller.WAITING:
-            button = [[KeyboardButton("Yordam")]]
+            help_btn = {
+                "uz": "Yordam",
+                "ru": "Помощь"
+            }
+            button = [[KeyboardButton(help_btn[db_user.language])]]
             user.send_message(
                 "Kuting",
                 reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
@@ -96,14 +118,21 @@ class MainHandlers:
             )
             return MENU
         elif db_user.state == SaleSeller.CANCELED:
-            button = [[KeyboardButton("Yordam")]]
+            help_btn = {
+                "uz": "Yordam",
+                "ru": "Помощь"
+            }
+            button = [[KeyboardButton(help_btn[db_user.language])]]
+            text = {
+                "uz": "Sizning so'rovingiz bekor qilingan",
+                "ru": "Ваш запрос отменен"
+            }
             user.send_message(
-                "Bekor qilindingiz",
+                text=text[db_user.language],
                 reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
             )
             return MENU
 
-    @delete_tmp_message
     def language(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         lang = (
@@ -114,15 +143,18 @@ class MainHandlers:
         db_user.set_language(lang)
 
         if db_user.language:
-            user.send_message(
-                "Ismingizni kiriting",
+            text = {
+                "uz": "Ismingizni kiriting",
+                "ru": "Введите ваше имя"
+            }
+            user.send_message(text=text[db_user.language],
                 reply_markup=ReplyKeyboardRemove(),
                 parse_mode="HTML",
             )
             return NAME
         else:
             user.send_message(
-                "language_not_found",
+                "Til Topilmadi",
                 reply_markup=ReplyKeyboardMarkup(
                     [
                         ["🇺🇿 O'zbekcha", "🇷🇺 Русский"],
@@ -133,18 +165,25 @@ class MainHandlers:
             )
             return LANGUAGE
 
-    # @delete_tmp_message
     def name(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         name = update.message.text
         db_user.set_name(name)
 
-        user.send_message(
-            "Tel raqamizni kiriting",
+        text = {
+                "uz": "Telefon raqamizni kiriting",
+                "ru": "Введите свой номер телефона"
+            }
+        send_btn = {
+                "uz": "Yuborish",
+                "ru": "Отправить"
+            }
+
+        user.send_message(text=text[db_user.language],
             reply_markup=ReplyKeyboardMarkup(
                 [
                     [
-                        KeyboardButton("Yuborish", request_contact=True),
+                        KeyboardButton(send_btn[db_user.language], request_contact=True),
                     ]
                 ],
                 resize_keyboard=True,
@@ -153,7 +192,6 @@ class MainHandlers:
         )
         return NUMBER
 
-    # @delete_tmp_message
     def number(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         phone = None
@@ -163,8 +201,11 @@ class MainHandlers:
             phone = update.message.contact.phone_number
         db_user.set_phone(phone)
         db_user.save()
-        user.send_message(
-            "Viloyatingizni tanlang",
+        text = {
+                "uz": "Viloyatingizni tanlang",
+                "ru": "Выберите свой регион"
+            }
+        user.send_message(text=text[db_user.language],
             reply_markup=ReplyKeyboardMarkup(
                 distribute(
                     [region.name(db_user.language) for region in Regions.objects.all()],
@@ -175,27 +216,34 @@ class MainHandlers:
             parse_mode="HTML",
         )
         return REGION
-
-    @delete_tmp_message
     def region(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         msg = update.message.text
         region = Regions.objects.filter(
             **{"uz_data" if db_user.language == "uz" else "ru_data": msg}
         )
-        print(msg)
         if region.exists():
+            help_btn = {
+                "uz": "Yordam",
+                "ru": "Помощь"
+            }
+            text = {
+                "uz": "Tasdiqlanishingiz kutilmoqda",
+                "ru": "Ваше подтверждение ожидает"
+            }
             db_user.set_region(region.first())
-            button = [[KeyboardButton("Yordam")]]
-            user.send_message(
-                "Tasdiqlanishingiz kutilmoqda",
+            button = [[KeyboardButton(help_btn[db_user.language])]]
+            user.send_message(text=text[db_user.language],
                 reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
             )
             return MENU
 
         else:
-            user.send_message(
-                "Viloyat topilmadi",
+            text = {
+                "uz": "Viloyat topilmadi",
+                "ru": "Регион не найден"
+            }
+            user.send_message(text=text[db_user.language],
                 reply_markup=ReplyKeyboardMarkup(
                     distribute(
                         [
@@ -221,19 +269,32 @@ class MainHandlers:
             )
         )
         seria = context.user_data.get("seria", None)
-        print(seria)
         seria.is_used = True
         seria.seller = db_user
-        db_user.account += seria.cashback
         seria.save()
         db_user.save()
         cashback = Cashback.objects.create(photo=photo.name.replace("./media/", ''), seria=seria)
+        help_btn = {
+                "uz": "Yordam",
+                "ru": "Помощь"
+            }
+        seria = {
+                "uz": "Seriya № yuborish",
+                "ru": "Отправить серийный номер"
+            }
+        my_account = {
+                "uz": "Mening hisobim",
+                "ru": "Мой счет"
+            }
         button = [
-            [KeyboardButton("CashBack olish")],
-            [KeyboardButton("Mening hisobim"), KeyboardButton("Yordam")],
+            [KeyboardButton(seria[db_user.language])],
+            [KeyboardButton(my_account[db_user.language]), KeyboardButton(help_btn[db_user.language])],
         ]
-        update.message.reply_html(
-            f"Tabriklaymiz hizobingizga ${cashback.seria.cashback} cashback tushirildi",
+        text = {
+            "uz":f"Tabriklaymiz hizobingizga ${cashback.seria.cashback} cashback tushirildi",
+            "ru": f"Поздравляем, кешбэк ${cashback.seria.cashback} добавлен на ваш счет."
+        }
+        update.message.reply_html(text=text[db_user.language],
             reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
         )
 
