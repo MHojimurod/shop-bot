@@ -142,8 +142,8 @@ class Bot(Updater, MainHandlers):
     def help(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         text = {
-            "uz": "Hurmatli sotuvchi sizda ushbu aksiya bo'yicha murojaatlaringiz bo'lsa quydagi manzilarga etishingiz mumkin:\n\n☎️ +998557020020\nIsh vaqti: Dush-Shanba 8:00-18:00",
-            "ru": "Уважаемый продавец, если у вас есть вопросы по данной акции, вы можете обращаться по следующим адресам:\n\n☎️ +998557020020\nРежим работы: Пн-Сб 8:00-18:00"
+            "uz": "Hurmatli sotuvchi sizda ushbu aksiya bo'yicha murojaatlaringiz bo'lsa quydagi manzilarga etishingiz mumkin:\n\n☎️ +998557040020\nIsh vaqti: Dush-Shanba 8:00-18:00",
+            "ru": "Уважаемый продавец, если у вас есть вопросы по данной акции, вы можете обращаться по следующим адресам:\n\n☎️ +998557040020\nРежим работы: Пн-Сб 8:00-18:00"
         }
         button = {
             "uz": "Telegram orqali",
