@@ -75,7 +75,7 @@ class SerialNumbers(models.Model):
     seller = models.ForeignKey(SaleSeller, on_delete=models.SET_NULL, null=True, blank=True)
     used_time = models.DateTimeField(null=True, blank=True)
     def __str__(self):
-        return f"{self.code} | {self.cashback} {self.is_used} | {self.seller}"
+        return f"{self.code} | {self.cashback} {self.is_used}"
     
 class CashOrder(models.Model):
     WAITING = 1
