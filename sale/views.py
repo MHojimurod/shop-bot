@@ -127,7 +127,6 @@ def update_cashback(request,pk, state):
     return redirect("wait_cashback")
 
 
-@login_required_decorator
 def send_message(chat_id, message):
     try:
         # bot = Updater("6525921476:AAHn9ocU5-ik7TMuFScvpAw6BAlJwrpywkI")
