@@ -16,6 +16,9 @@ class SaleSeller(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     account = models.BigIntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
     def set_language(self, language):
         self.language = language
         self.save()
@@ -72,7 +75,7 @@ class SerialNumbers(models.Model):
     seller = models.ForeignKey(SaleSeller, on_delete=models.SET_NULL, null=True, blank=True)
     used_time = models.DateTimeField(null=True, blank=True)
     def __str__(self):
-        return f"{self.code} | {self.cashback}"
+        return f"{self.code} | {self.cashback} {self.is_used} | {self.seller}"
     
 class CashOrder(models.Model):
     WAITING = 1
@@ -85,6 +88,9 @@ class CashOrder(models.Model):
     state = models.SmallIntegerField(default=WAITING)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.seller.name} | {self.state}"
+
 
 class Cashback(models.Model):
     WAITING = 1
@@ -94,3 +100,6 @@ class Cashback(models.Model):
     seria = models.ForeignKey(SerialNumbers, on_delete=models.CASCADE, related_name="serialnumber")
     state = models.SmallIntegerField(default=WAITING)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.seria.code} | {self.seria.seller.name} | {self.state}"
