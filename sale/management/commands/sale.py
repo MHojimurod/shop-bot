@@ -270,6 +270,32 @@ class Bot(Updater, MainHandlers):
         msg = update.message.text
         card_number = context.user_data.get("card", None)
         card = Card.objects.filter(seller=db_user, card_number=card_number).last()
+        if db_user.account < 5:
+            help_btn = {
+                "uz": "Yordam",
+                "ru": "Помощь"
+            }
+            seria = {
+                    "uz": "Seriya № yuborish",
+                    "ru": "Отправить серийный номер"
+                }
+            my_account = {
+                    "uz": "Mening hisobim",
+                    "ru": "Мой счет"
+                }
+            button = [
+                [KeyboardButton(seria[db_user.language])],
+                [KeyboardButton(my_account[db_user.language]), KeyboardButton(help_btn[db_user.language])],
+            ]
+            text = {
+                "uz": "To'lovga tasdiqlangan summa $5 yoki undan ko'proq bo'lishi kerak",
+                "ru": "Подтвержденный платеж должен составлять не менее $5"
+            }
+            update.message.reply_html(text=text[db_user.language],
+                reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
+            )
+            return MENU
+            
         if not card:
             card = Card.objects.create(
                 card_number=card_number, holder_name=msg, seller=db_user

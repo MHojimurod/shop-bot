@@ -1,13 +1,21 @@
+from datetime import datetime
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 import requests
 from telegram.ext import Updater
-from sale.models import CashOrder, SaleSeller, Card, Cashback
+from admin_panel.views import login_required_decorator
+from sale.models import CashOrder, SaleSeller, Card, Cashback, SerialNumbers
+import xlsxwriter
 
+
+@login_required_decorator
 def cash_orders(request):
     orders = CashOrder.objects.order_by("-id").all()
     return render(request, 'dashboard/sale/cash_orders.html', {'orders': orders, "e_o": "active"})
 
+
+@login_required_decorator
 def update_cash_order(request,pk, state):
     order = CashOrder.objects.get(pk=pk)
     order.state = state
@@ -31,6 +39,7 @@ def update_cash_order(request,pk, state):
     
 
 
+@login_required_decorator
 def sale_seller(request):
     seller = SaleSeller.objects.order_by("-id").exclude(state=0).all()
     ctx ={
@@ -40,6 +49,8 @@ def sale_seller(request):
     return render(request, 'dashboard/sale/seller.html',ctx)
 
 
+
+@login_required_decorator
 def update_sale_seller(request, pk, state):
     seller = SaleSeller.objects.get(pk=pk)
     seller.state = state
@@ -59,6 +70,8 @@ def update_sale_seller(request, pk, state):
 
     return redirect("sale_seller")
 
+
+@login_required_decorator
 def wait_cashback(request):
     wait = Cashback.objects.order_by("-id").filter(state=1)
     ctx = {
@@ -67,6 +80,8 @@ def wait_cashback(request):
     }
     return render(request, 'dashboard/sale/cashback_wait.html', ctx)
 
+
+@login_required_decorator
 def accept_cashback(request):
     accept = Cashback.objects.order_by("-id").filter(state=2)
     ctx = {
@@ -75,6 +90,8 @@ def accept_cashback(request):
     }
     return render(request, 'dashboard/sale/cashback_accept.html', ctx)
 
+
+@login_required_decorator
 def reject_cashback(request):
     reject = Cashback.objects.order_by("-id").filter(state=3)
     ctx = {
@@ -83,6 +100,8 @@ def reject_cashback(request):
     }
     return render(request, 'dashboard/sale/cashback_reject.html', ctx)
 
+
+@login_required_decorator
 def update_cashback(request,pk, state):
     cashback = Cashback.objects.get(pk=pk)
     cashback.state = state
@@ -108,7 +127,7 @@ def update_cashback(request,pk, state):
     return redirect("wait_cashback")
 
 
-
+@login_required_decorator
 def send_message(chat_id, message):
     try:
         # bot = Updater("6525921476:AAHn9ocU5-ik7TMuFScvpAw6BAlJwrpywkI")
@@ -118,3 +137,33 @@ def send_message(chat_id, message):
 
     except:
         print("not send message")
+
+
+@login_required_decorator
+def sale_statistics(request,pk):
+    seller = SaleSeller.objects.get(pk=pk)
+    numbers = SerialNumbers.objects.order_by("-id").filter(seller=seller)
+        
+    workbook: xlsxwriter.Workbook = xlsxwriter.Workbook(f"media/{datetime.now().date()}.xlsx")
+    worksheet = workbook.add_worksheet()
+    worksheet.write(f'A1', f"Sotuvchi")
+    worksheet.write(f'B1', f"{seller.name}")
+    worksheet.write(f'A3', f"№")
+    worksheet.write(f'B3', f"Sana")
+    worksheet.write(f'C3', f"Seria nomer")
+    worksheet.write(f'D3', f"Cashback")
+    count = 4
+    forloop = 1
+    for i in numbers:
+        worksheet.write(f'A{count}', f"{forloop}")
+        worksheet.write(f'B{count}', f"{i.used_time.strftime('%d-%m-%Y') if i.used_time else ''}")
+        worksheet.write(f'C{count}', f"{i.code}")
+        worksheet.write(f'D{count}', f"{i.cashback}")
+
+        count += 1
+        forloop += 1
+    workbook.close()
+    response = HttpResponse(open(workbook.filename, "rb"),
+                            content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename={}'.format(f"{datetime.now().date()}.xlsx")
+    return response

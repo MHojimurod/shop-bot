@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import uuid4
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
@@ -271,6 +272,7 @@ class MainHandlers:
         seria = context.user_data.get("seria", None)
         seria.is_used = True
         seria.seller = db_user
+        seria.used_time = datetime.now().date()
         seria.save()
         db_user.save()
         cashback = Cashback.objects.create(photo=photo.name.replace("./media/", ''), seria=seria)

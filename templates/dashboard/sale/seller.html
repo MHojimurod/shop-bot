@@ -67,7 +67,7 @@
                 {% for i in seller %}
                 <tr>
                   <td>{{i.id}}</td>
-                  <td><a href="">{{i.name}}</a></td>
+                  <td><a href="{% url 'statistics' i.id %}">{{i.name}}</a></td>
                   <td><a href="tel:{{i.number}}">{{i.phone}}</a></td>
                   <td>{{i.region.ru_data}}</td>
                   <td>$ {{i.account}}</td>
