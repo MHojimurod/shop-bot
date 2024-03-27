@@ -19,7 +19,7 @@ class MainHandlers:
                 try:
                     context.user_data['tmp_message'].delete()
                 except:pass
-        
+
         context.user_data['register'] = {
             "chat_id": user.id,
         }
@@ -46,14 +46,14 @@ class MainHandlers:
                 user.send_message(i18n(
                 "block", db_user.language), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
                 return MENU
-                
+
             else:
                 user.send_message(i18n(
                 "not_access", db_user.language), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
                 return MENU
-                
 
-        
+
+
 
 
     @delete_tmp_message
@@ -144,6 +144,8 @@ class MainHandlers:
                 ], 2), resize_keyboard=True
             ), parse_mode="HTML")
             return DISTRICT
+
+
     @delete_tmp_message
     def shop(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
@@ -152,10 +154,11 @@ class MainHandlers:
         context.user_data['tmp_message'] = user.send_message(
             i18n('shop_passport_photo', lang))
         return SHOP_PASSPORT_PHOTO
-    
+
     @delete_tmp_message
     def shop_location(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
+        print("Salom")
         lang = context.user_data['register']['language']
         context.user_data['register']['shop_location'] = {
             "latitude":update.message.location.latitude,
@@ -166,18 +169,18 @@ class MainHandlers:
         context.user_data['tmp_message'] = user.send_message(
             (i18n("passport_photo", lang)))
         return PASSPORT_PHOTO
-    
+
     @delete_tmp_message
     def passport_photo(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         lang = context.user_data['register']['language']
-        
+
         context.user_data['register']['passport_photo'] = ImageFile(
             open(update.message.photo[-1].get_file().download(f"./media/passport_photo/{str(uuid4())}.jpg"), 'rb'))
         context.user_data['tmp_message'] = user.send_message(i18n(
             "shop_name", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         return SHOP
-    
+
     @delete_tmp_message
     def shop_passport_photo(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
@@ -186,7 +189,7 @@ class MainHandlers:
             open(update.message.photo[-1].get_file().download(f"./media/passport_photo/{str(uuid4())}.jpg"), 'rb'))
         dillers = Diller.objects.filter(status=1)
         keyboard = [KeyboardButton(i.name) for i in dillers]
-        
+
         user.send_message(i18n(
             "dillers_choice", lang), reply_markup=ReplyKeyboardMarkup(distribute(keyboard,3),resize_keyboard=True), parse_mode="HTML")
         context.user_data["dillers"] = []
@@ -203,12 +206,14 @@ class MainHandlers:
             user.send_message(i18n(
             "wait_accept", lang), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return MENU
+
+
         diller = Diller.objects.filter(name=msg)
         if not diller:
             user.send_message(i18n(
             "diller_not_found", lang), parse_mode="HTML")
             return DILLERS_CHOICE
-        
+
         context.user_data["dillers"].append(diller.first())
         dillers = Diller.objects.filter(status=1)
         keyboard =[KeyboardButton(i18n("next", lang))]

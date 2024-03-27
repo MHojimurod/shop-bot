@@ -1,0 +1,83 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Маҳсулотни таҳрирлаш</h1> <!-- Changed heading to "Edit Product" -->
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Маҳсулотни таҳрирлаш</li> <!-- Adjusted breadcrumb -->
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+              <!-- Adjust form action to submit to the edit URL, passing the instance ID -->
+              <form method="post" action="{% url 'promocodes-edit' pk=form.instance.pk %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <!-- Assuming 'pk' field or a hidden field for identifying the record is no longer necessary
+                       since the form action URL already includes the object's ID.
+                       If still needed for other purposes, ensure it's correctly handled in the view. -->
+
+                <div class="row">
+                  <!-- Rendered form fields remain unchanged -->
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Diller</label><br>
+                        {{form.diller}}
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Mashina</label><br>
+                        {{form.car}}
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Joylashuv</label><br>
+                        {{form.order}}
+                      </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Seria</label><br>
+                        {{form.seria}}
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label>Harf</label><br>
+                        {{form.letter}}
+                    </div>
+                  </div>
+                   <div class="col-4">
+                    <div class="form-group">
+                      <label>Kod</label><br>
+                        {{form.code}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ml-3">
+                  <!-- Adjusted button label to reflect "Save" rather than "Add" -->
+                  <button type="submit" class="btn col-sm-1 btn-primary">Сақлаш</button>
+                  <button type="button" onclick="history.back()" class="btn col-sm-1 btn-secondary">
+                    Ортга
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

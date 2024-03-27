@@ -1,0 +1,160 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load currency %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>{{category.name_uz}}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Promocodlar</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+          {% endif %}
+          <div class="card-header">
+            <h3 class="card-title">{{category.name_uz}}</h2>
+
+
+              <div class="card-tools">
+                <a href="{% url 'promocode-create' %}">
+                  <div class="btn btn-block btn-success">Қўшиш</div>
+                </a>
+              </div>
+              <div class="card-tools mr-2">
+                <a href="/">
+                  <div class="btn btn-block btn-primary ">Ортга</div>
+                </a>
+              </div>
+              <div class="card-tools mr-2">
+                <!-- New Button Here -->
+                <button type="button" class="btn btn-block btn-primary" data-toggle="modal"
+                  data-target="#uploadXlsxModal">
+                  Xlsx орқали қўшиш
+                </button>
+              </div>
+          </div>
+
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Car</th>
+                  <th>Letter</th>
+                  <th>Order</th>
+                  <th>Diller</th>
+                  <th>Code</th>
+                  <th>SERIA</th>
+                  <th><i class="far fa-edit"></i></th>
+                  <th><i class="fas fa-trash-alt"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in promocodes %}
+
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.car.name }}</td>
+                  <td>{{ i.letter }}</td>
+                  <td>{{ i.order }}</td>
+                  <td>{{ i.diller.name }}</td>
+                  <td>{{ i.code }}</td>
+                  <td>{{ i.seria }}</td>
+
+                  <td><a style="color: #17a2b8;" href="{% url 'promocodes-edit' i.id  %}">
+                      <div><i class="far fa-edit"></i></div>
+                    </a></td>
+                  <td><a style="color: #dc3545;" href="{% url 'promocodes-delete' i.id %}">
+                      <div><i class="fas fa-trash-alt"></i></div>
+                    </a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+          <!-- Pagination Controls -->
+          <div class="card-footer clearfix">
+            <ul class="pagination pagination-sm m-0 float-right">
+              {% if promocodes.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ promocodes.previous_page_number }}">&laquo;</a></li>
+              {% endif %}
+
+              {% if promocodes.number|add:'-4' > 1 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+              {% endif %}
+
+              {% for number in promocodes.paginator.page_range %}
+                {% if number >= promocodes.number|add:'-3' and number <= promocodes.number|add:'3' %}
+                  {% if promocodes.number == number %}
+                    <li class="page-item active"><span class="page-link">{{ number }}</span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ number }}">{{ number }}</a></li>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% if promocodes.number|add:'3' < promocodes.paginator.num_pages %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+              {% endif %}
+
+              {% if promocodes.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ promocodes.next_page_number }}">&raquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ promocodes.paginator.num_pages }}">Last</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- XLSX Upload Modal -->
+<div class="modal fade" id="uploadXlsxModal" tabindex="-1" role="dialog" aria-labelledby="uploadXlsxModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadXlsxModalLabel">Xlsx файл орқали маҳсулот қўшиш</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" enctype="multipart/form-data" action="{% url 'promocode-create-xlsx' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="xlsxFile">Xlsx файлни танланг</label>
+            <input type="file" class="form-control-file" id="xlsxFile" name="xlsxFile" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Бекор қилиш</button>
+          <button type="submit" class="btn btn-primary">Юклаш</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

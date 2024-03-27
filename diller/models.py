@@ -23,13 +23,13 @@ class Diller(models.Model):
     def get_gift(self, gift) -> "OrderGiftDiller":
         return OrderGiftDiller.objects.create(user=self, gift=gift)
 
-    
+
     language:int = models.IntegerField(default=0,choices=((0, 'uz'), (1, 'ru')))
     @property
     def busket(self) -> "Busket":
         b = Busket.objects.filter(diller=self, is_ordered=False).first()
         return b if b is not None else Busket.objects.create(diller=self)
-    
+
     def text(self, name) -> str:
         text = Text.objects.filter(name=name)
         return (text.first().uz_data if self.language == 0 else text.first().ru_data) if text.exists() else ""
@@ -59,7 +59,12 @@ class Diller(models.Model):
     def __str__(self):
         return self.name
 
-        
+
+
+
+
+
+
 
 
 
@@ -89,7 +94,7 @@ class Busket(models.Model):
     @property
     def items(self) -> "List[Busket_item]":
         return Busket_item.objects.filter(busket=self)
-    
+
     def item(self, product:Product) -> "Busket_item":
         return Busket_item.objects.filter(busket=self, product=product).first()
 
@@ -98,7 +103,7 @@ class Busket(models.Model):
         self.ordered_date = datetime.now()
         self.is_ordered = True
         self.save()
-    
+
     def purchase(self) -> int:
         self.is_purchased = True
         balls:int = 0
@@ -117,7 +122,7 @@ class Busket(models.Model):
                 # <= 3 else busket_item.product.diller_nasiya_ball) * busket_item.count
                 res += busket_item.product.diller_ball * busket_item.count
         return res
-    
+
     def ball_by_var(self, var):
         res = 0
         for busket_item in self.items:
@@ -133,7 +138,7 @@ class Busket_item(models.Model):
     active:bool = models.BooleanField(default=True)
     def total_price(self) -> int:
         return self.product.price * self.count
-    
+
     @property
     def ball(self) -> int:
         return self.product.diller_ball * self.count

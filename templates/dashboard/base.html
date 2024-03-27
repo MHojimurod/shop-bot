@@ -20,17 +20,22 @@
   <link rel="stylesheet" href="{% static 'dashboard/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
   <!-- icheck bootstrap -->
   <link rel="stylesheet" href="{% static 'dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>    
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
   {% block style %}{% endblock %}
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
+
+
   <div class="wrapper" style="min-height: 1342.88px;">
 
+
     {% include 'dashboard/navbar.html' %}
+
     <div class="content-wrapper" style="min-height: 1342.88px;">
       {% block content %}{% endblock %}
       <aside class="control-sidebar control-sidebar-dark">
+
         <!-- Control sidebar content goes here -->
       </aside>
     </div>
@@ -48,6 +53,8 @@
 <script src="{% static 'dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dashboard/js/adminlte.js' %}"></script>
+
+
 
 {% block javascript %}{% endblock %}
 </body>

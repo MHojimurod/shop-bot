@@ -10,6 +10,9 @@ def run_diller():
     os.system("python manage.py diller")
 def run_seller():
     os.system("python manage.py seller")
+
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         threading.Thread(target=run_diller).start()

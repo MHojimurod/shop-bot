@@ -74,6 +74,7 @@ class Bot(Updater, MainHandlers):
                 REGION: [
                     MessageHandler(Filters.text & not_start, self.region),
                 ],
+
                 ACCOUNT: [
                     MessageHandler(
                         Filters.regex("^(Kartaga chiqarish|Выпуск на карту)"), self.transfer
@@ -93,16 +94,18 @@ class Bot(Updater, MainHandlers):
                     MessageHandler(Filters.photo & not_start, self.cashback_photo),
                 ],
                 MENU: [
+                    
                     MessageHandler(Filters.regex("^(Yordam|Помощь)"), self.help),
                     MessageHandler(Filters.regex("^(Seriya № yuborish|Отправить серийный номер)"), self.cashback),
                     MessageHandler(Filters.regex("^(Mening hisobim|Мой счет)"), self.my_account),
+
                     CommandHandler("language", self.change_language),
                 ],
                 CASHBACK: [
                     MessageHandler(Filters.regex("^(Ortga|Назад)"), self.start),
                     MessageHandler(Filters.text & not_start, self.check_cashback),
                 ]
-                
+
             },
             fallbacks=[
                 CommandHandler("start", self.start),
@@ -205,7 +208,7 @@ class Bot(Updater, MainHandlers):
         text += f"Umumiy cashback summasi: ${db_user.total_sum}\n\n"
         text += f"To'langan: ${db_user.payed_sum}\n\n"
         text += f"Kutilyotgan: ${db_user.waiting_sum}\n\n"
-        text += f"To'lovga tasdiqlangan: ${db_user.account}" 
+        text += f"To'lovga tasdiqlangan: ${db_user.account}"
         button = []
         if db_user.account >= 5:
             button_text = {
@@ -295,7 +298,7 @@ class Bot(Updater, MainHandlers):
                 reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
             )
             return MENU
-            
+
         if not card:
             card = Card.objects.create(
                 card_number=card_number, holder_name=msg, seller=db_user

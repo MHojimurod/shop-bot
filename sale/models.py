@@ -1,5 +1,9 @@
+from typing import TYPE_CHECKING
 from django.db import models
 from seller.models import Regions
+if TYPE_CHECKING:
+    from diller.models import Diller
+
 
 
 class SaleSeller(models.Model):
@@ -16,6 +20,21 @@ class SaleSeller(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     account = models.BigIntegerField(default=0)
 
+
+
+    ################################
+    #          KOMILJONOV          #
+    ################################
+
+
+    diller: "Diller | None" = models.ForeignKey("diller.Diller",on_delete=models.SET_NULL, null=True,blank=True,related_name="sale_sellers")
+
+
+
+
+    ################################
+    #        KOMILJONOV END        #
+    ################################
     def __str__(self):
         return self.name
 
@@ -43,7 +62,7 @@ class SaleSeller(models.Model):
         for i in order:
             price+= i.seria.cashback
         return price
-    
+
     @property
     def payed_sum(self):
         order = CashOrder.objects.exclude(state=3).filter(seller=self)
@@ -76,7 +95,7 @@ class SerialNumbers(models.Model):
     used_time = models.DateTimeField(null=True, blank=True)
     # def __str__(self):
     #     return f"{self.code} | {self.is_used}"
-    
+
 class CashOrder(models.Model):
     WAITING = 1
     ACCEPTED = 2
@@ -103,3 +122,50 @@ class Cashback(models.Model):
 
     def __str__(self):
         return f"{self.seria.code} | {self.seria.seller.name} | {self.state}"
+
+
+
+
+
+
+
+
+
+
+
+################################
+#          KOMILJONOV          #
+################################
+
+
+class Car(models.Model):
+    name = models.CharField(max_length=255)
+    name_ru = models.CharField(max_length=255)
+
+
+    def __str__(self) -> str:
+        return self.name
+
+
+
+
+
+class PromoCode(models.Model):
+    diller: "Diller" = models.ForeignKey("diller.Diller",on_delete=models.SET_NULL,null=True,blank=True)
+
+    car:Car = models.ForeignKey(Car, on_delete=models.SET_NULL,null=True,blank=True)
+
+    order = models.IntegerField(default=1)
+
+    seria = models.CharField(max_length=255)
+    letter = models.CharField(max_length=255)
+
+    code = models.IntegerField()
+
+
+
+
+
+################################
+#        KOMILJONOV END        #
+################################

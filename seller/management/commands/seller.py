@@ -27,7 +27,8 @@ from .constant import (
     BALL,
     CARD,
     PASSPORT_PHOTO,
-    SHOP_PASSPORT_PHOTO
+    SHOP_PASSPORT_PHOTO,
+    SHOP_LOCATION
 )
 
 
@@ -56,18 +57,20 @@ class Bot(Updater,MainHandlers):
                 NUMBER: [MessageHandler(Filters.contact & not_start, self.number), MessageHandler(Filters.all & not_start, self.invalid_number)],
                 REGION: [MessageHandler(Filters.text & not_start, self.region), MessageHandler(Filters.all & not_start, self.incorrect_region)],
                 DISTRICT: [MessageHandler(Filters.text & not_start, self.district), MessageHandler(Filters.all & not_start, self.incorrect_district)],
-                CARD: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
+
+
+                SHOP_LOCATION: [MessageHandler(Filters.location & not_start, self.shop_location), MessageHandler(Filters.all & not_start, self.incorrect_shop_location)],
                 PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.passport_photo), MessageHandler(Filters.all & not_start, self.invalid_passport_photo)],
                 SHOP: [MessageHandler(Filters.text, self.shop)],
                 SHOP_PASSPORT_PHOTO: [MessageHandler(Filters.photo & not_start, self.shop_passport_photo), MessageHandler(Filters.all & not_start, self.invalid_shop_passport_photo)],
-                
+
                 MENU: [
                     MessageHandler(Filters.regex("^(Kvitansiya|Квитанция)"), self.cvitation),
                     MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls),
                     MessageHandler(Filters.regex("^(Reyting|Рейтинг)"), self.score),
                     CommandHandler('language', self.change_language),
                     CallbackQueryHandler(self.top_40, pattern="top_40")
-                    
+
                 ],
                 CVI_PHOTO: [MessageHandler(Filters.photo, self.cvi_photo), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), ],
                 CVI_SERIAL_NUMBER: [MessageHandler(Filters.text & not_start, self.cvi_serial_number), MessageHandler(Filters.regex("^(Kvitansiya|Kvitansiya)"), self.cvitation), MessageHandler(Filters.regex("^(Mening ballarim|Мои баллы)"), self.my_balls), ],
@@ -93,7 +96,7 @@ class Bot(Updater,MainHandlers):
                      methods=['POST', 'GET'])(self.reject_ball)
         server.route('/seller_status',
                      methods=['POST', 'GET'])(self.user_state_update)
-        
+
 
         server.run("127.0.0.1", port=6003)
         self.idle()
@@ -124,19 +127,19 @@ class Bot(Updater,MainHandlers):
             seller.delete()
             return 'ok'
         return 'error'
-        
-        
+
+
     @delete_tmp_message
     def cvitation(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         if db_user.status == 2:
             user.send_message(i18n("block",db_user.language))
             return MENU
-            
+
         context.user_data['tmp_message'] = user.send_message(
             i18n("send_cvitation",db_user.language))
         return CVI_PHOTO
-    
+
     def cvi_photo(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         img = update.message.photo[-1].get_file().download(f"./media/cvitations/{str(uuid4())}.jpg")
@@ -144,7 +147,7 @@ class Bot(Updater,MainHandlers):
         context.user_data['tmp_message'] = user.send_message(
             i18n("send_cvi_serial_number",db_user.language), reply_markup=ReplyKeyboardRemove())
         return CVI_SERIAL_NUMBER
-    
+
     def cvi_serial_number(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         product = BaseProduct.objects.filter(serial_number=update.message.text,seller=db_user)
@@ -182,7 +185,7 @@ class Bot(Updater,MainHandlers):
                     pass
             context.user_data['tmp_message'] = user.send_message(db_user.text("seria_not_found"))
         return CVI_SERIAL_NUMBER
-    
+
     def my_balls(self, update:Update, context:CallbackContext):
         user, db_user= get_user(update)
         if update.message:
@@ -205,7 +208,7 @@ class Bot(Updater,MainHandlers):
             else:
                 update.callback_query.message.edit_text(**balls_keyboard_pagination(db_user, 1), parse_mode="HTML")
                 return BALL
-    
+
     def select_gift(self, update:Update, context:CallbackContext):
         user, db_user = get_user(update)
         data = update.callback_query.data.split(":")
@@ -233,7 +236,7 @@ class Bot(Updater,MainHandlers):
                 return self.start(update, context, False)
             else:
                 return self.my_balls(update, context)
-    
+
     @delete_tmp_message
     def change_language(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
@@ -264,7 +267,7 @@ class Bot(Updater,MainHandlers):
                 ], resize_keyboard=True
             ), parse_mode="HTML")
             return SELECT_NEW_LANGUAGE
-    
+
 
 
 
@@ -338,7 +341,7 @@ class Bot(Updater,MainHandlers):
         workbook.close()
         context.bot.send_document(chat_id=user.id,document=open("media/top-40.xlsx","rb"))
 
-            
+
 
 
     @delete_tmp_message
