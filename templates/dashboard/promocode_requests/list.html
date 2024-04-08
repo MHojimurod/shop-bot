@@ -1,21 +1,10 @@
 {% extends 'dashboard/base.html' %} {% load static %} {% load currency %} {% block style %}
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
-/>
+<link rel="stylesheet" href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}" />
 <!-- DataTables -->
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"
-/>
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"
-/>
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}"
-/>
+<link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}" />
+<link rel="stylesheet"
+  href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}" />
+<link rel="stylesheet" href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}" />
 <!-- Theme style -->
 <link rel="stylesheet" href="{% static 'dashboard/css/adminlte.min.css' %}" />
 {% endblock %} {% block content %}
@@ -23,12 +12,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Promocodes</h1>
+        <h1>So'rovlar</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
-          <li class="breadcrumb-item active">Promocodes</li>
+          <li class="breadcrumb-item active">So'rovlar</li>
         </ol>
       </div>
     </div>
@@ -51,28 +40,6 @@
           </div>
           {% endfor %}
           {% endif %}
-          <div class="card-header">
-            <h3 class="card-title">{{category.name_uz}}</h2>
-
-
-              <div class="card-tools">
-                <a href="{% url 'promocode-create' %}">
-                  <div class="btn btn-block btn-success">Қўшиш</div>
-                </a>
-              </div>
-              <div class="card-tools mr-2">
-                <a href="/">
-                  <div class="btn btn-block btn-primary ">Ортга</div>
-                </a>
-              </div>
-              <div class="card-tools mr-2">
-                <!-- New Button Here -->
-                <button type="button" class="btn btn-block btn-primary" data-toggle="modal"
-                  data-target="#uploadXlsxModal">
-                  Xlsx орқали қўшиш
-                </button>
-              </div>
-          </div>
 
 
           <div class="card-body table-responsive p-0">
@@ -80,38 +47,93 @@
               <thead>
                 <tr>
                   <th>№</th>
+                  <th>Seller</th>
+                  <th>Promocode</th>
+                  <th>Seria</th>
                   <th>Car</th>
                   <th>Letter</th>
-                  <th>Order</th>
-                  <th>Diller</th>
-                  <th>Sotuvchi</th>
-                  <th>Code</th>
-                  <th>SERIA</th>
+                  <th>Time</th>
+                  <th>Image</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                  <!-- <th>Tasdiqlash/Rad etish</th> -->
+
+                  <!-- <th>Edit</th> -->
+
                   <th><i class="far fa-edit"></i></th>
                   <th><i class="fas fa-trash-alt"></i></th>
                 </tr>
               </thead>
               <tbody>
-                {% for i in promocodes %}
+                {% for i in requests %}
 
                 <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ i.car.name }}</td>
-                  <td>{{ i.letter }}</td>
-                  <td>{{ i.order }}</td>
-                  <td>{{ i.diller.name }}</td>
+                  <td><a href="{% url 'promocode-request-edit' i.id %}">{{ forloop.counter }}</a></td>
                   <td>{{ i.seller.name }}</td>
-                  <td>{{ i.code }}</td>
-                  <td>{{ i.seria }}</td>
+                  <td>{{ i.promo.code }}</td>
+                  <td>{{ i.promo.seria }}</td>
+                  <td>{{ i.promo.car.name }}</td>
+                  <td>{{ i.promo.letter }} {{i.promo.order}}</td>
+                  <!-- <td>{{ i.get_status_display }}</td> -->
+                  <td>{{ i.created_at }}</td>
+                  <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal">
+                      View Image
+                    </button></td>
 
-                  <td><a style="color: #17a2b8;" href="{% url 'promocodes-edit' i.id  %}">
+
+                  {% if i.status == 1 %}
+                  <td><span class="badge badge-warning">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a href="{% url 'promocode-request-accept' pk=i.pk %}" class="btn btn-xs btn-success"><i
+                        class="p-1 fas fa-check-circle"></i></a>
+                    <a href="{% url 'promocode-request-reject' pk=i.pk %}" class="btn btn-xs btn-danger"><i
+                        class="p-1 fas fa-times-circle"></i></a>
+                  </td>
+                  {% elif i.status == 2 %}
+                  <td><span class="badge badge-success">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"><i class="p-1 fas fa-check-circle"></i></a>
+                    <a class="btn btn-xs btn-secondary disabled"><i class="p-1 fas fa-times-circle"></i></a>
+                  </td>
+                  {% else %}
+                  <td><span class="badge badge-danger">{{i.get_status_display}}</span></td>
+                  <td>
+                    <a class="btn btn-xs btn-secondary disabled"><i class="p-1 fas fa-check-circle"></i></a>
+                    <a class="btn btn-xs btn-secondary disabled"><i class="p-1 fas fa-times-circle"></i></a>
+                  </td>
+                  {% endif %}
+
+
+
+                  <td><a style="color: #17a2b8;" href="{% url 'promocode-request-edit' i.id  %}">
                       <div><i class="far fa-edit"></i></div>
                     </a></td>
-                  <td><a style="color: #dc3545;" href="{% url 'promocodes-delete' i.id %}">
+                  <td><a style="color: #dc3545;" href="{% url 'promocode-request-delete' i.id %}">
                       <div><i class="fas fa-trash-alt"></i></div>
                     </a></td>
                 </tr>
+
+                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <img src="{{i.image.url}}" class="img-fluid" alt="Responsive image">
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {% endfor %}
+
               </tbody>
             </table>
           </div>
@@ -149,6 +171,8 @@
   </div>
 </div>
 
+
+
 <!-- Control Sidebar -->
 <!-- <aside class="control-sidebar control-sidebar-dark"> -->
 <!-- Control sidebar content goes here -->
@@ -178,14 +202,14 @@
         lengthChange: false,
         autoWidth: false,
         buttons: ["copy", "csv", "excel", "pdf", "print"],
-        pageLength:50,
+        pageLength: 50,
         deferRender: true,
       })
       .buttons()
       .container()
       .appendTo("#example1_wrapper .col-md-6:eq(0)");
 
-      $("#example2").DataTable({
+    $("#example2").DataTable({
       paging: true,
       lengthChange: false,
       searching: false,

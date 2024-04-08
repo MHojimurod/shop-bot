@@ -1,7 +1,4 @@
-{% extends 'dashboard/base.html' %}
- {% load static %}
- {% load currency %}
- {% block style %}
+{% extends 'dashboard/base.html' %} {% load static %} {% load currency %} {% block style %}
 <link
   rel="stylesheet"
   href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
@@ -26,12 +23,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Сотувчилар</h1>
+        <h1>Диллерлар</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
-          <li class="breadcrumb-item active">Сотувчилар</li>
+          <li class="breadcrumb-item active">Диллерлар</li>
         </ol>
       </div>
     </div>
@@ -47,76 +44,47 @@
         <!-- /.card -->
 
         <div class="card p-2">
+          <div class="card-header">
+            <h3 class="card-title"></h3>
+
+            <div class="card-tools">
+              <a href="{% url 'sale_dillers_create' %}">
+                <div class="btn btn-block btn-success">Қўшиш</div>
+              </a>
+            </div>
+          </div>
           <div class="card-body table-responsive p-0">
-            <table id="example1" class="table table-bordered table-striped" data-page-length="10" data-ordering="true" data-info="false" data-source="false">
+            <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
                   <th>№</th>
-                  <th>ID</th>
                   <th>ФИО</th>
-                  <th>Телефон</th>
-                  <th>Viloyat</th>
-                  <th>Diller</th>
-                  <th>Hisob</th>
-                  <th>Yutuqlar</th>
-                  <th>Ҳолати</th>
-                  <th><i class="p-1 fas fa-check-circle"></i
-                    ></th>
-                  <th><i class="p-1 fas fa-times-circle"></i
-                    ></th>
+                  <!-- <th>Телефон</th> -->
+                  <th>Вилоят</th>
+                  <!-- <th>Туман</th> -->
+                  <th>Stikerlar berilgan</th>
+                  <th>Stikerlar qabul qilindi</th>
+
+                  <th>Ўчириш</th>
                 </tr>
               </thead>
               <tbody>
-                {% for i in seller %}
+                {% for i in dillers %}
                 <tr>
-                  <td><a href="{% url 'seller_edit' i.id %}">{{i.id}}</a></td>
-                  <td><a href="{% url 'statistics' i.id %}">{{i.id}}</a></td>
-                  <td><a href="{% url 'seller_edit' i.id %}">{{i.name}}</a></td>
-                  <td><a href="tel:{{i.number}}">{{i.phone}}</a></td>
+                  <td>{{forloop.counter}}</td>
+                  <td><a href="{% url 'sale_diller_detail' pk=i.id %}">{{i.name}}</td></td>
+                  <!-- <td><a href="tel:{{i.number}}">{{i.number}}</a></td> -->
+
                   <td>{{i.region.ru_data}}</td>
-                  <td>{{i.diller.name}}</td>
-                  <td>$ {{i.account}}</td>
-                  <td><p class="badge badge-info">{{i.gifts_text|upper|safe }}</p></td>
-                  {% if i.state == 1 %}
-                  <td><span class="badge badge-warning">Kutilmoqda</span></td>
-                  <td>
-                    <a href="{% url 'update_sale_seller' pk=i.pk state=2 %}" class="btn btn-xs btn-success"
-                    ><i class="p-1 fas fa-check-circle"></i
-                      ></a>
-                    </td>
-                  <td>
-                    <a href="{% url 'update_sale_seller' pk=i.pk state=3 %}" class="btn btn-xs btn-danger"
-                    ><i class="p-1 fas fa-times-circle"></i
-                      ></a>
-                    </td>
-
-                    {% elif i.state == 2 %}
-                  <td><span class="badge badge-success">Qabul qilingan</span></td>
+                  <!-- <td>{{i.district.ru_data}}</td> -->
+                  <!-- <td>{{i.get_language_display}}</td> -->
+                  <td>{{ i.got_promos }}</td>
+                  <td>{{ i.used_promos }}</td>
 
                   <td>
-                    <a class="btn btn-xs btn-success disabled"
-                    ><i class="p-1 fas fa-check-circle"></i></a>
-                  </td>
-                  <td>
-                    <a class="btn btn-xs btn-danger disabled"
+                    <a href="{% url 'sale_diller_delete' i.pk %}" class="btn btn-xs btn-danger"
                       ><i class="p-1 far fa-trash-alt"></i></a>
                   </td>
-                  {% elif i.state == 3 %}
-                  <td><span class="badge badge-danger">Bekor qilindi</span></td>
-
-                  <td>
-                    <a  class="btn btn-xs btn-success disabled"
-                      ><i class="p-1 fas fa-check-circle"></i
-                    ></a>
-                  </td>
-                  <td>
-                    <a  class="btn btn-xs btn-danger disabled"
-                      ><i class="p-1 far fa-trash-alt"></i></a>
-                  </td>
-
-                  {% endif %}
-
-
 
                 </tr>
                 {% endfor %}
@@ -162,28 +130,20 @@
       .buttons()
       .container()
       .appendTo("#example1_wrapper .col-md-6:eq(0)");
-    $("#example2").DataTable({
-      paging: true,
-      lengthChange: false,
-      searching: false,
-      ordering: true,
-      info: true,
-      autoWidth: false,
-      responsive: true,
-    });
+
+    //   $("#example2").DataTable({
+    //   paging: true,
+    //   lengthChange: false,
+    //   searching: false,
+    //   ordering: true,
+    //   info: true,
+    //   autoWidth: false,
+    //   responsive: true,
+    // });
+
   });
-//   setInterval(() => {
-//     location.reload();
-//   }, 30000);
-
-    function Copy(value, pk){
-        navigator.clipboard.writeText(value);
-        var button = document.getElementById(pk+"_copy")
-
-        button.textContent = 'Скопировано!';
-    setTimeout(() => {
-      button.textContent = value;
-    }, 1000);
-    }
+  // setInterval(() => {
+  //   location.reload();
+  // }, 30000);
 </script>
 {% endblock %}

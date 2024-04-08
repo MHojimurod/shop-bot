@@ -20,6 +20,7 @@ from admin_panel.models import Text
 from diller.management.commands.decorators import delete_tmp_message
 from sale.management.commands.decorators import get_user
 
+from sale.management.commands.promo import PromoAction
 from sale.models import Card, CashOrder, SerialNumbers
 from seller.models import  Seller
 
@@ -50,7 +51,7 @@ back = {
 }
 
 
-class Bot(Updater, MainHandlers):
+class Bot(Updater, MainHandlers,PromoAction):
     def __init__(self, token: str = None):
         assert token, ValueError("Token is required")
         super().__init__(token)
@@ -94,7 +95,7 @@ class Bot(Updater, MainHandlers):
                     MessageHandler(Filters.photo & not_start, self.cashback_photo),
                 ],
                 MENU: [
-                    
+                    self.promoActionHandlers(),
                     MessageHandler(Filters.regex("^(Yordam|Помощь)"), self.help),
                     MessageHandler(Filters.regex("^(Seriya № yuborish|Отправить серийный номер)"), self.cashback),
                     MessageHandler(Filters.regex("^(Mening hisobim|Мой счет)"), self.my_account),

@@ -52,6 +52,7 @@
                   <th>№</th>
                   <th>Name</th>
                   <th>Name RU</th>
+                  <th>Promokodlar soni</th>
 
                   <th><i class="far fa-edit"></i></th>
                   <th><i class="fas fa-trash-alt"></i></th>
@@ -64,6 +65,7 @@
                   <td>{{ forloop.counter }}</td>
                   <td>{{ i.name }}</td>
                   <td>{{ i.name_ru }}</td>
+                  <td>{{ i.promocodes.count }}</td>
 
                   <td><a style="color: #17a2b8;" href="{% url 'cars-edit' i.id  %}">
                       <div><i class="far fa-edit"></i></div>

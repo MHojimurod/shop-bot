@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8aw2z1am#v&3md)pd&!00op7^__sk8tvki)tw6#wx#var#^s@r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["http://137.184.208.152"]
+CSRF_TRUSTED_ORIGINS = ["http://137.184.208.152","https://f6a9-84-54-66-171.ngrok-free.app"]
 
 # Application definition
 
@@ -45,9 +45,11 @@ INSTALLED_APPS = [
     'seller',
     'runbots',
     'sale',
+    # 'debug_toolbar'
 ]
 
 MIDDLEWARE = [
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -168,3 +170,15 @@ MESSAGE_TAGS = {
 
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 999999
+
+
+
+
+# INTERNAL_IPS = [
+#     # ...
+#     "127.0.0.1",
+#     # ...
+# ]

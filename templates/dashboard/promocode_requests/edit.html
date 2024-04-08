@@ -1,0 +1,146 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Маҳсулотни таҳрирлаш</h1> <!-- Changed heading to "Edit Product" -->
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Маҳсулотни таҳрирлаш</li> <!-- Adjusted breadcrumb -->
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Adjust form action to submit to the edit URL, passing the instance ID -->
+        <form method="post" action="{% url 'promocodes-edit' pk=form.instance.pk %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <!-- Assuming 'pk' field or a hidden field for identifying the record is no longer necessary
+                       since the form action URL already includes the object's ID.
+                       If still needed for other purposes, ensure it's correctly handled in the view. -->
+
+          <div class="row">
+            <!-- Rendered form fields remain unchanged -->
+            <div class="col-4">
+              <div class="form-group">
+                <label>Diller</label><br>
+                <a href="{% url 'seller_edit' form.instance.seller.id %}">{{form.instance.seller.name}}</a>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="form-group">
+                <label>PromoCode</label><br>
+                <a href="{% url 'promocodes-edit' form.instance.promo.id %}">{{form.instance.promo.code}}</a>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Seria</label><br>
+                <a href="{% url 'promocodes-edit' form.instance.promo.id %}"> {{form.instance.promo.seria}}</a>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Sovg'a</label><br>
+                <a href="{% url 'cars-edit' form.instance.promo.car.id %}"> {{form.instance.promo.car.name}}</a>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>harf</label><br>
+                <a href="{% url 'promocodes-edit' form.instance.promo.id %}">{{form.instance.promo.letter|upper}}
+                  {{form.instance.promo.order}}</a>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Keyingi holati</label><br>
+                {% if form.instance.status == 1 %}
+                <td><span class="badge badge-warning">{{form.instance.get_status_display}}</span></td>
+                {% elif form.instance.status == 2 %}
+                <td><span class="badge badge-success">{{form.instance.get_status_display}}</span></td>
+                {% else %}
+                <td><span class="badge badge-danger">{{form.instance.get_status_display}}</span></td>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Vaqti</label><br>
+                <td><span class="badge badge-info">{{form.instance.created_at|date:"d.m.Y H:i"}}</span></td>
+
+              </div>
+            </div>
+            <!-- <div class="col-4">
+              <div class="form-group">
+                <label>Vaqti</label><br>
+                <a href="{{form.instance.image.url}}">Image</a>
+              </div>
+            </div> -->
+
+            <div class="col-4">
+              <div class="form-group">
+                <label>Rasm</label><br>
+                <!-- Trigger button for modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal">
+                  View Image
+                </button>
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <div class="container">
+            <div class="row justify-content-between">
+              <!-- Left side buttons -->
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Сақлаш</button>
+                <button type="button" onclick="history.back()" class="btn btn-secondary">
+                  Ортга
+                </button>
+              </div>
+              <!-- Right side buttons -->
+              <div class="col-auto">
+                <a href="{% url 'promocode-request-reject' form.instance.id %}" ><button type="button"   class="btn btn-danger" {%  if form.instance.status != 1  %}disabled{% endif %}>Rad etish</button></a>
+                <a href="{% url 'promocode-request-accept' form.instance.id %}" ><button type="button"  class="btn btn-success" {%  if form.instance.status != 1  %}disabled{% endif %}>Ruhsat berish</button></a>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="{{form.instance.image.url}}" class="img-fluid" alt="Responsive image">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 import datetime
 import os
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from admin_panel.forms import CategoryForm, DillerForm, DistrictForm, GiftsForm, ProductForm, PromotionForm, RegionsForm, SoldForm, TextForm
 from admin_panel.models import BaseProduct, Gifts, Promotion_Order, Regions, District, Category, Product, Text, Promotion
 from diller.models import Diller, Busket, Busket_item, OrderGiftDiller
@@ -15,6 +15,7 @@ from telegram.ext import Updater
 from seller.management.commands.constant import TOKEN
 import locale
 import re
+from django.contrib import messages
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
@@ -684,13 +685,13 @@ def sold_create(request):
         a = 0
         if bas:
             try:
-                a =  int(bas.serial_number.split(f"{data[1]}")[1]) 
+                a =  int(bas.serial_number.split(f"{data[1]}")[1])
             except:
                 a = 19
         count = a
 
-        for i in range(int(req)): 
-            count+=1           
+        for i in range(int(req)):
+            count+=1
             worksheet.write(f'A{count_1}', f"{i+1}")
             worksheet.write(f'B{count_1}', f"{data[0]}{seller}{data[1]}{count}")
             BaseProduct.objects.create(
@@ -701,7 +702,7 @@ def sold_create(request):
         workbook.close()
         open(workbook.filename, "rb")
         data = requests.get(f"http://127.0.0.1:6002/excel", json={"data":workbook.filename })
-                          
+
 
         # return redirect("solds")
     print(form.errors)
@@ -871,7 +872,7 @@ def reports(request):
     diller = Diller.objects.filter(status=1)
     region = Regions.objects.all()
     if request.POST:
-        
+
 
         if request.POST.get('region',False):
             workbook:xlsxwriter.Workbook = xlsxwriter.Workbook("media/data.xlsx")
@@ -898,7 +899,7 @@ def reports(request):
             response =  HttpResponse(open(workbook.filename,"rb"), content_type="application/ms-excel")
             response['Content-Disposition'] = 'attachment; filename={}'.format(f"Hududlar-{datetime.datetime.now()}.xlsx")
             return response
-                
+
         elif request.POST.get('diller',False):
             workbook:xlsxwriter.Workbook = xlsxwriter.Workbook("media/data.xlsx")
             worksheet = workbook.add_worksheet()
@@ -925,8 +926,8 @@ def reports(request):
             response['Content-Disposition'] = 'attachment; filename={}'.format(f"Dillerlar-{datetime.datetime.now()}.xlsx")
             return response
 
-    
-        
+
+
     ctx = {
 
     }
@@ -1142,3 +1143,19 @@ def region_statistika(request):
     region = Regions.objects.all()
     for i in region:...
 
+
+
+@login_required
+def diller_detail(request, pk:int):
+    diller = get_object_or_404(Diller, pk=pk)
+    if request.method == "POST":
+        form = DillerForm(request.POST, instance=diller)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Diller updated successfully.')
+            return redirect('cars')  # Redirect to the car listing page
+    else:
+        form = DillerForm(instance=diller)
+
+    print(diller.promocodes.all())
+    return render(request, 'dashboard/dillers/edit.html', {'form': form,'promocodes': diller.promocodes.all()})

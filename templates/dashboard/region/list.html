@@ -38,6 +38,8 @@
                   <th>№</th>
                   <th>Номи УЗ</th>
                   <th>Номи РУ</th>
+                  <th>Stikerlar berilgan</th>
+                  <th>Stikerlar qabul qilindi</th>
                   <th>Тахрирлаш</th>
                   <th>Ўчириш</th>
                 </tr>
@@ -50,6 +52,8 @@
                   <td>{{ forloop.counter }}</td>
                   <td><a href="{% url 'districts' region_id=i.id %}">{{ i.uz_data }}</a></td>
                   <td><a href="{% url 'districts' region_id=i.id %}">{{ i.ru_data }}</a></td>
+                  <td>{{ i.got_promos }}</td>
+                  <td>{{ i.used_promos }}</td>
                   <td><a style="color: #17a2b8;" href="{% url 'region_edit' pk=i.id %}">
                     <div ><i class="far fa-edit"></i></div></a></td>
                   <td><a style="color: #dc3545;" href="{% url 'region_delete' pk=i.id %}">

@@ -17,6 +17,7 @@ urlpatterns = [
     path('diller_delete/<int:pk>/', diller_delete,name="diller_delete"),
     path('seller_delete/<int:pk>/', seller_delete,name="seller_delete"),
     path('diller_create', diller_create,name="diller_create"),
+    path('diller/<int:pk>', diller_detail,name="diller_detail"),
 
     path('checks', checks,name="checks"),
     path('reject_check/<str:seria>/<int:user>/<int:status>', reject_check,name="update_check"),
@@ -33,8 +34,8 @@ urlpatterns = [
     path('product_create/<int:pk>', product_create,name="product_create"),
     path('product_edit/<int:pk>/<int:category_id>', product_edit,name="product_edit"),
     path('product_delete/<int:pk>/', product_delete,name="product_delete"),
-    
-    
+
+
     path('gifts/', gifts,name="gifts"),
     path('gift_create/', gift_create,name="gift_create"),
     path('gift_edit/<int:pk>', gift_edit,name="gift_edit"),
@@ -89,6 +90,6 @@ urlpatterns = [
     # path("write_regions",write_regions),
     # path("write_diller",write_diller),
     path("blabl",blabl)
-    
+
     ]
 

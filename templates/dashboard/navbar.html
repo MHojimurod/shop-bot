@@ -44,24 +44,70 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
-            <li class="nav-item ">
+            <li class="nav-item ml-2">
               <a href="{% url 'sale_seller' %}" class="nav-link {{e_s}}">
                 <!-- <i class="nav-icon fas fa-hotdog"></i> -->
                 <p>Sotuvchilar</p>
               </a>
             </li>
-            <li class="nav-item  ">
+            <li class="nav-item  ml-2">
               <a href="{% url 'cash_orders' %}" class="nav-link {{e_o}}">
                 <!-- <i class="nav-icon fas fa-seedling"></i> -->
                 <p>Pul o'tkazmalar</p>
               </a>
             </li>
-            <li class="nav-item ">
+            <li class="nav-item ml-2">
               <a href="{% url 'wait_cashback' %}" class="nav-link  {{e_c}}">
                 <!-- <i class="nav-icon fas fa-seedling"></i> -->
                 <p>Cashback</p>
               </a>
             </li>
+          </ul>
+        </li>
+         <li class="nav-item {{b_active_2}}">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-list"></i>
+            <p>
+              ELITE Promo Aksiya 2 🎉
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+
+            <li class="nav-item ml-2 ">
+              <a href="{% url 'promocodes' %}" class="nav-link {{promocodes_navbar}}">
+                <!-- <i class="nav-icon fas fa-list"></i> -->
+                <i class="nav-icon fas fa-gift"></i>
+                <!-- <i class="fa-sign-out"></i> -->
+                <p>Promocodlar</p>
+              </a>
+            </li>
+            <li class="nav-item ml-2 ">
+              <a href="{% url 'sale_dillers' %}" class="nav-link {{sale_dillers_navbar}}">
+                <!-- <i class="nav-icon fas fa-list"></i> -->
+                <i class="nav-icon fas fa-gift"></i>
+                <!-- <i class="fa-sign-out"></i> -->
+                <p>Dillerlar</p>
+              </a>
+            </li>
+            <li class="nav-item ml-2 ">
+              <a href="{% url 'cars' %}" class="nav-link {{cars_active}}">
+                <!-- <i class="nav-icon fas fa-list"></i> -->
+                <i class="nav-icon fas fa-car"></i>
+                <!-- <i class="fa-sign-out"></i> -->
+                <p>Mashinalar</p>
+              </a>
+            </li>
+            <li class="nav-item ml-2">
+              <a href="{% url 'promocode-requests' %}" class="nav-link {{promocodes_request_navbar}}">
+                <!-- <i class="nav-icon fas fa-list"></i> -->
+                <i class="nav-icon fas fa-gift"></i>
+                <!-- <i class="fa-sign-out"></i> -->
+                <p>So'rovlar</p>
+              </a>
+            </li>
+
+
           </ul>
         </li>
 
@@ -170,22 +216,7 @@
             <p>Ҳисоботлар</p>
           </a>
         </li>
-        <li class="nav-item {{sol_active}}">
-          <a href="{% url 'promocodes' %}" class="nav-link">
-            <!-- <i class="nav-icon fas fa-list"></i> -->
-            <i class="nav-icon fas fa-gift"></i>
-            <!-- <i class="fa-sign-out"></i> -->
-            <p>Promocodlar</p>
-          </a>
-        </li>
-        <li class="nav-item {{sol_active}}">
-          <a href="{% url 'cars' %}" class="nav-link">
-            <!-- <i class="nav-icon fas fa-list"></i> -->
-            <i class="nav-icon fas fa-car"></i>
-            <!-- <i class="fa-sign-out"></i> -->
-            <p>Mashinalar</p>
-          </a>
-        </li>
+
 
 
 

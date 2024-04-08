@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from ctypes import Union
 from datetime import datetime
 from email.policy import default
@@ -5,6 +6,9 @@ from typing import List
 from django.db import models
 from admin_panel.models import *
 from seller.models import Seller
+
+if TYPE_CHECKING:
+    from sale.models import PromoCode
 
 
 class Diller(models.Model):
@@ -58,6 +62,7 @@ class Diller(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 

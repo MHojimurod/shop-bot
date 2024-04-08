@@ -1,49 +1,27 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% load currency %} {% block style %}
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/fontawesome-free/css/all.min.css' %}"
-/>
-<!-- DataTables -->
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"
-/>
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"
-/>
-<link
-  rel="stylesheet"
-  href="{% static 'dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}"
-/>
-<!-- Theme style -->
-<link rel="stylesheet" href="{% static 'dashboard/css/adminlte.min.css' %}" />
-{% endblock %} {% block content %}
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load currency %}
+{% block content %}
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Promocodes</h1>
+        <h1>{{category.name_uz}}</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
-          <li class="breadcrumb-item active">Promocodes</li>
+          <li class="breadcrumb-item active">Promocodlar</li>
         </ol>
       </div>
     </div>
   </div>
-  <!-- /.container-fluid -->
 </section>
-
-<!-- Main content -->
 <section class="content">
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        <!-- /.card -->
-
-        <div class="card p-2">
+        <div class="card">
           {% if messages %}
           {% for message in messages %}
           <div class="alert alert-{{ message.tags }}">
@@ -74,9 +52,18 @@
               </div>
           </div>
 
-
           <div class="card-body table-responsive p-0">
-            <table id="example1" class="table table-bordered table-striped">
+            <div class="p-3">
+              <form method="get" action="">
+                  <div class="input-group mb-3">
+                      <input type="text" name="search" class="form-control" placeholder="Search by seria, code, or diller..." value="{{ request.GET.search }}">
+                      <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" type="submit">Search</button>
+                      </div>
+                  </div>
+              </form>
+          </div>
+            <table class="table table-hover text-nowrap">
               <thead>
                 <tr>
                   <th>№</th>
@@ -84,7 +71,6 @@
                   <th>Letter</th>
                   <th>Order</th>
                   <th>Diller</th>
-                  <th>Sotuvchi</th>
                   <th>Code</th>
                   <th>SERIA</th>
                   <th><i class="far fa-edit"></i></th>
@@ -100,7 +86,6 @@
                   <td>{{ i.letter }}</td>
                   <td>{{ i.order }}</td>
                   <td>{{ i.diller.name }}</td>
-                  <td>{{ i.seller.name }}</td>
                   <td>{{ i.code }}</td>
                   <td>{{ i.seria }}</td>
 
@@ -112,10 +97,45 @@
                     </a></td>
                 </tr>
                 {% endfor %}
+
               </tbody>
             </table>
           </div>
+          <!-- /.card-body -->
+          <!-- Pagination Controls -->
+          <div class="card-footer clearfix">
+            <ul class="pagination pagination-sm m-0 float-right">
+              {% if promocodes.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ promocodes.previous_page_number }}">&laquo;</a></li>
+              {% endif %}
+
+              {% if promocodes.number|add:'-4' > 1 %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+              {% endif %}
+
+              {% for number in promocodes.paginator.page_range %}
+                {% if number >= promocodes.number|add:'-3' and number <= promocodes.number|add:'3' %}
+                  {% if promocodes.number == number %}
+                    <li class="page-item active"><span class="page-link">{{ number }}</span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ number }}">{{ number }}</a></li>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% if promocodes.number|add:'3' < promocodes.paginator.num_pages %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+              {% endif %}
+
+              {% if promocodes.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ promocodes.next_page_number }}">&raquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ promocodes.paginator.num_pages }}">Last</a></li>
+              {% endif %}
+            </ul>
+          </div>
         </div>
+        <!-- /.card -->
       </div>
     </div>
   </div>
@@ -148,56 +168,4 @@
     </div>
   </div>
 </div>
-
-<!-- Control Sidebar -->
-<!-- <aside class="control-sidebar control-sidebar-dark"> -->
-<!-- Control sidebar content goes here -->
-<!-- </aside> -->
-<!-- /.control-sidebar -->
-<!-- ./wrapper -->
-{% endblock %} {% block javascript %}
-<script src="{% static 'dashboard/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/jszip/jszip.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<script src="/static/dashboard/js/adminlte.min.js"></script>
-<script src="/static/dashboard/js/demo.js"></script>
-<script>
-  $(function () {
-    $("#example1")
-      .DataTable({
-        responsive: true,
-        lengthChange: false,
-        autoWidth: false,
-        buttons: ["copy", "csv", "excel", "pdf", "print"],
-        pageLength:50,
-        deferRender: true,
-      })
-      .buttons()
-      .container()
-      .appendTo("#example1_wrapper .col-md-6:eq(0)");
-
-      $("#example2").DataTable({
-      paging: true,
-      lengthChange: false,
-      searching: false,
-      ordering: true,
-      info: true,
-      autoWidth: false,
-      responsive: true,
-    });
-
-  });
-  // setInterval(() => {
-  //   location.reload();
-  // }, 30000);
-</script>
 {% endblock %}

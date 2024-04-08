@@ -53,14 +53,15 @@ class MainHandlers:
                 "ru": "Отправить"
             }
             user.send_message(text=text[db_user.language],
-                reply_markup=ReplyKeyboardMarkup(
+                              reply_markup=ReplyKeyboardMarkup(
+                [
                     [
-                        [
-                            KeyboardButton(send_btn[db_user.language], request_contact=True),
-                        ]
-                    ],
-                    resize_keyboard=True,
-                ),
+                        KeyboardButton(
+                            send_btn[db_user.language], request_contact=True),
+                    ]
+                ],
+                resize_keyboard=True,
+            ),
                 parse_mode="HTML",
             )
             return NUMBER
@@ -70,16 +71,16 @@ class MainHandlers:
                 "ru": "Выберите свой регион"
             }
             user.send_message(text=text[db_user.language],
-                reply_markup=ReplyKeyboardMarkup(
-                    distribute(
-                        [
-                            region.name(db_user.language)
-                            for region in Regions.objects.all()
-                        ],
-                        2,
-                    ),
-                    resize_keyboard=True,
+                              reply_markup=ReplyKeyboardMarkup(
+                distribute(
+                    [
+                        region.name(db_user.language)
+                        for region in Regions.objects.all()
+                    ],
+                    2,
                 ),
+                resize_keyboard=True,
+            ),
                 parse_mode="HTML",
             )
             return REGION
@@ -96,9 +97,20 @@ class MainHandlers:
                 "uz": "Yordam",
                 "ru": "Помощь"
             }
+            promo = {
+                "uz": "Proma kodni kiritish",
+                "ru": "Введите промокод"
+            }
+            prizes = {
+                "uz": "Yutuqlar",
+                "ru": "Достижения"
+            }
             button = [
-                [KeyboardButton(seria[db_user.language])],
-                [KeyboardButton(my_account[db_user.language]), KeyboardButton(help_btn[db_user.language])],
+                [KeyboardButton(promo[db_user.language])],
+                [KeyboardButton(seria[db_user.language]),
+                 prizes[db_user.language]],
+                [KeyboardButton(my_account[db_user.language]),
+                 KeyboardButton(help_btn[db_user.language])],
             ]
             user.send_message(
                 "Menu",
@@ -149,9 +161,9 @@ class MainHandlers:
                 "ru": "Введите ваше имя"
             }
             user.send_message(text=text[db_user.language],
-                reply_markup=ReplyKeyboardRemove(),
-                parse_mode="HTML",
-            )
+                              reply_markup=ReplyKeyboardRemove(),
+                              parse_mode="HTML",
+                              )
             return NAME
         else:
             user.send_message(
@@ -172,23 +184,24 @@ class MainHandlers:
         db_user.set_name(name)
 
         text = {
-                "uz": "Telefon raqamizni kiriting",
-                "ru": "Введите свой номер телефона"
-            }
+            "uz": "Telefon raqamizni kiriting",
+            "ru": "Введите свой номер телефона"
+        }
         send_btn = {
-                "uz": "Yuborish",
-                "ru": "Отправить"
-            }
+            "uz": "Yuborish",
+            "ru": "Отправить"
+        }
 
         user.send_message(text=text[db_user.language],
-            reply_markup=ReplyKeyboardMarkup(
+                          reply_markup=ReplyKeyboardMarkup(
+            [
                 [
-                    [
-                        KeyboardButton(send_btn[db_user.language], request_contact=True),
-                    ]
-                ],
-                resize_keyboard=True,
-            ),
+                    KeyboardButton(
+                        send_btn[db_user.language], request_contact=True),
+                ]
+            ],
+            resize_keyboard=True,
+        ),
             parse_mode="HTML",
         )
         return NUMBER
@@ -203,20 +216,22 @@ class MainHandlers:
         db_user.set_phone(phone)
         db_user.save()
         text = {
-                "uz": "Viloyatingizni tanlang",
-                "ru": "Выберите свой регион"
-            }
+            "uz": "Viloyatingizni tanlang",
+            "ru": "Выберите свой регион"
+        }
         user.send_message(text=text[db_user.language],
-            reply_markup=ReplyKeyboardMarkup(
-                distribute(
-                    [region.name(db_user.language) for region in Regions.objects.all()],
-                    2,
-                ),
-                resize_keyboard=True,
+                          reply_markup=ReplyKeyboardMarkup(
+            distribute(
+                [region.name(db_user.language)
+                 for region in Regions.objects.all()],
+                2,
             ),
+            resize_keyboard=True,
+        ),
             parse_mode="HTML",
         )
         return REGION
+
     def region(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         msg = update.message.text
@@ -235,8 +250,9 @@ class MainHandlers:
             db_user.set_region(region.first())
             button = [[KeyboardButton(help_btn[db_user.language])]]
             user.send_message(text=text[db_user.language],
-                reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
-            )
+                              reply_markup=ReplyKeyboardMarkup(
+                                  button, resize_keyboard=True),
+                              )
             return MENU
 
         else:
@@ -245,16 +261,16 @@ class MainHandlers:
                 "ru": "Регион не найден"
             }
             user.send_message(text=text[db_user.language],
-                reply_markup=ReplyKeyboardMarkup(
-                    distribute(
-                        [
-                            region.name(db_user.language)
-                            for region in Regions.objects.all()
-                        ],
-                        2,
-                    ),
-                    resize_keyboard=True,
+                              reply_markup=ReplyKeyboardMarkup(
+                distribute(
+                    [
+                        region.name(db_user.language)
+                        for region in Regions.objects.all()
+                    ],
+                    2,
                 ),
+                resize_keyboard=True,
+            ),
                 parse_mode="HTML",
             )
             return REGION
@@ -275,29 +291,32 @@ class MainHandlers:
         seria.used_time = datetime.now().date()
         seria.save()
         db_user.save()
-        cashback = Cashback.objects.create(photo=photo.name.replace("./media/", ''), seria=seria)
+        cashback = Cashback.objects.create(
+            photo=photo.name.replace("./media/", ''), seria=seria)
         help_btn = {
-                "uz": "Yordam",
-                "ru": "Помощь"
-            }
+            "uz": "Yordam",
+            "ru": "Помощь"
+        }
         seria = {
-                "uz": "Seriya № yuborish",
-                "ru": "Отправить серийный номер"
-            }
+            "uz": "Seriya № yuborish",
+            "ru": "Отправить серийный номер"
+        }
         my_account = {
-                "uz": "Mening hisobim",
-                "ru": "Мой счет"
-            }
+            "uz": "Mening hisobim",
+            "ru": "Мой счет"
+        }
         button = [
             [KeyboardButton(seria[db_user.language])],
-            [KeyboardButton(my_account[db_user.language]), KeyboardButton(help_btn[db_user.language])],
+            [KeyboardButton(my_account[db_user.language]),
+             KeyboardButton(help_btn[db_user.language])],
         ]
         text = {
-            "uz":f"Tabriklaymiz hizobingizga ${cashback.seria.cashback} cashback tushirildi",
+            "uz": f"Tabriklaymiz hizobingizga ${cashback.seria.cashback} cashback tushirildi",
             "ru": f"Поздравляем, кешбэк ${cashback.seria.cashback} добавлен на ваш счет."
         }
         update.message.reply_html(text=text[db_user.language],
-            reply_markup=ReplyKeyboardMarkup(button, resize_keyboard=True),
-        )
+                                  reply_markup=ReplyKeyboardMarkup(
+                                      button, resize_keyboard=True),
+                                  )
 
         return MENU

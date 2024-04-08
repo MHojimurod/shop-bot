@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db import models
 
+# from sale.models import PromoCode
+
 # from seller.models import Seller
 
 
@@ -34,8 +36,18 @@ class Regions(models.Model):
         return self.uz_data if lang == 'uz' else self.ru_data
 
     def __str__(self):
-        return self.ru_data    
-            
+        return self.ru_data
+
+
+
+    def got_promos(self):
+        from sale.models import PromoCode
+        return PromoCode.objects.filter(diller__region=self).count()
+
+    def used_promos(self):
+        from sale.models import PromoCode
+        return PromoCode.objects.filter(diller__region=self,status=3).count()
+
 class District(models.Model):
     id:int
     region: Regions = models.ForeignKey(Regions, on_delete=models.CASCADE)
@@ -47,6 +59,16 @@ class District(models.Model):
 
     def __str__(self):
         return self.ru_data
+
+
+
+    def got_promos(self):
+        from sale.models import PromoCode
+        return PromoCode.objects.filter(diller__district=self).count()
+
+    def used_promos(self):
+        from sale.models import PromoCode
+        return PromoCode.objects.filter(diller__district=self,status=3).count()
 
 class Category(models.Model):
     id:int
@@ -109,7 +131,7 @@ class   BaseProduct(models.Model):
     is_active:bool = models.BooleanField(default=False)
     date:datetime = models.DateTimeField(auto_now_add=True)
 
-    
+
     def sale(self):
         self.is_active = True
         self.save()
@@ -137,6 +159,6 @@ class Promotion_Order(models.Model):
     id:int
     user  = models.ForeignKey("diller.Diller", on_delete=models.CASCADE)
     promotion:Promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
-    count:int = models.IntegerField(default=1)  
+    count:int = models.IntegerField(default=1)
     date:datetime = models.DateTimeField(auto_now_add=True)
     status:int = models.IntegerField(default=0,choices=((0,"Kutilmoqda"),(1,"Qabul qilingan"),(2,"Yuborilgan"),(3,"Rad etilgan")))

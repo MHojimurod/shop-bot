@@ -1,0 +1,207 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Маҳсулот қўшиш</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Асосий</a></li>
+          <li class="breadcrumb-item active">Маҳсулот қўшиш</li>
+
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="">
+
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Diller Ismi</label><br>
+                  {{form.name}}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Telefon Raqami</label><br>
+                  {{form.number}}
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Viloyati</label><br>
+                  {{form.region}}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Tumani</label><br>
+                  {{form.district}}
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+            <div class="ml-3">
+              <button type="submit" class="btn col-sm-1 btn-info">Saqlash</button>
+              <button onclick="history.back()" class="btn col-sm-1 btn-secondary">
+                Ortga
+              </button>
+            </div>
+          </form>
+
+
+          <!-- <div class="text-right mb-3 mr-5">
+            <button type="button" class="btn btn-primary pr-3 pt-2" data-toggle="modal" data-target="#givePromocodeModal">
+              Give Promocodes
+            </button>
+          </div> -->
+          <!-- <div class="card-body table-responsive p-0">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>Car</th>
+                  <th>Letter</th>
+                  <th>Order</th>
+                  <th>Diller</th>
+                  <th>Code</th>
+                  <th>SERIA</th>
+                  <th><i class="far fa-edit"></i></th>
+                  <th><i class="fas fa-trash-alt"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in promocodes %}
+
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.car.name }}</td>
+                  <td>{{ i.letter }}</td>
+                  <td>{{ i.order }}</td>
+                  <td>{{ i.diller.name }}</td>
+                  <td>{{ i.code }}</td>
+                  <td>{{ i.seria }}</td>
+
+                  <td><a style="color: #17a2b8;" href="{% url 'promocodes-edit' i.id  %}">
+                      <div><i class="far fa-edit"></i></div>
+                    </a></td>
+                  <td><a style="color: #dc3545;" href="{% url 'promocodes-delete' i.id %}">
+                      <div><i class="fas fa-trash-alt"></i></div>
+                    </a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="givePromocodeModal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Give Promocode</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- Start of form -->
+      <form id="promocodeForm" method="POST" action="/promocodes/give_to_diller">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="promocodeInput">Promocode</label>
+            {% csrf_token %}
+            <input type="hidden" name="diller" value="{{form.instance.id}}">
+            <textarea class="form-control" id="promocodeInput" name="promocode"
+              placeholder="Enter promocode"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+      <!-- End of form -->
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<script>
+  $('#givePromocodeModal').on('shown.bs.modal', function () {
+    $('#promocodeInput').trigger('focus');
+  });
+
+
+
+  document.getElementById('promocodeInput').addEventListener('input', function (e) {
+    var lines = e.target.value.split('\n');
+    var lastLine = lines[lines.length - 1].trim();
+    if (lastLine.length === 12) { // Assuming EAN-13 barcode length
+      var seria = lastLine; // Derived from the last line
+
+      fetch(`/promocodes/check/${seria}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('API Response:', data);
+          if (data.status == 'error') {
+            // If the code is invalid, change the border to red
+            document.getElementById('promocodeInput').style.borderColor = 'red';
+          } else {
+            // If the code is valid, revert any red border back to default
+            document.getElementById('promocodeInput').style.borderColor = '';
+          }
+          // Move cursor to the end of the text
+          var textarea = document.getElementById('promocodeInput');
+          textarea.focus();
+          var val = textarea.value; //store the value of the element
+          textarea.value = ''; //clear the value of the element
+          textarea.value = val; //set that value back.
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+  });
+</script>
+</script>
+
+</script>
+{% endblock %}
