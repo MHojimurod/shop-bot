@@ -23,7 +23,6 @@ requests==2.27.1
 six==1.16.0
 sqlparse==0.4.2
 toml==0.10.2
-tornado==6.1
 tzdata==2021.5
 tzlocal==4.1
 urllib3==1.26.8
