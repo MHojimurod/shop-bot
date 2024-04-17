@@ -1,10 +1,10 @@
 from telegram import *
 from telegram.ext import *
-from sale.models import SaleSeller
+from sale.models import SaleSeller,SaleSeller2
 
 def get_user(update:Update):
     user = update.message.from_user if update.message else update.callback_query.from_user
-    db_user, created = SaleSeller.objects.get_or_create(chat_id=user.id)
+    db_user, created = SaleSeller2.objects.get_or_create(chat_id=user.id)
     return user, db_user
 
 

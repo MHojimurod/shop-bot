@@ -9,6 +9,11 @@ from sale.views import (
     # promocode_requests_accept,
     # promocode_requests_reject
 )
+from sale.views import (
+    sale_seller2,
+    sale_seller2_edit,
+    update_sale_seller2
+)
 
 from sale.views import sale_dillers
 
@@ -80,5 +85,17 @@ urlpatterns = [
     path('sale_dillers/', sale_dillers, name="sale_dillers"),
     path('sale_dillers/create', sale_dillers_create, name="sale_dillers_create"),
     path('sale_dillers/<int:pk>/', sale_diller_detail, name="sale_diller_detail"),
-    path('sale_dillers/<int:pk>/delete', sale_diller_delete, name="sale_diller_delete"),
+    path('sale_dillers/<int:pk>/delete',
+         sale_diller_delete, name="sale_diller_delete"),
+
+
+
+
+
+    path('sale/seller2', sale_seller2, name="sale_seller2"),
+    path('sale/seller2/<int:pk>', sale_seller2_edit, name="seller_edit2"),
+    path('sale/seller2/update/<int:pk>/<int:state>',
+         update_sale_seller2, name="update_sale_seller2"),
+
+
 ]

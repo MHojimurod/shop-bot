@@ -8,12 +8,12 @@ from telegram.ext import Updater
 from admin_panel.views import login_required_decorator
 from diller.models import Diller
 from sale.forms import PromoCodeForm
-from sale.models import Car, CashOrder, PromoCode, PromocodeRequest, SaleDiller, SaleSeller, Card, Cashback, SerialNumbers
+from sale.models import Car, CashOrder, PromoCode, PromocodeRequest, SaleDiller, SaleSeller, Card, Cashback, SaleSeller2, SerialNumbers
 import xlsxwriter
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 # Ensure this is the correct path to your form
-from .forms import CarForm, PromoCodeForm, PromocodeRequestForm, SaleDillerForm, SaleDillerForm, SaleSellerForm
+from .forms import CarForm, PromoCodeForm, PromocodeRequestForm, SaleDillerForm, SaleDillerForm, SaleSeller2Form, SaleSellerForm
 # from .models import PromoCode, Diller, Car  # Adjust the import paths as necessary
 import pandas as pd
 from django.db import transaction
@@ -578,3 +578,63 @@ def sale_diller_delete(request, pk: int):
     dillers.delete()
     messages.success(request, 'SaleDiller deleted successfully.')
     return redirect('sale_dillers')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required_decorator
+def sale_seller2(request):
+    seller = SaleSeller2.objects.order_by("-id").exclude(state=0).all()
+    ctx = {
+        "seller": seller,
+        "e_s2": "active"
+    }
+    return render(request, 'dashboard/sale2/seller.html', ctx)
+
+
+@login_required_decorator
+def update_sale_seller2(request, pk, state):
+    seller = SaleSeller2.objects.get(pk=pk)
+    seller.state = state
+    seller.save()
+    if state == 2:
+        text = {
+            "uz": f"Siz qabul qilindingiz boshlash uchun /start buyrug'ini yuboring",
+            "ru": f"Вы приняты. Отправьте команду /start для запуска.",
+        }
+        send_message(seller.chat_id, text[seller.language])
+    else:
+        text = {
+            "uz": f"Sizning so'rovingiz bekor qilindi",
+            "ru": f"Ваш запрос отменен",
+        }
+        send_message(seller.chat_id, text[seller.language])
+
+    return redirect("sale_seller2")
+
+
+
+@login_required
+def sale_seller2_edit(request, pk: int):
+    car = get_object_or_404(SaleSeller2, pk=pk)
+    if request.method == "POST":
+        form = SaleSeller2Form(request.POST, instance=car)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'SaleSeller updated successfully.')
+            return redirect('sale_seller2')  # Redirect to the car listing page
+    else:
+        form = SaleSellerForm(instance=car)
+
+    return render(request, 'dashboard/sale2/seller_edit.html', {'form': form, "b_active_2": "menu-open"})

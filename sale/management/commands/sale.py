@@ -97,7 +97,7 @@ class Bot(Updater, MainHandlers,PromoAction):
                 MENU: [
                     self.promoActionHandlers(),
                     MessageHandler(Filters.regex("^(Yordam|Помощь)"), self.help),
-                    MessageHandler(Filters.regex("^(Seriya № yuborish|Отправить серийный номер)"), self.cashback),
+                    # MessageHandler(Filters.regex("^(Seriya № yuborish|Отправить серийный номер)"), self.cashback),
                     MessageHandler(Filters.regex("^(Mening hisobim|Мой счет)"), self.my_account),
 
                     CommandHandler("language", self.change_language),

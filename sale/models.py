@@ -134,6 +134,12 @@ class SaleSeller(models.Model):
 
 
 
+
+class SaleSeller2(SaleSeller):
+    pass
+
+
+
 class Card(models.Model):
     seller = models.ForeignKey(SaleSeller, on_delete=models.CASCADE, null=True)
     holder_name = models.CharField(max_length=200)
@@ -222,7 +228,7 @@ class Car(models.Model):
 
 
 class UserGift(models.Model):
-    user = models.ForeignKey(SaleSeller,on_delete=models.CASCADE,related_name="gifts")
+    user = models.ForeignKey(SaleSeller2,on_delete=models.CASCADE,related_name="gifts")
     car = models.ForeignKey(Car,on_delete=models.CASCADE)
 
 
@@ -249,7 +255,7 @@ class PromoCode(models.Model):
         default=1
     )
 
-    seller = models.ForeignKey(SaleSeller, on_delete=models.SET_NULL,null=True,blank=True,related_name="promocodes")
+    seller = models.ForeignKey(SaleSeller2, on_delete=models.SET_NULL,null=True,blank=True,related_name="promocodes")
     image = models.ImageField(upload_to="promocode_images",null=True,blank=True)
 
 
@@ -261,7 +267,7 @@ class PromoCode(models.Model):
     got_at = models.DateTimeField(null=True,blank=True)
 
 
-    def give_promo(self, request:"PromocodeRequest", db_user:"SaleSeller"):
+    def give_promo(self, request:"PromocodeRequest", db_user:"SaleSeller2"):
 
         promo = request.promo
         car = promo.car
@@ -348,7 +354,7 @@ class PromoCode(models.Model):
 
 
 class PromocodeRequest(models.Model):
-    seller = models.ForeignKey(SaleSeller,on_delete=models.CASCADE,related_name="promo_requests")
+    seller = models.ForeignKey(SaleSeller2,on_delete=models.CASCADE,related_name="promo_requests")
     promo = models.ForeignKey(PromoCode, on_delete=models.SET_NULL,related_name="promo_requests",null=True,blank=True)
 
     image = models.ImageField(upload_to="promo_request_images")
