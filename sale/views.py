@@ -505,10 +505,18 @@ def promocode_requests_reject(request, pk: int):
 
 
     promo = promo_request.promo
+    gift = promo.gift
     promo.status = 2
     promo.seller = None
     promo.image = None
+    promo.gift = None
     promo.save()
+
+
+    if gift.promocodes.count() == 0:
+        gift.delete()
+
+
 
     return redirect('promocode-requests')
 

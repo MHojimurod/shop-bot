@@ -251,24 +251,8 @@ class PromoAction:
             user.send_message(t[db_user.language])
             return self.start(update,context)
 
-        gifts_text = db_user.gifts_text("\n")
+        gifts_text = db_user.gifts_text("\n").upper()
 
-        # gifts = db_user.gifts.all()
-
-        # for gift in gifts:
-        #     t = ""
-        #     c_count = {}
-        #     for c in gift.car.name:
-        #         i = c_count.get(c,0) + 1
-        #         promo = gift.promocodes.filter(letter=c, order=i).first()
-        #         if promo:
-        #             t += promo.letter
-        #         else:
-        #             t += "*"
-
-        #         c_count[c] = i
-
-        #     gifts_text += t + "\n"
 
 
         t = {
