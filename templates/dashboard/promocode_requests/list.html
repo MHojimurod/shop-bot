@@ -48,6 +48,7 @@
                 <tr>
                   <th>№</th>
                   <th>Seller</th>
+                  <th>Diller</th>
                   <th>Promocode</th>
                   <th>Seria</th>
                   <th>Car</th>
@@ -70,6 +71,7 @@
                 <tr>
                   <td><a href="{% url 'promocode-request-edit' i.id %}">{{ forloop.counter }}</a></td>
                   <td>{{ i.seller.name }}</td>
+                  <td>{{ i.seller.diller.name }}</td>
                   <td>{{ i.promo.code }}</td>
                   <td>{{ i.promo.seria }}</td>
                   <td>{{ i.promo.car.name }}</td>
