@@ -110,7 +110,7 @@ class SaleSeller(models.Model):
 
 
 
-    def gifts_text(self, breaker=" <br>"):
+    def gifts_text(self, breaker="&nbsp;<br>"):
         gifts_text = ""
 
         gifts = self.gifts.all()
