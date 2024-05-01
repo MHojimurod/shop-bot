@@ -107,9 +107,11 @@ class MainHandlers:
             }
             button = [
                 [KeyboardButton(promo[db_user.language])],
-                [KeyboardButton(seria[db_user.language]),
+                [
+                    #KeyboardButton(seria[db_user.language]),
                  prizes[db_user.language]],
-                [KeyboardButton(my_account[db_user.language]),
+                [
+                    #KeyboardButton(my_account[db_user.language]),
                  KeyboardButton(help_btn[db_user.language])],
             ]
             user.send_message(
