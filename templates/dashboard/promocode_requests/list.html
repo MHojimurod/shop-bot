@@ -78,7 +78,7 @@
                   <td>{{ i.promo.letter }} {{i.promo.order}}</td>
                   <!-- <td>{{ i.get_status_display }}</td> -->
                   <td>{{ i.created_at }}</td>
-                  <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal">
+                  <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal_{{i.id}}">
                       View Image
                     </button></td>
 
@@ -115,7 +115,7 @@
                     </a></td>
                 </tr>
 
-                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+                <div class="modal fade" id="imageModal_{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
                   aria-hidden="true">
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
