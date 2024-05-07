@@ -20,6 +20,7 @@ from sale.models import Cashback, SaleSeller
 def is_user_following(bot: Bot, chat_id: int, user_id: int) -> bool:
     try:
         chat_member = bot.get_chat_member(chat_id, user_id)
+        print(chat_member)
         return chat_member.status in ['member', 'administrator', 'creator']
     except Exception as e:
         print(e)
@@ -30,7 +31,7 @@ class MainHandlers:
     def start(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
 
-        is_member = is_user_following(self.bot, 2045594351, user.id)
+        is_member = is_user_following(self.bot, 2045594351, db_user.chat_id)
 
 
 
