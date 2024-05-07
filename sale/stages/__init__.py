@@ -36,7 +36,7 @@ class MainHandlers:
     def start(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
 
-        is_member = is_user_following(self.bot, 2045594351, db_user.chat_id)
+        is_member = is_user_following(self.bot, 2113685330, db_user.chat_id)
 
 
 
