@@ -21,6 +21,8 @@ def is_user_following(bot: Bot, chat_id: int, user_id: int) -> bool:
     # bot.send_message(user_id, "Salom")
     # bot.send_message(chat_id, ".")
 
+    print(chat_id, user_id)
+
     print(bot.get_chat_member(chat_id, bot.id))
 
     try:
