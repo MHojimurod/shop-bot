@@ -23,7 +23,7 @@ def is_user_following(bot: Bot, chat_id: int, user_id: int) -> bool:
 
     print(chat_id, user_id)
 
-    print(bot.get_chat_member(chat_id, bot.id))
+    # print(bot.get_chat_member(chat_id, bot.id))
 
     try:
         chat_member = bot.get_chat_member(chat_id, user_id)
@@ -38,7 +38,7 @@ class MainHandlers:
     def start(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
 
-        is_member = is_user_following(self.bot, 2113685330, db_user.chat_id)
+        is_member = is_user_following(self.bot, -1002045594351, db_user.chat_id)
 
 
 
