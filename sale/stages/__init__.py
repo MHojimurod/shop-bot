@@ -42,17 +42,19 @@ class MainHandlers:
                 update.callback_query.message.delete()
             except:
                 pass
-            user.send_message("Kechirasiz siz kanalga obuna bo'lmagansiz.\n\nIltimos shu kanalga obuna bo'ling.", reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton(
-                        "Obuna bo'lish ➕", url="https://t.me/ELITE_aksiya")
-                ],
-                [
-                    InlineKeyboardButton(
-                        "Obuna bo'ldim ✅", callback_data='start')
-                ]
-            ]))
-            return
+            if not is_member:
+
+                user.send_message("Kechirasiz siz kanalga obuna bo'lmagansiz.\n\nIltimos shu kanalga obuna bo'ling.", reply_markup=InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton(
+                            "Obuna bo'lish ➕", url="https://t.me/ELITE_aksiya")
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            "Obuna bo'ldim ✅", callback_data='start')
+                    ]
+                ]))
+                return
 
 
         if not is_member:
