@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import uuid4
-from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackContext
 from admin_panel.models import Regions
 from seller.management.commands.constant import (
@@ -17,9 +17,58 @@ from sale.management.commands.decorators import delete_tmp_message, distribute, 
 from sale.models import Cashback, SaleSeller
 
 
+def is_user_following(bot: Bot, chat_id: int, user_id: int) -> bool:
+    try:
+        chat_member = bot.get_chat_member(chat_id, user_id)
+        return chat_member.status in ['member', 'administrator', 'creator']
+    except Exception as e:
+        print(e)
+        return False
+
+
 class MainHandlers:
     def start(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
+
+        is_member = is_user_following(self.bot, 2045594351, user.id)
+
+
+
+        if update.callback_query and update.callback_query.data == 'start':
+            try:
+                update.callback_query.message.delete()
+            except:
+                pass
+            user.send_message("Kechirasiz siz kanalga obuna bo'lmagansiz.\n\nIltimos shu kanalga obuna bo'ling.", reply_markup=InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        "Obuna bo'lish ➕", url="https://t.me/ELITE_aksiya")
+                ],
+                [
+                    InlineKeyboardButton(
+                        "Obuna bo'ldim ✅", callback_data='start')
+                ]
+            ]))
+            return
+
+
+        if not is_member:
+
+            user.send_message("Iltimos shu kanalga obuna bo'ling.", reply_markup=InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        "Obuna bo'lish ➕", url="https://t.me/ELITE_aksiya")
+                ],
+                [
+                    InlineKeyboardButton(
+                        "Obuna bo'ldim ✅", callback_data='start')
+                ]
+            ]))
+            return
+
+
+
+
         if not db_user.language:
             user.send_message(
                 f"Salom {user.first_name}",

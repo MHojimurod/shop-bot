@@ -6,6 +6,7 @@ from telegram.ext import (
     ConversationHandler,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler
 )
 
 from telegram import (
@@ -58,9 +59,12 @@ class Bot(Updater, MainHandlers,PromoAction):
 
         not_start = ~Filters.regex("^(/start)")
 
+
+
         self.conversation = ConversationHandler(
             entry_points=[
                 CommandHandler("start", self.start),
+                CallbackQueryHandler(self.start, pattern="start"),
             ],
             states={
                 LANGUAGE: [
@@ -110,6 +114,7 @@ class Bot(Updater, MainHandlers,PromoAction):
             },
             fallbacks=[
                 CommandHandler("start", self.start),
+                CallbackQueryHandler(self.start, pattern="start"),
                 MessageHandler(Filters.all, self.start),
             ],
         )
