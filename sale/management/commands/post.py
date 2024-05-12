@@ -303,8 +303,7 @@ class AdminPost:
         sent = 0
         fail = 0
 
-        p_m = context.bot.send_message(
-            chat_id=user.chat_id,
+        p_m = user.send_message(
             text=f"Post yuborilmoqda.\n\nYuborildi: {sent}\nYuborib bo'lmadi: {fail}\nProcess: 0%"
         )
 
