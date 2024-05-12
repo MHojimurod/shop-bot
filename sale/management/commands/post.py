@@ -121,7 +121,7 @@ class AdminPost:
 
         temp = temps[user.id]
 
-        if not user.admin:
+        if len(context.args) == 0 or context.args[0] is not 'wcpNbj':
             return
 
         temp['keyboards_json'] = dict(keyboards=[[]])
