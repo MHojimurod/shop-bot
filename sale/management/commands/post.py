@@ -56,11 +56,11 @@ class ReplyKeyboardMarkup(ReplyKeyboardMarkupImp):
         super().__init__(
             [*keyboard, [BACK if back else ""]],
             resize_keyboard,
-            one_time_keyboard,
-            selective,
-            input_field_placeholder,
-            is_persistent,
-            
+            # one_time_keyboard,
+            # selective,
+            # input_field_placeholder,
+            # is_persistent,
+
         )
 
 
