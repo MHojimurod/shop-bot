@@ -13,7 +13,8 @@ from telegram.ext import (
 from telethon import TelegramClient
 from telethon.tl.types import DocumentAttributeImageSize, DocumentAttributeVideo
 
-from telegram import ReplyKeyboardMarkup as ReplyKeyboardMarkupImp
+# from telegram import ReplyKeyboardMarkup as ReplyKeyboardMarkupImp
+from telegram import ReplyKeyboardMarkup 
 
 from sale.models import SaleSeller2
 from .constant import (
@@ -40,18 +41,20 @@ from telegram.ext import CallbackContext
 temps = {}
 
 
-class ReplyKeyboardMarkup(ReplyKeyboardMarkupImp):
-    def __init__(
-        self,
-        keyboard: Sequence[Sequence[str | KeyboardButton]] = [],
-        back: bool = True,
-        resize_keyboard: bool | None = True
-    ):
-        super().__init__(
-            [*keyboard, [BACK if back else ""]],
-            resize_keyboard,
+# class ReplyKeyboardMarkup(ReplyKeyboardMarkupImp):
+#     def __init__(
+#         self,
+#         keyboard: Sequence[Sequence[str | KeyboardButton]] = [],
+#         back: bool = True,
+#         resize_keyboard: bool | None = True
+#     ):
+#         super().__init__(
+#             [*keyboard,
+#             #  [BACK if back else ""]
+#             ],
+#             resize_keyboard,
 
-        )
+#         )
 
 
 class AdminPost:
