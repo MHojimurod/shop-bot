@@ -17,6 +17,7 @@ from telegram import (
     Update,
     User,
 )
+
 from admin_panel.models import Text
 from diller.management.commands.decorators import delete_tmp_message
 from sale.management.commands.decorators import get_user
@@ -31,7 +32,6 @@ from .constant import (
     CASHBACK,
     CASHBACK_PHOTO,
     LANGUAGE,
-    SELECT_NEW_LANGUAGE,
     HOLDER,
     TOKEN,
     NUMBER,

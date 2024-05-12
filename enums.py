@@ -1,4 +1,4 @@
-from telegram.constants import MessageAttachmentType
+# from telegram.constants import MessageAttachmentType
 
 
 
