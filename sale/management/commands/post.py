@@ -341,7 +341,7 @@ class AdminPost:
                     f"Process: {(sent + fail) / len(users) * 100:.2f}%"
                 )
 
-        context.bot.send_message(
-            chat_id=user.chat_id,
+        user.send_message(
+            # chat_id=user.id,
             text="Habarlar yuborildi."
         )
