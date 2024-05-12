@@ -323,9 +323,12 @@ class AdminPost:
                     send_method = context.bot.send_document if file_type == PostMediaTypeEnum.DOCUMENT else context.bot.send_photo if file_type == PostMediaTypeEnum.PHOTO else context.bot.send_video_note if file_type == PostMediaTypeEnum.VIDEO_NOTE else context.bot.send_video
                     send_method(
                         chat_id=u.chat_id,
-                        document=file_id if file_type == PostMediaTypeEnum.DOCUMENT else file_id,
+                        # document=file_id if file_type == PostMediaTypeEnum.DOCUMENT else file_id,
                         caption=temp['str1'],
                         parse_mode=ParseMode.HTML,
+                        **{
+                            ("document" if file_type == PostMediaTypeEnum.DOCUMENT else "photo" if file_type == PostMediaTypeEnum.PHOTO else "video_not" if file_type == PostMediaTypeEnum.VIDEO_NOTE else "video"): file_id
+                        }
                     )
                 sent += 1
             except Exception as e:
