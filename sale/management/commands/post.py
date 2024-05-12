@@ -65,7 +65,7 @@ class AdminPost:
 
     def postHandlers(self):
         return ConversationHandler(
-            [MessageHandler(Filters.Text(["Post yuborish"]), self.send_post)],
+            [CommandHandler('post', self.send_post)],
             {
                 ADMIN_POST_MEDIA: [
                     MessageHandler(
