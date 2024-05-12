@@ -78,7 +78,7 @@ class AdminPost:
                         | Filters.text & self.not_start,
                         self.send_post_media,
                     ),
-                    MessageHandler(Filters.Text([BACK]), self.start),
+                    # MessageHandler(Filters.Tetextxt([BACK]), self.start),
                 ],
                 ADMIN_POST_KEYBOARD: [
                     CallbackQueryHandler(
@@ -95,7 +95,7 @@ class AdminPost:
                 ],
                 ADMIN_POST_KEYBOARD_LINK: [
                     MessageHandler(
-                        Filters.Regex(r"^https?://\S+"),
+                        Filters.regex(r"^https?://\S+"),
                         self.admin_post_add_keyboard_link,
                     ),
                 ],
