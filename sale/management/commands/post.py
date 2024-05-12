@@ -64,8 +64,8 @@ class AdminPost:
     bot: ExtBot
 
     def postHandlers(self):
-        not_start = ~Filters.regex("^(/start)")
-        
+        self.not_start = ~Filters.regex("^(/start)")
+
         return ConversationHandler(
             [CommandHandler('post', self.send_post)],
             {
