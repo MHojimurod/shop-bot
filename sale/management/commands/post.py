@@ -32,6 +32,10 @@ from telethon import Button
 from typing import Optional, Sequence, Tuple, Union
 from sale.management.commands.decorators import get_user
 
+from telegram import Update, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import CallbackContext
+
+
 
 temps = {}
 
@@ -109,7 +113,7 @@ class AdminPost:
             map_to_parent={MENU: MENU},
         )
 
-    async def send_post(self, update: Update, context: CallbackContext):
+    def send_post(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
 
 
@@ -122,13 +126,13 @@ class AdminPost:
 
         temp['keyboards_json'] = dict(keyboards=[[]])
 
-        await user.send_message(
+        user.send_message(
             "Post uchun media yuboring.", reply_markup=ReplyKeyboardMarkup()
         )
         temps[user.id] = temp
         return ADMIN_POST_MEDIA
 
-    async def send_post_media(self, update: Update, context: CallbackContext):
+    def send_post_media(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         temp = temps[user.id]
 
@@ -182,20 +186,20 @@ class AdminPost:
 
         temp['str2'] = f.file_id if f else ""
         temps[user.id] = temp
-        # await user.send_message("Iltimos postni tekshiring.")
+        # user.send_message("Iltimos postni tekshiring.")
 
-        await user.send_message(
+        user.send_message(
             "Keyboardni sozlang",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton("➕", callback_data=f"add:0")]]
             ),
         )
 
-        await self.send(update, context)
+        self.send(update, context)
         temps[user.id] = temp
         return ADMIN_POST_KEYBOARD
 
-    async def admin_post_add_keyboard(self, update: Update, context: CallbackContext):
+    def admin_post_add_keyboard(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         temp = temps[user.id]
 
@@ -204,11 +208,11 @@ class AdminPost:
         temp['y'] = y
         temps[user.id] = temp
 
-        await user.send_message("Iltimos tugmaning nomini yuboring.")
+        user.send_message("Iltimos tugmaning nomini yuboring.")
         temps[user.id] = temp
         return ADMIN_POST_KEYBOARD_NAME
 
-    async def admin_post_add_keyboard_name(
+    def admin_post_add_keyboard_name(
         self, update: Update, context: CallbackContext
     ):
         user, db_user = get_user(update)
@@ -216,11 +220,11 @@ class AdminPost:
 
         temp['button_name'] = update.message.text
         temps[user.id] = temp
-        await user.send_message("Iltimos tugmaning linkini yuboring.")
+        user.send_message("Iltimos tugmaning linkini yuboring.")
         temps[user.id] = temp
         return ADMIN_POST_KEYBOARD_LINK
 
-    async def admin_post_add_keyboard_link(
+    def admin_post_add_keyboard_link(
         self, update: Update, context: CallbackContext
     ):
         user, db_user = get_user(update)
@@ -240,11 +244,11 @@ class AdminPost:
         temp['keyboards_json'] = {"keyboards": keyboards}
         temps[user.id] = temp
 
-        await self.send(update, context)
+        self.send(update, context)
         temps[user.id] = temp
         return ADMIN_POST_KEYBOARD
 
-    async def send(self, update: Update, context: CallbackContext):
+    def send(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         temp = temps[user.id]
 
@@ -275,43 +279,43 @@ class AdminPost:
         )
 
         if temp['int1'] == PostMediaTypeEnum.TEXT:
-            await user.send_message(
+            user.send_message(
                 temp['str1'],
                 parse_mode="HTML",
                 reply_markup=keyboard,
             )
         elif temp['int1'] == PostMediaTypeEnum.VIDEO:
-            await user.send_video(
+            user.send_video(
                 temp['str2'],
                 caption=temp['str1'],
                 parse_mode="HTML",
                 reply_markup=keyboard,
             )
         elif temp['int1'] == PostMediaTypeEnum.VIDEO_NOTE:
-            await user.send_video_note(
+            user.send_video_note(
                 temp['str2'],
             )
-            await user.send_message(
+            user.send_message(
                 "Tasdiqlaysizmi?2",
                 parse_mode="HTML",
                 reply_markup=keyboard,
             )
         elif temp['int1'] == PostMediaTypeEnum.PHOTO:
-            await user.send_photo(
+            user.send_photo(
                 temp['str2'],
                 caption=temp['str1'],
                 parse_mode="HTML",
                 reply_markup=keyboard,
             )
         elif temp['int1'] == PostMediaTypeEnum.DOCUMENT:
-            await user.send_document(
+            user.send_document(
                 temp['str2'],
                 caption=temp['str1'],
                 parse_mode="HTML",
                 reply_markup=keyboard,
             )
 
-    async def admin_post_check(self, update: Update, context: CallbackContext):
+    def admin_post_check(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
         temp = temps[user.id]
 
@@ -325,151 +329,210 @@ class AdminPost:
         print(a)
 
         if not a:
-            return await self.send_post(update, context)
+            return self.send_post(update, context)
 
-        await user.send_message(
+        user.send_message(
             "Habarlar yuborilmoqda.\n\nIltimos kuting biroz vaqt ketadi."
         )
 
-        await self.send_post_to_users(update, context)
+        self.send_post_to_users(update, context)
 
         temp['keyboards_json'] = dict(keyboards=[[]])
         temp['y'] = 0
 
-        return await self.start(update, context, False, False)
+        return self.start(update, context, False, False)
 
-    async def send_post_to_users(self, update: Update, context: CallbackContext):
+    # def send_post_to_users(self, update: Update, context: CallbackContext):
+    #     user, db_user = get_user(update)
+    #     temp = temps[user.id]
+
+    #     client = TelegramClient(
+    #         f"PostClient_{user.chat_id}.session",
+    #         1576297,
+    #         "4baa5091b96708ed0aebc626dc404ff9",
+    #     )
+
+    #     client.start(bot_token=self.token)
+
+    #     f = None
+
+    #     if temp['int1'] in [
+    #         PostMediaTypeEnum.VIDEO,
+    #         PostMediaTypeEnum.PHOTO,
+    #         PostMediaTypeEnum.DOCUMENT,
+    #         PostMediaTypeEnum.VIDEO_NOTE,
+    #     ]:
+    #         tf = self.bot.get_file(temp['str2'])
+
+    #         c = BytesIO()
+    #         tf.download_to_memory(c)
+    #         c.seek(0)
+
+    #         f = client.upload_file(
+    #             c,
+    #             file_name=temp['str5'],
+    #         )
+
+    #     users = SaleSeller2.objects.all()
+    #     sent = 0
+    #     fail = 0
+
+    #     p_m = user.send_message(
+    #         "Post yuborilmoqda.\n\n"
+    #         f"Yuborildi: {sent}\n"
+    #         f"Yuborib bo'lmadi: {fail}\n"
+    #         f"Process: 0%"
+    #     )
+
+    #     keyboard = [
+    #         [
+    #             *[Button.url(k["name"], k["link"]) for k in kl],
+    #         ]
+    #         for i, kl in enumerate(temp['keyboards_json']["keyboards"])
+    #     ]
+
+    #     print(keyboard)
+
+    #     for i in range(len(users)):
+    #         u = users[i]
+    #         if temp['int1'] == PostMediaTypeEnum.TEXT:
+    #             try:
+    #                 client.send_message(
+    #                     u.chat_id, temp['str1'], parse_mode="html", buttons=keyboard
+    #                 )
+    #                 sent += 1
+    #             except Exception as e:
+    #                 print(e)
+    #                 fail += 1
+    #         elif temp['int1'] == PostMediaTypeEnum.VIDEO:
+    #             try:
+    #                 client.send_file(
+    #                     u.chat_id,
+    #                     f,
+    #                     caption=temp['str1'],
+    #                     # file_size=tf.file_size,
+    #                     parse_mode="html",
+    #                     attributes=[
+    #                         DocumentAttributeVideo(
+    #                             # temp['int2'], temp['int3'], temp['int4'])
+    #                             0, 0, 0)
+    #                     ],
+    #                     buttons=keyboard,
+    #                 )
+    #                 sent += 1
+    #             except Exception as e:
+    #                 print(e)
+    #                 fail += 1
+    #         elif temp['int1'] == PostMediaTypeEnum.VIDEO_NOTE:
+    #             try:
+    #                 client.send_file(
+    #                     u.chat_id,
+    #                     f,
+    #                     video_note=True,
+    #                     file_size=tf.file_size,
+    #                     buttons=keyboard,
+    #                 )
+    #                 sent += 1
+    #             except Exception as e:
+    #                 print(e)
+    #                 fail += 1
+    #         elif temp['int1'] == PostMediaTypeEnum.PHOTO:
+    #             try:
+    #                 client.send_file(
+    #                     u.chat_id,
+    #                     f,
+    #                     caption=temp['str1'],
+    #                     file_size=tf.file_size,
+    #                     parse_mode="html",
+    #                     attributes=[DocumentAttributeImageSize(
+    #                         temp['int3'], temp['int4'])],
+    #                     buttons=keyboard,
+    #                 )
+    #                 sent += 1
+    #             except Exception as e:
+    #                 print(e)
+    #                 fail += 1
+    #         elif temp['int1'] == PostMediaTypeEnum.DOCUMENT:
+    #             try:
+    #                 client.send_file(
+    #                     u.chat_id,
+    #                     f,
+    #                     file_size=tf.file_size,
+    #                     caption=temp['str1'],
+    #                     parse_mode="html",
+    #                     buttons=keyboard,
+    #                 )
+    #                 sent += 1
+    #             except Exception as e:
+    #                 print(e)
+    #                 fail += 1
+    #         if i % 100 == 0:
+    #             # user.send_message(i)
+    #             p_m.edit_text(
+    #                 "Post yuborilmoqda.\n\n"
+    #                 f"Yuborildi: {sent}\n"
+    #                 f"Yuborib bo'lmadi: {fail}\n"
+    #                 f"Process: {((sent + fail) / users.count()) * 100 }%"
+    #             )
+    #     client.log_out()
+
+    #     user.send_message("Habarlar yuborildi.")
+
+
+
+
+    def send_post_to_users(self, update: Update, context: CallbackContext) -> None:
         user, db_user = get_user(update)
         temp = temps[user.id]
 
-        client = TelegramClient(
-            f"PostClient_{user.chat_id}.session",
-            1576297,
-            "4baa5091b96708ed0aebc626dc404ff9",
-        )
-
-        await client.start(bot_token=self.token)
-
-        f = None
-
-        if temp['int1'] in [
-            PostMediaTypeEnum.VIDEO,
-            PostMediaTypeEnum.PHOTO,
-            PostMediaTypeEnum.DOCUMENT,
-            PostMediaTypeEnum.VIDEO_NOTE,
-        ]:
-            tf = await self.bot.get_file(temp['str2'])
-
-            c = BytesIO()
-            await tf.download_to_memory(c)
-            c.seek(0)
-
-            f = await client.upload_file(
-                c,
-                file_name=temp['str5'],
-            )
-
-        users = SaleSeller2.objects.all()
         sent = 0
         fail = 0
 
-        p_m = await user.send_message(
-            "Post yuborilmoqda.\n\n"
-            f"Yuborildi: {sent}\n"
-            f"Yuborib bo'lmadi: {fail}\n"
-            f"Process: 0%"
+        p_m = context.bot.send_message(
+            chat_id=user.chat_id,
+            text=f"Post yuborilmoqda.\n\nYuborildi: {sent}\nYuborib bo'lmadi: {fail}\nProcess: 0%"
         )
 
         keyboard = [
-            [
-                *[Button.url(k["name"], k["link"]) for k in kl],
-            ]
-            for i, kl in enumerate(temp['keyboards_json']["keyboards"])
+            [InlineKeyboardButton(k["name"], url=k["link"]) for k in kl]
+            for kl in temp['keyboards_json']["keyboards"]
         ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
 
-        print(keyboard)
+        users = SaleSeller2.objects.all()
+        file_type = temp['int1']
+        file_id = temp['str2']  # This is the file ID on Telegram servers
 
-        for i in range(len(users)):
-            u = users[i]
-            if temp['int1'] == PostMediaTypeEnum.TEXT:
-                try:
-                    await client.send_message(
-                        u.chat_id, temp['str1'], parse_mode="html", buttons=keyboard
+        for i, u in enumerate(users):
+            try:
+                if file_type == PostMediaTypeEnum.TEXT:
+                    context.bot.send_message(
+                        chat_id=u.chat_id,
+                        text=temp['str1'],
+                        parse_mode=ParseMode.HTML,
+                        reply_markup=reply_markup
                     )
-                    sent += 1
-                except Exception as e:
-                    print(e)
-                    fail += 1
-            elif temp['int1'] == PostMediaTypeEnum.VIDEO:
-                try:
-                    await client.send_file(
-                        u.chat_id,
-                        f,
+                elif file_type in [PostMediaTypeEnum.PHOTO, PostMediaTypeEnum.DOCUMENT, PostMediaTypeEnum.VIDEO, PostMediaTypeEnum.VIDEO_NOTE]:
+                    send_method = context.bot.send_document if file_type == PostMediaTypeEnum.DOCUMENT else context.bot.send_photo if file_type == PostMediaTypeEnum.PHOTO else context.bot.send_video_note if file_type == PostMediaTypeEnum.VIDEO_NOTE else context.bot.send_video
+                    send_method(
+                        chat_id=u.chat_id,
+                        document=file_id if file_type == PostMediaTypeEnum.DOCUMENT else file_id,
                         caption=temp['str1'],
-                        # file_size=tf.file_size,
-                        parse_mode="html",
-                        attributes=[
-                            DocumentAttributeVideo(
-                                # temp['int2'], temp['int3'], temp['int4'])
-                                0, 0, 0)
-                        ],
-                        buttons=keyboard,
+                        parse_mode=ParseMode.HTML,
+                        reply_markup=reply_markup
                     )
-                    sent += 1
-                except Exception as e:
-                    print(e)
-                    fail += 1
-            elif temp['int1'] == PostMediaTypeEnum.VIDEO_NOTE:
-                try:
-                    await client.send_file(
-                        u.chat_id,
-                        f,
-                        video_note=True,
-                        file_size=tf.file_size,
-                        buttons=keyboard,
-                    )
-                    sent += 1
-                except Exception as e:
-                    print(e)
-                    fail += 1
-            elif temp['int1'] == PostMediaTypeEnum.PHOTO:
-                try:
-                    await client.send_file(
-                        u.chat_id,
-                        f,
-                        caption=temp['str1'],
-                        file_size=tf.file_size,
-                        parse_mode="html",
-                        attributes=[DocumentAttributeImageSize(
-                            temp['int3'], temp['int4'])],
-                        buttons=keyboard,
-                    )
-                    sent += 1
-                except Exception as e:
-                    print(e)
-                    fail += 1
-            elif temp['int1'] == PostMediaTypeEnum.DOCUMENT:
-                try:
-                    await client.send_file(
-                        u.chat_id,
-                        f,
-                        file_size=tf.file_size,
-                        caption=temp['str1'],
-                        parse_mode="html",
-                        buttons=keyboard,
-                    )
-                    sent += 1
-                except Exception as e:
-                    print(e)
-                    fail += 1
+                sent += 1
+            except Exception as e:
+                print(e)
+                fail += 1
+
             if i % 100 == 0:
-                # await user.send_message(i)
-                await p_m.edit_text(
-                    "Post yuborilmoqda.\n\n"
-                    f"Yuborildi: {sent}\n"
-                    f"Yuborib bo'lmadi: {fail}\n"
-                    f"Process: {((sent + fail) / users.count()) * 100 }%"
+                p_m.edit_text(
+                    f"Post yuborilmoqda.\n\nYuborildi: {sent}\nYuborib bo'lmadi: {fail}\n"
+                    f"Process: {(sent + fail) / len(users) * 100:.2f}%"
                 )
-        await client.log_out()
 
-        await user.send_message("Habarlar yuborildi.")
+        context.bot.send_message(
+            chat_id=user.chat_id,
+            text="Habarlar yuborildi."
+        )
