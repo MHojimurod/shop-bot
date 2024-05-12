@@ -115,7 +115,7 @@ class AdminPost:
         #     return
 
         user.send_message(
-            "Post uchun media yuboring.", reply_markup=ReplyKeyboardMarkup()
+            "Post uchun media yuboring.", reply_markup=ReplyKeyboardMarkup([])
         )
         temps[user.id] = temp
         return ADMIN_POST_MEDIA
@@ -276,7 +276,7 @@ class AdminPost:
         #     else None
         # )
         a = update.callback_query.data == "send"
-        
+
         if not a:
             return self.send_post(update, context)
 
