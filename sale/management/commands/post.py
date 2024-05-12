@@ -189,7 +189,7 @@ class AdminPost:
 
         self.send(update, context)
         temps[user.id] = temp
-        return ADMIN_POST_KEYBOARD
+        return ADMIN_POST_CHECK
 
     # def admin_post_add_keyboard(self, update: Update, context: CallbackContext):
     #     user, db_user = get_user(update)
