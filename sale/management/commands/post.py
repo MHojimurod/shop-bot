@@ -14,7 +14,7 @@ from telethon import TelegramClient
 from telethon.tl.types import DocumentAttributeImageSize, DocumentAttributeVideo
 
 # from telegram import ReplyKeyboardMarkup as ReplyKeyboardMarkupImp
-from telegram import ReplyKeyboardMarkup 
+from telegram import ReplyKeyboardMarkup
 
 from sale.models import SaleSeller2
 from .constant import (
@@ -35,7 +35,6 @@ from sale.management.commands.decorators import get_user
 
 from telegram import Update, ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
-
 
 
 temps = {}
@@ -99,6 +98,9 @@ class AdminPost:
                 ADMIN_POST_CHECK: [
                     MessageHandler(Filters.text & self.not_start,
                                    self.admin_post_check),
+                    CallbackQueryHandler(
+                        self.admin_post_check, pattern="^(send|cancel)$"
+                    ),
                     # MessageHandler(Filters.text([BACK]), self.send_post),
                 ],
             },
@@ -108,7 +110,6 @@ class AdminPost:
 
     def send_post(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
-
 
         temps[user.id] = {}
 
@@ -188,7 +189,7 @@ class AdminPost:
 
         self.send(update, context)
         temps[user.id] = temp
-        # return ADMIN_POST_KEYBOARD
+        return ADMIN_POST_KEYBOARD
 
     # def admin_post_add_keyboard(self, update: Update, context: CallbackContext):
     #     user, db_user = get_user(update)
@@ -214,7 +215,6 @@ class AdminPost:
     #     user.send_message("Iltimos tugmaning linkini yuboring.")
     #     temps[user.id] = temp
     #     return ADMIN_POST_KEYBOARD_LINK
-
 
     def send(self, update: Update, context: CallbackContext):
         user, db_user = get_user(update)
@@ -293,8 +293,6 @@ class AdminPost:
 
         return self.start(update, context, False, False)
 
-
-
     def send_post_to_users(self, update: Update, context: CallbackContext) -> None:
         user, db_user = get_user(update)
         temp = temps[user.id]
@@ -306,7 +304,6 @@ class AdminPost:
             chat_id=user.chat_id,
             text=f"Post yuborilmoqda.\n\nYuborildi: {sent}\nYuborib bo'lmadi: {fail}\nProcess: 0%"
         )
-
 
         users = SaleSeller2.objects.all()
         file_type = temp['int1']
