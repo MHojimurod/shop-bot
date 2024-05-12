@@ -279,9 +279,11 @@ class AdminPost:
         #     else None
         # )
         a = update.callback_query.data == "send"
+        print("Sending",a)
 
         if not a:
             return self.send_post(update, context)
+        print("AAAAAAAAAAAAAAA")
 
         user.send_message(
             "Habarlar yuborilmoqda.\n\nIltimos kuting biroz vaqt ketadi."
@@ -289,6 +291,7 @@ class AdminPost:
 
         self.send_post_to_users(update, context)
 
+        print("BBBBBBBBBBBBBBBBBB")
         temp['y'] = 0
 
         return self.start(update, context, False, False)
