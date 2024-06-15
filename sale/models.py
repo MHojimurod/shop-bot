@@ -310,25 +310,55 @@ class PromoCode(models.Model):
 
 
 
+    # def gifts_text_seller(self, breaker="<br>"):
+    #     gifts_text = ""
+
+
+
+    #     # promos = self.seller.promocodes.order_by("got_at").all()
+
+
+
+    #     gifts = self.seller.gifts.all()
+
+
+    #     for gift in gifts:
+    #         t = ""
+    #         c_count = {}
+    #         for c in gift.car.name:
+    #             i = c_count.get(c,0) + 1
+    #             print(c,i,self.got_at)
+                
+    #             promo = gift.promocodes.filter(letter__iexact=c, order=i,got_at__lte=self.got_at).first()
+                
+    #             if promo:
+    #                 t += promo.letter
+    #             else:
+    #                 t += "*"
+
+    #             c_count[c] = i
+
+    #         if any([c != "*" for c in t]):
+    #             gifts_text += t + breaker
+
+    #     return gifts_text
+    
+    
     def gifts_text_seller(self, breaker="<br>"):
+        if self.got_at is None:
+            # raise ValueError("self.got_at cannot be None")
+            return ""
+
         gifts_text = ""
-
-
-
-        # promos = self.seller.promocodes.order_by("got_at").all()
-
-
-
         gifts = self.seller.gifts.all()
-
 
         for gift in gifts:
             t = ""
             c_count = {}
             for c in gift.car.name:
-                i = c_count.get(c,0) + 1
-                print(c,i,self.got_at)
-                promo = gift.promocodes.filter(letter__iexact=c, order=i,got_at__lte=self.got_at).first()
+                i = c_count.get(c, 0) + 1
+                promo = gift.promocodes.filter(letter__iexact=c, order=i, got_at__lte=self.got_at).first()
+
                 if promo:
                     t += promo.letter
                 else:
