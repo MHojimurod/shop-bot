@@ -89,7 +89,13 @@
                   <td>{{ i.car.name }}</td>
                   <td>{{ i.letter }}</td>
                   <td>{{ i.order }}</td>
-                  <td><a href="{% url 'seller_edit2' i.seller.id %}">{{ i.seller.name }}</a></td>
+                  <td>
+                    {% if i.seller %}
+                        <a href="{% url 'seller_edit2' i.seller.id %}">{{ i.seller.name }}</a>
+                    {% else %}
+                        <span></span>
+                    {% endif %}
+                </td>
                   <td>{{ i.code }}</td>
                   <td>{{ i.seria }}</td>
 
