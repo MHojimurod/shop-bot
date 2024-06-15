@@ -344,11 +344,7 @@ class PromoCode(models.Model):
     #     return gifts_text
     
     
-    def gifts_text_seller(self, breaker="<br>"):
-        if self.got_at is None:
-            # raise ValueError("self.got_at cannot be None")
-            return ""
-
+    def gifts_text_seller(self, breaker: str = "<br>") -> str:
         gifts_text = ""
         gifts = self.seller.gifts.all()
 
@@ -357,7 +353,11 @@ class PromoCode(models.Model):
             c_count = {}
             for c in gift.car.name:
                 i = c_count.get(c, 0) + 1
-                promo = gift.promocodes.filter(letter__iexact=c, order=i, got_at__lte=self.got_at).first()
+
+                if self.got_at is not None:
+                    promo = gift.promocodes.filter(letter__iexact=c, order=i, got_at__lte=self.got_at).first()
+                else:
+                    promo = gift.promocodes.filter(letter__iexact=c, order=i).first()
 
                 if promo:
                     t += promo.letter
